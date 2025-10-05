@@ -23,6 +23,7 @@ public class UserToUserResponse {
         userResponse.setUserCreatedAt(user.getUserCreatedAt() != null ? user.getUserCreatedAt() : null);
         userResponse.setCountry(user.getCountry() != null ? user.getCountry() : "Unknown");
         userResponse.setUserName(user.getUserName() !=null? user.getUserName():"Unknown");
+        userResponse.setGender(user.getGender().name()!=null? user.getGender().name(): "MALE");
         return userResponse;
     }
 }

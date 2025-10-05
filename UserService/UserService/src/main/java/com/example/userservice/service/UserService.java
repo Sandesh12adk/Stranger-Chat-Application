@@ -55,4 +55,12 @@ public class UserService {
         }
         return activeUsers;
     }
+    public void setStatus(long userId, String status1){
+        try {
+            STATUS status = STATUS.valueOf(status1.toUpperCase());
+            userRepo.updateStatusByUserId(userId,status);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Status can only be 'OFFLINE' or 'ONLINE'");
+        }
+    }
 }

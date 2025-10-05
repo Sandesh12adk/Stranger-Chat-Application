@@ -1,5 +1,6 @@
 package com.example.userservice.model;
 
+import com.example.userservice.constant.GENDER;
 import com.example.userservice.constant.STATUS;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -25,4 +26,6 @@ public class User {
     @Column(nullable = true)
     private String country="unknown";
     private String userName;
+    @Enumerated(EnumType.STRING)
+    private GENDER gender;
 }

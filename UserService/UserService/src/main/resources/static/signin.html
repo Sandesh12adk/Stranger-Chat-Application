@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectChat | Join the Conversation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Main Content */
+        #mainContent {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #mainContent.visible {
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            min-height: 550px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .illustration {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .illustration::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+            transform: rotate(-10deg);
+            top: -50%;
+            left: -50%;
+        }
+
+        .illustration-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 100%;
+        }
+
+        .illustration h2 {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .illustration p {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .chat-icon {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .features {
+            text-align: left;
+            margin-top: 30px;
+            display: none; /* Hidden on mobile by default */
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        }
+
+        .feature i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            min-width: 20px;
+        }
+
+        .login-form {
+            flex: 1;
+            padding: clamp(30px, 5vw, 50px) clamp(20px, 4vw, 40px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+            min-height: 550px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            color: var(--primary);
+        }
+
+        .logo i {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+        }
+
+        .login-form h2 {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: clamp(0.8rem, 3vw, 0.9rem);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .gender-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .gender-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            background: white;
+            font-size: clamp(0.8rem, 3vw, 1rem);
+        }
+
+        .gender-option:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .gender-option.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .gender-option.male.selected {
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+        }
+
+        .gender-option.female.selected {
+            background: linear-gradient(135deg, #f72585 0%, #c2185b 100%);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .loading {
+            display: none;
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+            color: var(--gray);
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+            max-width: calc(100vw - 40px);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification i {
+            font-size: 1.2rem;
+        }
+
+        .notification.error i {
+            color: var(--danger);
+        }
+
+        .notification.success i {
+            color: var(--success);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--dark);
+            font-size: clamp(1.3rem, 4vw, 1.5rem);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            width: auto;
+            padding: 0;
+        }
+
+        .close-modal:hover {
+            color: var(--dark);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal-body {
+            line-height: 1.6;
+        }
+
+        .modal-body h3 {
+            margin: 20px 0 10px;
+            color: var(--dark);
+            font-size: clamp(1rem, 3vw, 1.1rem);
+        }
+
+        .modal-body p {
+            margin-bottom: 15px;
+            color: var(--gray);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .modal-body ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .modal-body li {
+            margin-bottom: 8px;
+            color: var(--gray);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .illustration {
+                padding: 30px 20px;
+                min-height: 300px;
+            }
+
+            .login-form {
+                padding: 40px 30px;
+                min-height: auto;
+            }
+
+            .features {
+                display: block; /* Show features on tablet and mobile */
+            }
+
+            .gender-options {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            #mainContent {
+                padding: 10px;
+            }
+
+            .container {
+                width: 100%;
+                border-radius: 15px;
+            }
+
+            .illustration {
+                padding: 25px 15px;
+                min-height: 250px;
+            }
+
+            .login-form {
+                padding: 30px 20px;
+            }
+
+            .illustration h2 {
+                font-size: 1.4rem;
+            }
+
+            .chat-icon {
+                font-size: 3.5rem;
+                margin-bottom: 20px;
+            }
+
+            .login-form h2 {
+                font-size: 1.4rem;
+            }
+
+            .feature {
+                margin-bottom: 12px;
+            }
+
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .illustration {
+                padding: 20px 15px;
+            }
+
+            .login-form {
+                padding: 25px 15px;
+            }
+
+            input, select {
+                padding: 10px 12px 10px 40px;
+            }
+
+            .gender-option {
+                padding: 10px;
+            }
+
+            button {
+                padding: 12px;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 320px) {
+            .logo {
+                flex-direction: column;
+                gap: 5px;
+                text-align: center;
+            }
+
+            .feature {
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+            }
+
+            .feature i {
+                margin-right: 0;
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1000px;
+            }
+        }
+
+        /* Animation for form elements */
+        .form-group {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .form-group:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        button {
+            animation: fadeInUp 0.5s ease 0.4s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Prevent horizontal scroll on mobile */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+<!-- Loading Screen -->
+<div id="loadingScreen">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Checking your session...</div>
+</div>
+
+<!-- Main Content -->
+<div id="mainContent">
+    <div class="container">
+        <div class="illustration">
+            <div class="illustration-content">
+                <i class="fas fa-comments chat-icon"></i>
+                <h2>Welcome to ConnectChat</h2>
+                <p>Join conversations with people around the world</p>
+
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Safe and secure environment</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>Instant connection with others</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-users"></i>
+                        <span>Meet interesting people</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-smile"></i>
+                        <span>Friendly community guidelines</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-form">
+            <div class="logo">
+                <i class="fas fa-comments"></i>
+                <span>ConnectChat</span>
+            </div>
+
+            <h2>Enter the Chat</h2>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="age">Your Age</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="number" id="age" name="age" required min="1" max="120" placeholder="Enter your age to continue">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Your Gender</label>
+                    <div class="gender-options">
+                        <div class="gender-option male" data-value="male">
+                            <i class="fas fa-mars"></i> Male
+                        </div>
+                        <div class="gender-option female" data-value="female">
+                            <i class="fas fa-venus"></i> Female
+                        </div>
+                    </div>
+                    <input type="hidden" id="gender" name="gender" required>
+                </div>
+
+                <button type="submit" id="submitBtn">
+                    <span class="button-text">Join Conversation</span>
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </button>
+            </form>
+
+            <div class="footer">
+                <p>By entering the chat, you agree to our <a id="termsLink">Terms and Conditions</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Terms and Conditions Modal -->
+<div class="modal" id="termsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>ConnectChat Terms and Conditions</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <h3>1. Acceptance of Terms</h3>
+            <p>By accessing and using ConnectChat, you accept and agree to be bound by the terms and provision of this agreement.</p>
+
+            <h3>2. Use of Service</h3>
+            <p>ConnectChat provides a platform for users to communicate with each other. You agree to use the service responsibly and in accordance with all applicable laws.</p>
+
+            <h3>3. User Conduct</h3>
+            <p>You agree not to use the service to:</p>
+            <ul>
+                <li>Post any content that is unlawful, harmful, threatening, abusive, harassing, defamatory, or otherwise objectionable</li>
+                <li>Impersonate any person or entity</li>
+                <li>Harass or intimidate other users</li>
+                <li>Share personal information of yourself or others</li>
+                <li>Engage in any activity that could harm the service or its users</li>
+            </ul>
+
+            <h3>4. Privacy</h3>
+            <p>Your privacy is important to us. We collect only minimal information necessary to provide the service and do not share your personal data with third parties without your consent.</p>
+
+            <h3>5. Age Requirement</h3>
+            <p>You must be at least 13 years old to use ConnectChat. Users between 13-18 should use the service under parental guidance.</p>
+
+            <h3>6. Content</h3>
+            <p>You are solely responsible for the content you post on ConnectChat. We reserve the right to remove any content that violates these terms.</p>
+
+            <h3>7. Termination</h3>
+            <p>We may terminate or suspend your access to ConnectChat immediately, without prior notice, for conduct that we believe violates these Terms.</p>
+
+            <h3>8. Changes to Terms</h3>
+            <p>We reserve the right to modify these terms at any time. We will notify users of any material changes via the application.</p>
+
+            <h3>9. Contact</h3>
+            <p>If you have any questions about these Terms, please contact us at support@connectchat.com.</p>
+
+            <p style="margin-top: 20px; font-style: italic;">Last updated: January 2023</p>
+        </div>
+    </div>
+</div>
+
+<div class="notification" id="notification">
+    <i class="fas fa-exclamation-circle"></i>
+    <span id="notificationText">This is a notification</span>
+</div>
+
+<script>
+    const apiUrl = "http://localhost:8080/api/user";
+
+    // Function to check session and handle page display
+    function checkSessionAndDisplay() {
+        fetch(`${apiUrl}/session-check`, {
+            method: "GET",
+            credentials: 'include'
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error("No active session");
+        })
+        .then(data => {
+            // If session exists, redirect to homepage immediately
+            window.location.href = "home.html";
+        })
+        .catch(err => {
+            // No session, show the login page
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('mainContent').classList.add('visible');
+            }, 500); // Small delay for smooth transition
+        });
+    }
+
+    // Check session immediately when page loads
+    document.addEventListener('DOMContentLoaded', checkSessionAndDisplay);
+
+    // Gender selection functionality
+    document.querySelectorAll('.gender-option').forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selected class from all options
+            document.querySelectorAll('.gender-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // Add selected class to clicked option
+            this.classList.add('selected');
+
+            // Set the hidden input value
+            document.getElementById('gender').value = this.dataset.value;
+        });
+    });
+
+    // Handle login form submission
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const age = document.getElementById("age").value;
+        const gender = document.getElementById("gender").value;
+        const submitBtn = document.getElementById("submitBtn");
+        const buttonText = submitBtn.querySelector('.button-text');
+        const loading = submitBtn.querySelector('.loading');
+
+        // Validate gender selection
+        if (!gender) {
+            showNotification("Please select your gender", "error");
+            return;
+        }
+
+        // Show loading state
+        buttonText.style.display = 'none';
+        loading.style.display = 'block';
+        submitBtn.disabled = true;
+
+        fetch(`${apiUrl}/signin`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                age: age,
+                gender: gender
+            }),
+            credentials: 'include'
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Unable to join chat");
+            return response.json();
+        })
+        .then(data => {
+            // Save user info to localStorage
+            localStorage.setItem("userName", data.userName);
+            localStorage.setItem("userId", data.userId);
+            localStorage.setItem("userGender", data.gender);
+
+            // Show success notification
+            showNotification("Welcome to ConnectChat! Redirecting...", "success");
+
+            // Redirect to homepage after a short delay
+            setTimeout(() => {
+                window.location.href = "home.html";
+            }, 1500);
+        })
+        .catch(error => {
+            // Show error notification
+            showNotification(error.message, "error");
+
+            // Reset button state
+            buttonText.style.display = 'block';
+            loading.style.display = 'none';
+            submitBtn.disabled = false;
+        });
+    });
+
+    // Function to show notification
+    function showNotification(message, type) {
+        const notification = document.getElementById("notification");
+        const notificationText = document.getElementById("notificationText");
+
+        notificationText.textContent = message;
+        notification.className = `notification ${type} show`;
+
+        // Hide notification after 5 seconds
+        setTimeout(() => {
+            notification.classList.remove("show");
+        }, 5000);
+    }
+
+    // Add input validation
+    document.getElementById("age").addEventListener("input", function() {
+        const age = parseInt(this.value);
+
+        if (age < 1 || age > 120) {
+            this.style.borderColor = "var(--danger)";
+        } else {
+            this.style.borderColor = "var(--light-gray)";
+        }
+    });
+
+    // Terms and Conditions Modal
+    const termsModal = document.getElementById("termsModal");
+    const termsLink = document.getElementById("termsLink");
+    const closeModal = document.querySelector(".close-modal");
+
+    termsLink.addEventListener("click", function() {
+        termsModal.style.display = "flex";
+    });
+
+    closeModal.addEventListener("click", function() {
+        termsModal.style.display = "none";
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener("click", function(event) {
+        if (event.target === termsModal) {
+            termsModal.style.display = "none";
+        }
+    });
+
+    // Handle mobile viewport height issues
+    function setViewportHeight() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    setViewportHeight();
+    window.addEventListener('resize', setViewportHeight);
+</script>
+</body>
+</html>

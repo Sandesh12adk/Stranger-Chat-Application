@@ -12,4 +12,5 @@ public class UserResponse {
     private String status;
     private String country;
     private String userName;
+    private String gender;
 }
