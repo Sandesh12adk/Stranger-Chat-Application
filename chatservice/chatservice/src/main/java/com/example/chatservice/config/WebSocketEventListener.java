@@ -42,6 +42,7 @@ public class WebSocketEventListener {
                 userServiceClient.setStatus(userId, "ONLINE");
                 System.out.println(userId + "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
                 // BROADCAST STATUS CHANGE TO ALL CLIENTS
+                broadcastUserStatusChange(userId, userName, "ONLINE");
 
             } catch (NumberFormatException e) {
                 logger.error("Invalid userId format: {}", userIdStr);
