@@ -99,5 +99,5 @@ public class WebSocketEventListener {
         } catch (Exception e) {
             logger.error("Error broadcasting status change: {}", e.getMessage());
         }
-    }7
+    }
 }

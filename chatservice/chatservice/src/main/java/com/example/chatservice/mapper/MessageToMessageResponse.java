@@ -13,6 +13,7 @@ public class MessageToMessageResponse {
             messageResponse.setSenderId(message.getSenderId());
             messageResponse.setReceiverId(message.getReceiverId());
             messageResponse.setId(message.getId());
+            messageResponse.setSentTime(message.getSentDateAndTime());
         }
         return messageResponse;
     }

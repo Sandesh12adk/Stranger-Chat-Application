@@ -1197,7 +1197,7 @@ function handleStatusUpdate(statusUpdate) {
             messageElement.className = isFromYou ? "message sent" : "message received";
 
             // Simple timestamp - since sentDateAndTime is null, use current time or just show message
-            let timeString = 'Just now';
+            let timeString = message.sentTime;
 
             messageElement.innerHTML = `
                 <div class="message-bubble">${message.msg}</div>
