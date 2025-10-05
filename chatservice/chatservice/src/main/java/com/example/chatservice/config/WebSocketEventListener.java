@@ -22,27 +22,31 @@ public class WebSocketEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
+
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String userIdStr = headers.getFirstNativeHeader("userId");
         String userName = headers.getFirstNativeHeader("userName");
-
+        String country = headers.getFirstNativeHeader("country");
+        String gender = headers.getFirstNativeHeader("gender");
 
         if (userIdStr != null) {
             try {
                 long userId = Long.parseLong(userIdStr);
                 System.out.println("✅ User connected: " + userId);
 
-                // STORE THE USERID IN SESSION ATTRIBUTES
+                // STORE THE USER INFO IN SESSION ATTRIBUTES
                 headers.getSessionAttributes().put("userId", userId);
-                headers.getSessionAttributes().put("userName", userName);;
+                headers.getSessionAttributes().put("userName", userName);
+                headers.getSessionAttributes().put("country", country);
+                headers.getSessionAttributes().put("gender", gender);
 
                 // Update status in database
                 userServiceClient.setStatus(userId, "ONLINE");
                 System.out.println(userId + "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
                 // BROADCAST STATUS CHANGE TO ALL CLIENTS
-                broadcastUserStatusChange(userId, userName, "ONLINE");
+                broadcastUserStatusChange(userId, userName, country, gender, "ONLINE");
 
             } catch (NumberFormatException e) {
                 logger.error("Invalid userId format: {}", userIdStr);
@@ -56,9 +60,11 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
 
-        // Get userId from session attributes (that we stored during connect)
+        // Get user info from session attributes (that we stored during connect)
         Long userId = (Long) headers.getSessionAttributes().get("userId");
         String userName = (String) headers.getSessionAttributes().get("userName");
+        String country = (String) headers.getSessionAttributes().get("country");
+        String gender = (String) headers.getSessionAttributes().get("gender");
 
         if (userId != null) {
             System.out.println("❌ User disconnected: " + userId);
@@ -67,22 +73,25 @@ public class WebSocketEventListener {
             userServiceClient.setStatus(userId, "OFFLINE");
 
             // BROADCAST STATUS CHANGE TO ALL CLIENTS
-            broadcastUserStatusChange(userId, userName, "OFFLINE");
+            broadcastUserStatusChange(userId, userName, country, gender, "OFFLINE");
 
         } else {
             logger.warn("User disconnected but userId was not found in session");
         }
     }
 
-    private void broadcastUserStatusChange(Long userId, String userName, String status) {
+    private void broadcastUserStatusChange(Long userId, String userName, String country, String gender, String status) {
         try {
-            // Create status update message
+            // Create status update message with all user info
             java.util.Map<String, Object> statusUpdate = new java.util.HashMap<>();
             statusUpdate.put("userId", userId);
             statusUpdate.put("userName", userName);
+            statusUpdate.put("country", country);
+            statusUpdate.put("gender", gender);
             statusUpdate.put("status", status);
             statusUpdate.put("timestamp", java.time.LocalDateTime.now().toString());
             statusUpdate.put("type", "USER_STATUS_UPDATE");
+
             // Broadcast to ALL connected clients
             messagingTemplate.convertAndSend("/topic/status-change", statusUpdate);
             System.out.println("📢 Broadcasted status update: " + userName + " is " + status);
@@ -90,5 +99,5 @@ public class WebSocketEventListener {
         } catch (Exception e) {
             logger.error("Error broadcasting status change: {}", e.getMessage());
         }
-    }
+    }7
 }

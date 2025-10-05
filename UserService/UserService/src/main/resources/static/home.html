@@ -675,12 +675,15 @@
     let userId = null;
     let unreadMessages = {}; // Track unread messages per user
     let currentChatUser = null; // Track currently open chat
+    let gender= null;
+    let country= null;
 
     // Check session and get user data
     function checkUserSession() {
         return fetch(`${userApiUrl}/session-check`, {
             method: "GET",
             credentials: "include"
+
         })
         .then(response => {
             if (!response.ok) throw new Error('Session invalid');
@@ -691,6 +694,8 @@
 
             userName = userData.userName;
             userId = userData.userId;
+            gender= userData.gender;
+            county= userData.country;
 
             document.getElementById("username").textContent = userName;
             document.getElementById("userAvatar").textContent = userName.charAt(0).toUpperCase();
@@ -719,7 +724,9 @@
             stompClient.connect(
                 {
                     'userId': userId.toString(),
-                    'userName': userName
+                    'userName': userName,
+                    'gender':gender,
+                    'country':country
                 },
                 function(frame) {
                     console.log('✅ WebSocket Connected');
