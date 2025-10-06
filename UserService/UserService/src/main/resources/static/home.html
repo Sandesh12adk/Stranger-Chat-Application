@@ -103,6 +103,26 @@
             font-size: 0.8rem;
         }
 
+        #dashboardBtn {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            margin-right: 10px;
+        }
+
+        #dashboardBtn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
         #logoutBtn {
             background: rgba(255, 255, 255, 0.2);
             padding: 6px 12px;
@@ -633,6 +653,77 @@
             box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
         }
 
+        /* Emoji Picker Styles - UPDATED WITH SCROLLING */
+        .emoji-picker {
+            position: absolute;
+            bottom: 70px;
+            left: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 10px;
+            z-index: 100;
+            display: none;
+            max-width: 300px;
+            max-height: 200px;
+            flex-wrap: wrap;
+            gap: 5px;
+            overflow-y: auto;
+            border: 1px solid var(--light-gray);
+        }
+
+        .emoji-picker.active {
+            display: flex;
+        }
+
+        /* Emoji picker scrollbar styling */
+        .emoji-picker::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .emoji-picker::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 3px;
+        }
+
+        .emoji-picker::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border-radius: 3px;
+        }
+
+        .emoji-picker::-webkit-scrollbar-thumb:hover {
+            background: var(--dark);
+        }
+
+        .emoji {
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .emoji:hover {
+            background: var(--light-gray);
+            transform: scale(1.2);
+        }
+
+        /* Make emoji picker responsive */
+        @media (max-width: 768px) {
+            .emoji-picker {
+                max-width: 250px;
+                max-height: 150px;
+                left: 10px;
+                bottom: 60px;
+            }
+
+            .emoji {
+                font-size: 1.1rem;
+                padding: 4px;
+            }
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
@@ -732,6 +823,10 @@
                 <div class="avatar" id="userAvatar">U</div>
                 <span id="username">User</span>
             </div>
+            <button id="dashboardBtn">
+                <i class="fas fa-arrow-left"></i>
+                Dashboard
+            </button>
             <button id="logoutBtn">
                 <i class="fas fa-sign-out-alt"></i>
                 Logout
@@ -819,7 +914,7 @@
 
             <div class="input-area">
                 <div class="input-actions">
-                    <button><i class="fas fa-smile"></i></button>
+                    <button id="emojiButton"><i class="fas fa-smile"></i></button>
                     <button><i class="fas fa-image"></i></button>
                 </div>
                 <div class="input-container">
@@ -827,6 +922,10 @@
                     <button class="send-button" onclick="sendMessage()">
                         <i class="fas fa-paper-plane"></i>
                     </button>
+                </div>
+                <!-- Emoji Picker -->
+                <div class="emoji-picker" id="emojiPicker">
+                    <!-- Emojis will be populated here -->
                 </div>
             </div>
         </div>
@@ -853,6 +952,197 @@
     let inboxUnreadCount = 0; // Total unread messages in inbox
     let currentlySelectedUserId = null; // Track currently selected user ID
 
+    // Emoji data
+   const emojis = [
+  '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
+  '🙂', '🙃', '😉', '😌',
+
+  // Expanded love/heart emojis
+  '😍', '🥰', '😘', '😗', '😙', '😚', '💖', '💗', '💓', '💞',
+  '💕', '💘', '💝', '💟', '🥲', '🤎', '🧡', '❤️‍🔥', '❤️‍🩹', '💌',
+  '❤️', '💛', '💚', '💙', '💜', '🖤', '🤍', '💋', '👩‍❤️‍👨', '👨‍❤️‍👨',
+
+  // Additional facial expressions & people
+  '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩',
+  '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣',
+  '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬',
+  '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗',
+  '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯',
+  '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐',
+  '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈',
+
+  // Fantasy & characters
+  '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾',
+  '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿',
+  '😾',
+
+  // Hand gestures & body parts
+  '👋', '🤚', '🖐️', '✋', '🖖', '👌', '🤌', '🤏', '✌️', '🤞',
+  '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👍',
+  '👎', '✊', '👊', '🤛', '🤜', '👏', '🙌', '👐', '🤲', '🤝',
+  '🙏', '✍️', '💅', '🤳', '💪', '🦾', '🦵', '🦿', '🦶', '👂',
+  '🦻', '👃', '🧠', '🦷', '🦴', '👀', '👁️', '👅', '👄',
+
+  // Animals & nature
+  '🐵', '🐒', '🦍', '🦧', '🐶', '🐕', '🦮', '🐩', '🐺', '🦊',
+  '🦝', '🐱', '🐈', '🦁', '🐯', '🐅', '🐆', '🐴', '🐎', '🦄',
+  '🦓', '🦌', '🐮', '🐂', '🐃', '🐄', '🐷', '🐖', '🐗', '🐽',
+  '🐏', '🐑', '🐐', '🐪', '🐫', '🦙', '🦒', '🐘', '🦏', '🦛',
+  '🐭', '🐁', '🐀', '🐹', '🐰', '🐇', '🐿️', '🦫', '🦔', '🦇',
+  '🐻', '🐨', '🐼', '🦥', '🦦', '🦨', '🦘', '🦡', '🐾', '🦃',
+  '🐔', '🐓', '🐣', '🐤', '🐥', '🐦', '🐧', '🕊️', '🦅', '🦆',
+  '🦢', '🦉', '🦤', '🦩', '🦚', '🦜', '🐸', '🐊', '🐢', '🦎',
+  '🐍', '🐲', '🐉', '🦕', '🦖', '🐳', '🐋', '🐬', '🦭', '🐟',
+  '🐠', '🐡', '🦈', '🐙', '🐚', '🐌', '🦋', '🐛', '🐜', '🐝',
+  '🪲', '🐞', '🦗', '🕷️', '🕸️', '🦂', '🦟', '🦠', '💐', '🌸',
+  '💮', '🏵️', '🌹', '🥀', '🌺', '🌻', '🌼', '🌷', '🌱', '🪴',
+  '🌲', '🌳', '🌴', '🌵', '🌾', '🌿', '☘️', '🍀', '🍁', '🍂',
+  '🍃', '🍄', '🌰', '🦀', '🦞', '🦐', '🦑', '🌍', '🌎', '🌏',
+  '🌐', '🪐', '💫', '⭐', '🌟', '✨', '⚡', '☄️', '💥', '🔥',
+  '🌪️', '🌈', '☀️', '🌤️', '⛅', '🌥️', '☁️', '🌦️', '🌧️', '⛈️',
+  '🌩️', '🌨️', '❄️', '☃️', '⛄', '🌬️', '💨', '💧', '💦', '☔',
+  '☂️', '🌊', '🌫️',
+
+  // Food & drinks
+  '🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐',
+  '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑',
+  '🥦', '🥬', '🥒', '🌶️', '🫑', '🌽', '🥕', '🫒', '🧄', '🧅',
+  '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳',
+  '🧈', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🦴', '🌭', '🍔',
+  '🍟', '🍕', '🫓', '🥪', '🥙', '🧆', '🌮', '🌯', '🫔', '🥗',
+  '🥘', '🫕', '🥫', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟',
+  '🦪', '🍤', '🍙', '🍚', '🍘', '🍥', '🥠', '🥮', '🍢', '🍡',
+  '🍧', '🍨', '🍦', '🥧', '🧁', '🍰', '🎂', '🍮', '🍭', '🍬',
+  '🍫', '🍿', '🍩', '🍪', '🌰', '🥜', '🫘', '🍯', '🥛', '🍼',
+  '🫖', '☕', '🍵', '🧃', '🥤', '🧋', '🍶', '🍺', '🍻', '🥂',
+  '🍷', '🥃', '🍸', '🍹', '🧉', '🍾', '🧊', '🥄', '🍴', '🍽️',
+  '🥣', '🥡', '🥢', '🧂',
+
+  // Activities & sports
+  '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱',
+  '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🎿', '⛷️', '🏂',
+  '🪂', '🏋️', '🤼', '🤸', '⛹️', '🤾', '🏌️', '🏇', '🧘', '🏄',
+  '🏊', '🤽', '🚣', '🧗', '🚴', '🚵', '🤹', '🤺', '🥊', '🥋',
+  '🎯', '🪃', '🥅', '🛹', '🛼', '🎲', '♟️', '🎮', '🎳', '🎭',
+  '🩰', '🎨', '🎪', '🎤', '🎧', '🎼', '🎹', '🥁', '🪘', '🎷',
+  '🎺', '🎸', '🪕', '🎻', '🎬', '🏆', '🎫', '🎗️', '🎟️', '🎭',
+
+  // Travel & places
+  '🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐',
+  '🛻', '🚚', '🚛', '🚜', '🏍️', '🛵', '🚲', '🛴', '🛹', '🛼',
+  '🚁', '✈️', '🛩️', '🛫', '🛬', '🪂', '💺', '🚀', '🛸', '🚉',
+  '🚊', '🚝', '🚄', '🚅', '🚈', '🚂', '🚆', '🚇', '🚋', '🚌',
+  '🚎', '🚐', '🚑', '🚒', '🚓', '🚔', '🚕', '🚖', '🚗', '🚘',
+  '🚙', '🚚', '🚛', '🚜', '🏠', '🏡', '🏢', '🏣', '🏤', '🏥',
+  '🏦', '🏨', '🏩', '🏪', '🏫', '🏬', '🏭', '🏯', '🏰', '💒',
+  '🗼', '🗽', '⛪', '🕌', '🛕', '🕍', '⛩️', '🕋', '🌄', '🌅',
+  '🌆', '🌇', '🌃', '🎠', '🎡', '🎢', '💈', '🌌', '🎇', '🎆',
+  '🌠', '🎑', '💎', '⚱️', '🚂', '🌉', '🎠', '⚓', '🚢', '⛵',
+  '🛶', '🚤', '🛳️', '⛴️', '🛥️', '🚟', '🚠', '🚡', '🛰️', '🚁',
+
+  // Objects & symbols
+  '❤️', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️',
+  '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '☮️', '✝️',
+  '☪️', '🕉️', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐', '⛎',
+  '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑',
+  '♒', '♓', '🆔', '⚛️', '🉑', '☢️', '☣️', '📴', '📳', '🈶',
+  '🈚', '🈸', '🈺', '🈷️', '✴️', '🆚', '💮', '🉐', '㊙️', '㊗️',
+  '🈴', '🈵', '🈹', '🈲', '🅰️', '🅱️', '🆎', '🆑', '🅾️', '🆘',
+  '❌', '⭕', '🛑', '⛔', '📛', '🚫', '💯', '💢', '♨️', '🚷',
+  '🚯', '🚳', '🚱', '🔞', '📵', '🚭', '❗', '❕', '❓', '❔',
+  '‼️', '⁉️', '🔅', '🔆', '〽️', '⚠️', '🚸', '🔱', '⚜️', '🔰',
+  '♻️', '✅', '🈯', '💹', '❇️', '✳️', '❎', '🌐', '💠', 'Ⓜ️',
+  '🌀', '💤', '🏧', '🚾', '♿', '🅿️', '🈳', '🈂️', '🛂', '🛃',
+  '🛄', '🛅', '🚹', '🚺', '🚼', '🚻', '🚮', '🎦', '📶', '🈁',
+  '🔣', 'ℹ️', '🔤', '🔡', '🔠', '🆖', '🆗', '🆙', '🆒', '🆕',
+  '🆓', '0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣',
+  '9️⃣', '🔟', '🔢', '#️⃣', '*️⃣', '⏏️', '▶️', '⏸️', '⏯️', '⏹️',
+  '⏺️', '⏭️', '⏮️', '⏩', '⏪', '⏫', '⏬', '◀️', '🔼', '🔽',
+  '➡️', '⬅️', '⬆️', '⬇️', '↗️', '↘️', '↙️', '↖️', '↕️', '↔️',
+  '↪️', '↩️', '⤴️', '⤵️', '🔀', '🔁', '🔂', '🔄', '🔃', '🎵',
+  '🎶', '➕', '➖', '➗', '✖️', '♾️', '💲', '💱', '™️', '©️',
+  '®️', '〰️', '➰', '➿', '🔚', '🔙', '🔛', '🔝', '🔜', '✔️',
+  '☑️', '🔘', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '⚫', '⚪',
+  '🟤', '🔺', '🔻', '🔸', '🔹', '🔶', '🔷', '🔳', '🔲', '▪️',
+  '▫️', '◾', '◽', '◼️', '◻️', '🟥', '🟧', '🟨', '🟩', '🟦',
+  '🟪', '⬛', '⬜', '🟫', '🔈', '🔇', '🔉', '🔊', '🔔', '🔕',
+  '📣', '📢', '👁️‍🗨️', '💬', '💭', '🗯️', '♠️', '♣️', '♥️', '♦️',
+  '🃏', '🎴', '🀄', '📩', '📨', '📧', '💌', '📥', '📤', '📦',
+  '🏷️', '📪', '📫', '📬', '📭', '📮', '📯', '📜', '📃', '📄',
+  '📑', '🧾', '📊', '📈', '📉', '🗒️', '🗓️', '📆', '📅', '🗑️',
+  '📇', '🗃️', '🗳️', '🗄️', '📋', '📁', '📂', '🗂️', '🗞️', '📰',
+  '📓', '📔', '📒', '📕', '📗', '📘', '📙', '📚', '📖', '🔖',
+  '🧷', '🔗', '📎', '🖇️', '📐', '📏', '🧮', '📌', '📍', '✂️',
+  '🖊️', '🖋️', '✒️', '🖌️', '🖍️', '📝', '✏️', '🔍', '🔎', '🔏',
+  '🔐', '🔒', '🔓', '❤️‍🔥', '❤️‍🩹', '🧡', '💛', '💚', '💙', '💜'
+];
+
+
+    // Initialize emoji picker with scrolling
+    function initializeEmojiPicker() {
+        const emojiPicker = document.getElementById('emojiPicker');
+        const emojiButton = document.getElementById('emojiButton');
+
+        // Clear any existing emojis
+        emojiPicker.innerHTML = '';
+
+        // Populate emoji picker with all emojis
+        emojis.forEach(emoji => {
+            const emojiElement = document.createElement('span');
+            emojiElement.className = 'emoji';
+            emojiElement.textContent = emoji;
+            emojiElement.title = emoji; // Show emoji on hover
+            emojiElement.addEventListener('click', () => {
+                insertEmoji(emoji);
+            });
+            emojiPicker.appendChild(emojiElement);
+        });
+
+        // Toggle emoji picker visibility
+        emojiButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            emojiPicker.classList.toggle('active');
+
+            // Scroll to top when opening
+            if (emojiPicker.classList.contains('active')) {
+                emojiPicker.scrollTop = 0;
+            }
+        });
+
+        // Close emoji picker when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!emojiPicker.contains(e.target) && e.target !== emojiButton) {
+                emojiPicker.classList.remove('active');
+            }
+        });
+
+        // Prevent emoji picker from closing when scrolling inside it
+        emojiPicker.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        console.log('✅ Emoji picker initialized with', emojis.length, 'emojis');
+    }
+
+    // Insert emoji into message input
+    function insertEmoji(emoji) {
+        const messageInput = document.getElementById('messageInput');
+        const startPos = messageInput.selectionStart;
+        const endPos = messageInput.selectionEnd;
+
+        messageInput.value = messageInput.value.substring(0, startPos) +
+                            emoji +
+                            messageInput.value.substring(endPos);
+
+        // Set cursor position after the inserted emoji
+        messageInput.selectionStart = messageInput.selectionEnd = startPos + emoji.length;
+        messageInput.focus();
+
+        // Close emoji picker
+        document.getElementById('emojiPicker').classList.remove('active');
+    }
+
     // Check session and get user data
     function checkUserSession() {
         return fetch(`${userApiUrl}/session-check`, {
@@ -878,7 +1168,8 @@
         })
         .catch(error => {
             console.error('❌ Session check failed:', error);
-            window.location.href = "signin.html";
+            // REDIRECT TO DASHBOARD INSTEAD OF SIGNIN
+            window.location.href = "dashboard.html";
         });
     }
 
@@ -1688,24 +1979,35 @@
     }
 
     // Event listeners
-    document.getElementById("messageInput").addEventListener("keydown", function(e) {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", function() {
-        if (stompClient) stompClient.disconnect();
-        fetch(`${userApiUrl}/logout`, { method: "GET", credentials: "include" })
-        .then(() => {
-            window.location.href = "signin.html";
+    function setupEventListeners() {
+        document.getElementById("messageInput").addEventListener("keydown", function(e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
         });
-    });
+
+        document.getElementById("logoutBtn").addEventListener("click", function() {
+            if (stompClient) stompClient.disconnect();
+            fetch(`${userApiUrl}/logout`, { method: "GET", credentials: "include" })
+            .then(() => {
+                window.location.href = "signin.html";
+            });
+        });
+
+        // ADD DASHBOARD BUTTON EVENT LISTENER
+        document.getElementById("dashboardBtn").addEventListener("click", function() {
+            // Redirect to dashboard
+            window.location.href = "dashboard.html";
+        });
+    }
 
     // Initialize app - IMPROVED VERSION
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 Initializing ConnectChat...');
+
+        // Initialize emoji picker first
+        initializeEmojiPicker();
 
         checkUserSession()
             .then((userData) => {
@@ -1715,6 +2017,7 @@
                 // Setup UI components
                 setupTabSwitching();
                 setupSearchAndFilter();
+                setupEventListeners();
 
                 // Connect WebSocket first and wait for it to be ready
                 return connectWebSocket();

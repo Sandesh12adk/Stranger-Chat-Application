@@ -781,8 +781,8 @@
             throw new Error("No active session");
         })
         .then(data => {
-            // If session exists, redirect to homepage immediately
-            window.location.href = "home.html";
+            // If session exists, redirect to DASHBOARD immediately
+            window.location.href = "dashboard.html";
         })
         .catch(err => {
             // No session, show the login page
@@ -855,9 +855,9 @@
             // Show success notification
             showNotification("Welcome to ConnectChat! Redirecting...", "success");
 
-            // Redirect to homepage after a short delay
+            // Redirect to DASHBOARD after a short delay
             setTimeout(() => {
-                window.location.href = "home.html";
+                window.location.href = "dashboard.html";
             }, 1500);
         })
         .catch(error => {
