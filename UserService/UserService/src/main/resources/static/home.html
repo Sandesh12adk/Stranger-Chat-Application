@@ -933,8 +933,8 @@
 </div>
 <script>
     // Separate URLs for different microservices
-    const userApiUrl = "http://localhost:8080/api/user";
-    const chatApiUrl = "http://localhost:8081"; // Chat Service base URL
+    const userApiUrl = "http://localhost:1111/user/api/user"; //UserBase URL
+    const chatApiUrl = "http://localhost:1111/chat"; // Chat Service base URL
 
     // Global variables
     let stompClient = null;
@@ -1191,7 +1191,7 @@
             try {
                 console.log('🔌 Connecting WebSocket for userId:', userId);
 
-                const socket = new SockJS('http://localhost:8081/ws-chat');
+                const socket = new SockJS('http://localhost:1111/chat/ws-chat'); //URL from chatservice
                 stompClient = Stomp.over(socket);
 
                 // Set a connection timeout

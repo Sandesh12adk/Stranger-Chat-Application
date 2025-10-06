@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "SESSIONMANAGEMENT")  // the service name registered in Eureka
+@FeignClient(name = "user")  // the service name registered in Eureka
 public interface UserServiceClient {
     @GetMapping("/api/user/find-by-id/{id}")
     public UserResponse findById(@PathVariable long id);
