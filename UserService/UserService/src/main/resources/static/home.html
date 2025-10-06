@@ -10,584 +10,714 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
         :root {
-     --primary: #4361ee;
-     --primary-dark: #3a56d4;
-     --secondary: #7209b7;
-     --light: #f8f9fa;
-     --dark: #212529;
-     --gray: #6c757d;
-     --light-gray: #e9ecef;
-     --success: #4cc9f0;
-     --danger: #f72585;
-     --warning: #f8961e;
-     --border-radius: 10px;
-     --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-     --transition: all 0.3s ease;
- }
-
- * {
-     margin: 0;
-     padding: 0;
-     box-sizing: border-box;
- }
-
- body {
-     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-     color: var(--dark);
-     line-height: 1.5;
-     height: 100vh;
-     overflow: hidden;
-     font-size: 14px;
- }
-
- .app-container {
-     display: flex;
-     flex-direction: column;
-     height: 100vh;
-     max-width: 1600px;
-     margin: 0 auto;
-     box-shadow: var(--shadow);
-     background-color: white;
- }
-
- /* Header Styles */
- header {
-     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-     color: white;
-     padding: 12px 20px;
-     display: flex;
-     justify-content: space-between;
-     align-items: center;
-     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-     z-index: 10;
- }
-
- .logo {
-     display: flex;
-     align-items: center;
-     gap: 10px;
-     font-weight: 700;
-     font-size: 1.3rem;
- }
-
- .logo i {
-     font-size: 1.5rem;
- }
-
- .profile {
-     display: flex;
-     align-items: center;
-     gap: 12px;
- }
-
- .user-info {
-     display: flex;
-     align-items: center;
-     gap: 8px;
-     background: rgba(255, 255, 255, 0.2);
-     padding: 6px 12px;
-     border-radius: 50px;
- }
-
- .avatar {
-     width: 28px;
-     height: 28px;
-     border-radius: 50%;
-     background: linear-gradient(135deg, var(--success) 0%, var(--primary) 100%);
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     font-weight: bold;
-     color: white;
-     font-size: 0.8rem;
- }
-
- #logoutBtn {
-     background: rgba(255, 255, 255, 0.2);
-     padding: 6px 12px;
-     border-radius: 6px;
-     border: 1px solid rgba(255, 255, 255, 0.3);
-     color: white;
-     cursor: pointer;
-     transition: var(--transition);
-     display: flex;
-     align-items: center;
-     gap: 6px;
-     font-size: 0.85rem;
- }
-
- #logoutBtn:hover {
-     background: rgba(255, 255, 255, 0.3);
-     transform: translateY(-2px);
- }
-
- /* Main Content */
- .chat-container {
-     display: flex;
-     flex: 1;
-     overflow: hidden;
- }
-
- /* Sidebar Styles */
- .sidebar {
-     width: 260px;
-     background: var(--light);
-     border-right: 1px solid var(--light-gray);
-     display: flex;
-     flex-direction: column;
-     overflow: hidden;
- }
-
- .sidebar-header {
-     padding: 15px;
-     border-bottom: 1px solid var(--light-gray);
- }
-
- .sidebar-content {
-     flex: 1;
-     overflow-y: auto;
-     padding: 12px;
- }
-
- .sidebar-section h3 {
-     font-size: 0.75rem;
-     text-transform: uppercase;
-     color: var(--gray);
-     margin-bottom: 12px;
-     letter-spacing: 0.5px;
- }
-
- .user-list {
-     list-style: none;
- }
-
- .user-item {
-     display: flex;
-     align-items: center;
-     gap: 10px;
-     padding: 8px;
-     border-radius: var(--border-radius);
-     cursor: pointer;
-     transition: var(--transition);
-     margin-bottom: 6px;
-     position: relative;
- }
-
- .user-item:hover {
-     background: white;
-     box-shadow: var(--shadow);
- }
-
- .user-item.active {
-     background: white;
-     box-shadow: var(--shadow);
-     border-left: 3px solid var(--primary);
- }
-
- .user-avatar {
-     width: 32px;
-     height: 32px;
-     border-radius: 50%;
-     background: linear-gradient(135deg, var(--warning) 0%, var(--danger) 100%);
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     color: white;
-     font-weight: bold;
-     font-size: 0.8rem;
-     position: relative;
- }
-
- .user-details {
-     flex: 1;
-     position: relative;
- }
-
- .user-name {
-     font-weight: 600;
-     margin-bottom: 2px;
-     font-size: 0.85rem;
- }
-
- .user-info-small {
-     font-size: 0.7rem;
-     color: var(--gray);
-     display: flex;
-     align-items: center;
-     gap: 4px;
- }
-
- .user-status {
-     font-size: 0.7rem;
-     color: var(--gray);
-     display: flex;
-     align-items: center;
-     gap: 4px;
- }
-
- .status-indicator {
-     width: 6px;
-     height: 6px;
-     border-radius: 50%;
-     background: var(--success);
- }
-
- .status-indicator.away {
-     background: var(--warning);
- }
-
- .status-indicator.offline {
-     background: var(--gray);
- }
-
- .gender-icon {
-     font-size: 0.6rem;
-     margin-right: 2px;
- }
-
- .country-flag {
-     font-size: 0.7rem;
-     margin-right: 2px;
- }
-
- /* UPDATED: Message Indicator Styles - Bigger and Better */
- .message-indicator {
-     position: absolute;
-     top: -5px;
-     right: -5px;
-     width: 20px;
-     height: 20px;
-     background: var(--danger);
-     border-radius: 50%;
-     border: 3px solid white;
-     animation: pulse 2s infinite;
-     display: none;
-     z-index: 10;
-     box-shadow: 0 2px 8px rgba(247, 37, 133, 0.4);
- }
-
- .message-indicator.with-count {
-     width: 24px;
-     height: 24px;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     font-size: 0.85rem;
-     font-weight: 800;
-     color: white;
-     background: linear-gradient(135deg, var(--danger) 0%, #d4145a 100%);
- }
-
- /* Special styling for small numbers to make them bigger */
- .message-indicator.with-count[data-count="1"],
- .message-indicator.with-count[data-count="2"],
- .message-indicator.with-count[data-count="3"] {
-     width: 26px;
-     height: 26px;
-     font-size: 0.95rem;
-     font-weight: 900;
- }
-
- @keyframes pulse {
-     0% {
-         transform: scale(1);
-         opacity: 1;
-         box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7);
-     }
-     50% {
-         transform: scale(1.15);
-         opacity: 0.9;
-         box-shadow: 0 0 0 8px rgba(247, 37, 133, 0);
-     }
-     100% {
-         transform: scale(1);
-         opacity: 1;
-         box-shadow: 0 0 0 0 rgba(247, 37, 133, 0);
-     }
- }
-
- .new-message-label {
-     position: absolute;
-     top: -8px;
-     right: 8px;
-     background: linear-gradient(135deg, var(--danger) 0%, #d4145a 100%);
-     color: white;
-     padding: 4px 8px;
-     border-radius: 12px;
-     font-size: 0.7rem;
-     font-weight: 800;
-     animation: bounce 0.5s ease;
-     z-index: 5;
-     box-shadow: 0 2px 6px rgba(247, 37, 133, 0.3);
-     text-transform: uppercase;
-     letter-spacing: 0.5px;
- }
-
- @keyframes bounce {
-     0%, 20%, 50%, 80%, 100% {
-         transform: translateY(0);
-     }
-     40% {
-         transform: translateY(-5px);
-     }
-     60% {
-         transform: translateY(-3px);
-     }
- }
-
- /* Chat Area Styles */
- .chat-area {
-     flex: 1;
-     display: flex;
-     flex-direction: column;
-     background: #fafafa;
- }
-
- .chat-header {
-     padding: 12px 20px;
-     border-bottom: 1px solid var(--light-gray);
-     display: flex;
-     align-items: center;
-     gap: 12px;
-     background: white;
- }
-
- .current-chat-user {
-     display: flex;
-     align-items: center;
-     gap: 10px;
- }
-
- .current-chat-user .user-avatar {
-     width: 34px;
-     height: 34px;
-     font-size: 0.8rem;
- }
-
- .chat-info h3 {
-     font-weight: 600;
-     margin-bottom: 2px;
-     font-size: 0.9rem;
- }
-
- .chat-info p {
-     font-size: 0.75rem;
-     color: var(--gray);
- }
-
- .user-details-extended {
-     display: flex;
-     gap: 10px;
-     margin-top: 2px;
- }
-
- .user-detail {
-     display: flex;
-     align-items: center;
-     gap: 4px;
-     font-size: 0.7rem;
-     color: var(--gray);
- }
-
- .messages {
-     flex: 1;
-     padding: 15px 20px;
-     overflow-y: auto;
-     display: flex;
-     flex-direction: column;
-     background: #fafafa;
- }
-
- .message {
-     max-width: 75%;
-     margin-bottom: 15px;
-     display: flex;
-     flex-direction: column;
- }
-
- .message.sent {
-     align-self: flex-end;
-     align-items: flex-end;
- }
-
- .message.received {
-     align-self: flex-start;
-     align-items: flex-start;
- }
-
- .message-bubble {
-     padding: 8px 14px;
-     border-radius: 16px;
-     position: relative;
-     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-     word-wrap: break-word;
-     font-size: 0.85rem;
-     line-height: 1.4;
- }
-
- .message.sent .message-bubble {
-     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-     color: white;
-     border-bottom-right-radius: 4px;
- }
-
- .message.received .message-bubble {
-     background: white;
-     color: var(--dark);
-     border: 1px solid var(--light-gray);
-     border-bottom-left-radius: 4px;
- }
-
- .message-time {
-     font-size: 0.65rem;
-     color: var(--gray);
-     margin-top: 4px;
- }
-
- .message.sent .message-time {
-     text-align: right;
- }
-
- .input-area {
-     padding: 15px;
-     border-top: 1px solid var(--light-gray);
-     background: white;
- }
-
- .input-container {
-     display: flex;
-     gap: 10px;
-     align-items: flex-end;
- }
-
- .input-actions {
-     display: flex;
-     gap: 8px;
-     margin-bottom: 12px;
- }
-
- .input-actions button {
-     background: none;
-     border: none;
-     color: var(--gray);
-     font-size: 0.9rem;
-     cursor: pointer;
-     transition: var(--transition);
- }
-
- .input-actions button:hover {
-     color: var(--primary);
- }
-
- #messageInput {
-     flex: 1;
-     padding: 12px 16px;
-     border: 1px solid var(--light-gray);
-     border-radius: 20px;
-     resize: none;
-     font-family: inherit;
-     font-size: 0.85rem;
-     transition: var(--transition);
-     max-height: 100px;
-     min-height: 40px;
-     line-height: 1.4;
- }
-
- #messageInput:focus {
-     outline: none;
-     border-color: var(--primary);
-     box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
- }
-
- .send-button {
-     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-     color: white;
-     border: none;
-     width: 40px;
-     height: 40px;
-     border-radius: 50%;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     cursor: pointer;
-     transition: var(--transition);
-     box-shadow: var(--shadow);
-     font-size: 0.8rem;
- }
-
- .send-button:hover {
-     transform: translateY(-2px);
-     box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
- }
-
- /* Responsive Design */
- @media (max-width: 768px) {
-     .sidebar {
-         width: 70px;
-     }
-
-     .sidebar .user-details,
-     .sidebar-section h3 {
-         display: none;
-     }
-
-     .user-item {
-         justify-content: center;
-     }
-
-     .message {
-         max-width: 85%;
-     }
-
-     .user-details-extended {
-         flex-direction: column;
-         gap: 2px;
-     }
-
-     .message-indicator {
-         top: -2px;
-         right: -2px;
-         width: 16px;
-         height: 16px;
-     }
-
-     .message-indicator.with-count {
-         width: 20px;
-         height: 20px;
-         font-size: 0.75rem;
-     }
-
-     .message-indicator.with-count[data-count="1"],
-     .message-indicator.with-count[data-count="2"],
-     .message-indicator.with-count[data-count="3"] {
-         width: 22px;
-         height: 22px;
-         font-size: 0.85rem;
-     }
- }
-
- /* Scrollbar Styling */
- ::-webkit-scrollbar {
-     width: 5px;
- }
-
- ::-webkit-scrollbar-track {
-     background: var(--light-gray);
- }
-
- ::-webkit-scrollbar-thumb {
-     background: var(--gray);
-     border-radius: 3px;
- }
-
- ::-webkit-scrollbar-thumb:hover {
-     background: var(--dark);
- }
-
- .status-indicator.offline {
-     background: #ccc !important;
- }
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --border-radius: 10px;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.5;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            box-shadow: var(--shadow);
+            background-color: white;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 50px;
+        }
+
+        .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--success) 0%, var(--primary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        #logoutBtn {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        #logoutBtn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .chat-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 300px;
+            background: var(--light);
+            border-right: 1px solid var(--light-gray);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--light-gray);
+            background: white;
+        }
+
+        .sidebar-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .sidebar-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            background: var(--light);
+        }
+
+        .sidebar-tab:hover {
+            background: var(--light-gray);
+        }
+
+        .tab-indicator {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            display: none;
+        }
+
+        .tab-indicator.active {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        .search-container {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--light-gray);
+            background: white;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 35px;
+            border: 1px solid var(--light-gray);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-select {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .filter-input {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            background: white;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .user-list {
+            list-style: none;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .user-item:hover {
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .user-item.active {
+            background: white;
+            box-shadow: var(--shadow);
+            border-left: 3px solid var(--primary);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--warning) 0%, var(--danger) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            position: relative;
+        }
+
+        .user-details {
+            flex: 1;
+            position: relative;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+            font-size: 0.85rem;
+        }
+
+        .user-info-small {
+            font-size: 0.7rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .user-status {
+            font-size: 0.7rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .status-indicator.away {
+            background: var(--warning);
+        }
+
+        .status-indicator.offline {
+            background: var(--gray);
+        }
+
+        .gender-icon {
+            font-size: 0.6rem;
+            margin-right: 2px;
+        }
+
+        .country-flag {
+            font-size: 0.7rem;
+            margin-right: 2px;
+        }
+
+        /* Message Indicator Styles */
+        .message-indicator {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 3px solid white;
+            animation: pulse 2s infinite;
+            display: none;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(247, 37, 133, 0.4);
+        }
+
+        .message-indicator.with-count {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: white;
+            background: linear-gradient(135deg, var(--danger) 0%, #d4145a 100%);
+        }
+
+        .message-indicator.with-count[data-count="1"],
+        .message-indicator.with-count[data-count="2"],
+        .message-indicator.with-count[data-count="3"] {
+            width: 26px;
+            height: 26px;
+            font-size: 0.95rem;
+            font-weight: 900;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7);
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 0.9;
+                box-shadow: 0 0 0 8px rgba(247, 37, 133, 0);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(247, 37, 133, 0);
+            }
+        }
+
+        .new-message-label {
+            position: absolute;
+            top: -8px;
+            right: 8px;
+            background: linear-gradient(135deg, var(--danger) 0%, #d4145a 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            animation: bounce 0.5s ease;
+            z-index: 5;
+            box-shadow: 0 2px 6px rgba(247, 37, 133, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(-3px);
+            }
+        }
+
+        /* Chat Area Styles */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fafafa;
+        }
+
+        .chat-header {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+        }
+
+        .current-chat-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .current-chat-user .user-avatar {
+            width: 34px;
+            height: 34px;
+            font-size: 0.8rem;
+        }
+
+        .chat-info h3 {
+            font-weight: 600;
+            margin-bottom: 2px;
+            font-size: 0.9rem;
+        }
+
+        .chat-info p {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .user-details-extended {
+            display: flex;
+            gap: 10px;
+            margin-top: 2px;
+        }
+
+        .user-detail {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+
+        .messages {
+            flex: 1;
+            padding: 15px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background: #fafafa;
+        }
+
+        .message {
+            max-width: 75%;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .message-bubble {
+            padding: 8px 14px;
+            border-radius: 16px;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            word-wrap: break-word;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .message.sent .message-bubble {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received .message-bubble {
+            background: white;
+            color: var(--dark);
+            border: 1px solid var(--light-gray);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.65rem;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .message.sent .message-time {
+            text-align: right;
+        }
+
+        .input-area {
+            padding: 15px;
+            border-top: 1px solid var(--light-gray);
+            background: white;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .input-actions button {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .input-actions button:hover {
+            color: var(--primary);
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: 20px;
+            resize: none;
+            font-family: inherit;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            max-height: 100px;
+            min-height: 40px;
+            line-height: 1.4;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            font-size: 0.8rem;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar .user-details,
+            .sidebar-section h3,
+            .search-container,
+            .sidebar-tabs span {
+                display: none;
+            }
+
+            .user-item {
+                justify-content: center;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .user-details-extended {
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .message-indicator {
+                top: -2px;
+                right: -2px;
+                width: 16px;
+                height: 16px;
+            }
+
+            .message-indicator.with-count {
+                width: 20px;
+                height: 20px;
+                font-size: 0.75rem;
+            }
+
+            .message-indicator.with-count[data-count="1"],
+            .message-indicator.with-count[data-count="2"],
+            .message-indicator.with-count[data-count="3"] {
+                width: 22px;
+                height: 22px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--dark);
+        }
+
+        .status-indicator.offline {
+            background: #ccc !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
@@ -612,13 +742,52 @@
     <div class="chat-container">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h3>Active Users</h3>
+                <h3>Connect with People</h3>
             </div>
+
+            <div class="sidebar-tabs">
+                <div class="sidebar-tab active" data-tab="active">
+                    <span>Active Users</span>
+                    <div class="tab-indicator" id="activeTabIndicator"></div>
+                </div>
+                <div class="sidebar-tab" data-tab="inbox">
+                    <span>Inbox</span>
+                    <div class="tab-indicator" id="inboxTabIndicator"></div>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="userSearch" class="search-input" placeholder="Search users...">
+                </div>
+                <div class="filter-options">
+                    <select id="genderFilter" class="filter-select">
+                        <option value="">All Genders</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                    </select>
+                    <input type="text" id="countryFilter" class="filter-input" placeholder="Country...">
+                </div>
+            </div>
+
             <div class="sidebar-content">
-                <div class="sidebar-section">
-                    <ul class="user-list" id="userList">
-                        <!-- User list will be populated here -->
-                    </ul>
+                <!-- Active Users Tab -->
+                <div class="tab-content active" id="activeTab">
+                    <div class="sidebar-section">
+                        <ul class="user-list" id="userList">
+                            <!-- Active users will be populated here -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Inbox Tab -->
+                <div class="tab-content" id="inboxTab">
+                    <div class="sidebar-section">
+                        <ul class="user-list" id="inboxList">
+                            <!-- Inbox users will be populated here -->
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -645,7 +814,7 @@
             </div>
 
             <div class="messages" id="messages">
-                <!-- Messages will appear here -->
+                <div class="no-chat">Select a user to start chatting</div>
             </div>
 
             <div class="input-area">
@@ -675,15 +844,20 @@
     let userId = null;
     let unreadMessages = {}; // Track unread messages per user
     let currentChatUser = null; // Track currently open chat
-    let gender= null;
-    let country= null;
+    let gender = null;
+    let country = null;
+    let connectionRetryCount = 0;
+    const MAX_RETRIES = 3;
+    let activeTab = 'active'; // 'active' or 'inbox'
+    let inboxUsers = new Map(); // Track users in inbox: {userId: {userData, unread}}
+    let inboxUnreadCount = 0; // Total unread messages in inbox
+    let currentlySelectedUserId = null; // Track currently selected user ID
 
     // Check session and get user data
     function checkUserSession() {
         return fetch(`${userApiUrl}/session-check`, {
             method: "GET",
             credentials: "include"
-
         })
         .then(response => {
             if (!response.ok) throw new Error('Session invalid');
@@ -694,8 +868,8 @@
 
             userName = userData.userName;
             userId = userData.userId;
-            gender= userData.gender;
-            county= userData.country;
+            gender = userData.gender;
+            country = userData.country;
 
             document.getElementById("username").textContent = userName;
             document.getElementById("userAvatar").textContent = userName.charAt(0).toUpperCase();
@@ -708,86 +882,139 @@
         });
     }
 
-    // WebSocket connection with status updates
+    // WebSocket connection with Promise
     function connectWebSocket() {
-        if (!userId) {
-            console.error('❌ Cannot connect WebSocket: userId is null');
-            return;
-        }
+        return new Promise((resolve, reject) => {
+            if (!userId) {
+                console.error('❌ Cannot connect WebSocket: userId is null');
+                reject(new Error('userId is null'));
+                return;
+            }
 
-        try {
-            console.log('🔌 Connecting WebSocket for userId:', userId);
+            // Clear any existing connection
+            if (stompClient && isWebSocketConnected) {
+                console.log('🔄 Disconnecting existing WebSocket...');
+                stompClient.disconnect();
+            }
 
-            const socket = new SockJS('http://localhost:8081/ws-chat');
-            stompClient = Stomp.over(socket);
+            try {
+                console.log('🔌 Connecting WebSocket for userId:', userId);
 
-            stompClient.connect(
-                {
-                    'userId': userId.toString(),
-                    'userName': userName,
-                    'gender':gender,
-                    'country':country
-                },
-                function(frame) {
-                    console.log('✅ WebSocket Connected');
-                    isWebSocketConnected = true;
+                const socket = new SockJS('http://localhost:8081/ws-chat');
+                stompClient = Stomp.over(socket);
 
-                    // Subscribe to receive private messages
-                    const privateTopic = "/topic/user/" + userId;
-                    console.log('📡 Subscribing to private messages:', privateTopic);
+                // Set a connection timeout
+                const connectionTimeout = setTimeout(() => {
+                    console.error('❌ WebSocket connection timeout');
+                    reject(new Error('Connection timeout'));
+                }, 10000); // 10 seconds timeout
 
-                    stompClient.subscribe(privateTopic, function(message) {
-                        console.log("📨 Message received:", message.body);
-                        try {
-                            const messageData = JSON.parse(message.body);
-                            handleIncomingMessage(messageData);
-                        } catch (e) {
-                            console.error("❌ Error parsing message:", e);
+                stompClient.connect(
+                    {
+                        'userId': userId.toString(),
+                        'userName': userName,
+                        'gender': gender,
+                        'country': country
+                    },
+                    function(frame) {
+                        clearTimeout(connectionTimeout);
+                        console.log('✅ WebSocket Connected');
+                        isWebSocketConnected = true;
+                        connectionRetryCount = 0; // Reset retry count on successful connection
+
+                        // Subscribe to receive private messages
+                        const privateTopic = "/topic/user/" + userId;
+                        console.log('📡 Subscribing to private messages:', privateTopic);
+
+                        stompClient.subscribe(privateTopic, function(message) {
+                            console.log("📨 Message received:", message.body);
+                            try {
+                                const messageData = JSON.parse(message.body);
+                                handleIncomingMessage(messageData);
+                            } catch (e) {
+                                console.error("❌ Error parsing message:", e);
+                            }
+                        });
+
+                        // Subscribe to user status changes
+                        const statusTopic = "/topic/status-change";
+                        console.log('📡 Subscribing to status updates:', statusTopic);
+
+                        const statusSubscription = stompClient.subscribe(statusTopic, function(message) {
+                            console.log("🔄 Status update received:", message.body);
+                            try {
+                                const statusUpdate = JSON.parse(message.body);
+                                handleStatusUpdate(statusUpdate);
+                            } catch (e) {
+                                console.error("❌ Error parsing status update:", e);
+                            }
+                        });
+
+                        // Verify subscription is active
+                        if (statusSubscription) {
+                            console.log('✅ Status subscription active');
+                        } else {
+                            console.error('❌ Status subscription failed');
                         }
-                    });
 
-                    // Subscribe to user status changes
-                    const statusTopic = "/topic/status-change";
-                    console.log('📡 Subscribing to status updates:', statusTopic);
+                        resolve(frame);
+                    },
+                    function(error) {
+                        clearTimeout(connectionTimeout);
+                        console.error('❌ WebSocket connection error:', error);
+                        isWebSocketConnected = false;
 
-                    stompClient.subscribe(statusTopic, function(message) {
-                        console.log("🔄 Status update received:", message.body);
-                        try {
-                            const statusUpdate = JSON.parse(message.body);
-                            handleStatusUpdate(statusUpdate);
-                        } catch (e) {
-                            console.error("❌ Error parsing status update:", e);
+                        // Retry logic
+                        if (connectionRetryCount < MAX_RETRIES) {
+                            connectionRetryCount++;
+                            console.log(`🔄 Retrying connection (${connectionRetryCount}/${MAX_RETRIES})...`);
+                            setTimeout(() => {
+                                connectWebSocket().then(resolve).catch(reject);
+                            }, 2000 * connectionRetryCount); // Exponential backoff
+                        } else {
+                            reject(error);
                         }
-                    });
+                    }
+                );
 
-                },
-                function(error) {
-                    console.error('❌ WebSocket connection error:', error);
-                    isWebSocketConnected = false;
-                }
-            );
+            } catch (error) {
+                console.error('❌ Error in WebSocket setup:', error);
+                reject(error);
+            }
+        });
+    }
 
-        } catch (error) {
-            console.error('❌ Error in WebSocket setup:', error);
-        }
+    // Connection monitoring
+    function monitorConnection() {
+        setInterval(() => {
+            if (!isWebSocketConnected) {
+                console.log('🔄 WebSocket disconnected, attempting reconnect...');
+                connectWebSocket()
+                    .then(() => console.log('✅ WebSocket reconnected'))
+                    .catch(error => console.error('❌ WebSocket reconnect failed:', error));
+            }
+        }, 30000); // Check every 30 seconds
     }
 
     // Handle incoming messages
     function handleIncomingMessage(messageData) {
-        const activeUserItem = document.querySelector('.user-item.active');
-        const activeUserId = activeUserItem ? parseInt(activeUserItem.dataset.userId) : null;
         const senderId = parseInt(messageData.senderId);
 
-        console.log('📨 Processing incoming message from:', senderId, 'active chat:', activeUserId);
+        console.log('📨 Processing incoming message from:', senderId, 'currently selected user:', currentlySelectedUserId);
+
+        // Add to inbox users (only for received messages)
+        if (senderId !== userId) {
+            addToInbox(senderId, messageData, true);
+        }
 
         // Check if message is from currently active chat
-        const isFromActiveChat = senderId === activeUserId;
+        const isFromActiveChat = senderId === currentlySelectedUserId;
 
         if (isFromActiveChat) {
             // Display message immediately if it's from active chat
             displayMessage(messageData);
-        } else {
-            // Show message indicator for non-active chats
+        } else if (senderId !== userId) {
+            // Show message indicator only for received messages (not sent)
             showMessageIndicator(senderId);
 
             // Move user to top of the list
@@ -798,6 +1025,260 @@
         if (senderId === userId) {
             displayMessage(messageData);
         }
+    }
+
+    // Add user to inbox
+    function addToInbox(userId, messageData, isReceived = false) {
+        // Get user data from active list or create basic user object
+        const userItem = document.querySelector(`[data-user-id="${userId}"]`);
+        let userData;
+
+        if (userItem) {
+            const userName = userItem.querySelector('.user-name').textContent;
+            const genderIcon = userItem.querySelector('.gender-icon');
+            const country = userItem.querySelector('.user-info-small span:last-child').textContent;
+
+            userData = {
+                userId: userId,
+                userName: userName,
+                gender: genderIcon.classList.contains('fa-venus') ? 'FEMALE' : 'MALE',
+                country: country,
+                status: 'online' // All active users should be online
+            };
+        } else {
+            // Create basic user data if not found in active list
+            userData = {
+                userId: userId,
+                userName: `User ${userId}`,
+                gender: 'MALE',
+                country: 'Unknown',
+                status: 'online' // Default to online for inbox users
+            };
+        }
+
+        // Add or update in inbox
+        if (!inboxUsers.has(userId)) {
+            inboxUsers.set(userId, {
+                userData: userData,
+                unread: isReceived ? 1 : 0,
+                hasUnread: isReceived
+            });
+        } else {
+            const existing = inboxUsers.get(userId);
+            if (isReceived) {
+                existing.unread = (existing.unread || 0) + 1;
+                existing.hasUnread = true;
+            }
+            // Update user data in case it changed
+            existing.userData = userData;
+        }
+
+        // Update inbox tab indicator only for received messages
+        if (isReceived) {
+            inboxUnreadCount++;
+            updateInboxTabIndicator();
+        }
+
+        // Refresh inbox list if active
+        if (activeTab === 'inbox') {
+            refreshInboxList();
+        }
+    }
+
+    // Update inbox tab indicator
+    function updateInboxTabIndicator() {
+        const indicator = document.getElementById('inboxTabIndicator');
+        const hasUnread = inboxUnreadCount > 0;
+
+        if (hasUnread) {
+            indicator.classList.add('active');
+        } else {
+            indicator.classList.remove('active');
+        }
+    }
+
+    // Create user list item with proper click handler
+    function createUserListItem(user) {
+        const userItem = document.createElement("li");
+        userItem.className = "user-item";
+        userItem.dataset.userId = user.userId;
+
+        const genderIcon = user.gender === 'FEMALE' ? 'fas fa-venus' : 'fas fa-mars';
+        const genderText = user.gender === 'FEMALE' ? 'Female' : 'Male';
+
+        // All users from active users list should be online
+        const statusClass = user.status === 'online' ? '' : 'offline';
+        const statusText = user.status === 'online' ? 'Online' : 'Offline';
+
+        userItem.innerHTML = `
+            <div class="user-avatar">${user.userName.charAt(0).toUpperCase()}</div>
+            <div class="user-details">
+                <div class="user-name">${user.userName}</div>
+                <div class="user-info-small">
+                    <i class="${genderIcon} gender-icon"></i>
+                    <span>${genderText}</span>
+                    <span>•</span>
+                    <i class="fas fa-globe country-flag"></i>
+                    <span>${user.country || 'Unknown'}</span>
+                </div>
+                <div class="user-status">
+                    <span class="status-indicator ${statusClass}"></span>
+                    ${statusText}
+                </div>
+            </div>
+        `;
+
+        userItem.addEventListener('click', function() {
+            selectUser(user);
+        });
+
+        return userItem;
+    }
+
+    // Select a user (called when user is clicked)
+    function selectUser(user) {
+        // Remove active class from all users in both lists
+        document.querySelectorAll('.user-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // Add active class to this user
+        const clickedUserItem = document.querySelector(`[data-user-id="${user.userId}"]`);
+        if (clickedUserItem) {
+            clickedUserItem.classList.add('active');
+        }
+
+        // Store the currently selected user ID
+        currentlySelectedUserId = user.userId;
+
+        setCurrentChatUser(user);
+        loadChatHistory(user.userId);
+
+        // Clear message indicators when user is selected
+        clearMessageIndicators(user.userId);
+
+        // Mark as read in inbox
+        if (inboxUsers.has(user.userId)) {
+            const inboxItem = inboxUsers.get(user.userId);
+            if (inboxItem.hasUnread) {
+                inboxUnreadCount -= inboxItem.unread;
+                inboxItem.unread = 0;
+                inboxItem.hasUnread = false;
+                updateInboxTabIndicator();
+                refreshInboxList();
+            }
+        }
+    }
+
+    // Refresh inbox list
+    function refreshInboxList() {
+        const inboxList = document.getElementById('inboxList');
+        inboxList.innerHTML = '';
+
+        if (inboxUsers.size === 0) {
+            inboxList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>No conversations yet</p>
+                    <p style="font-size: 0.7rem; margin-top: 5px;">Start chatting to see users here</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Convert Map to array and sort by last activity
+        const inboxArray = Array.from(inboxUsers.values());
+
+        inboxArray.forEach(inboxItem => {
+            const user = inboxItem.userData;
+            const userItem = createUserListItem(user);
+
+            // Add message indicator for unread messages
+            if (inboxItem.hasUnread && inboxItem.unread > 0) {
+                let indicator = document.createElement('div');
+                indicator.className = 'message-indicator';
+                if (inboxItem.unread > 1) {
+                    indicator.textContent = inboxItem.unread > 9 ? '9+' : inboxItem.unread;
+                    indicator.className = 'message-indicator with-count';
+                    indicator.setAttribute('data-count', inboxItem.unread);
+                }
+                indicator.style.display = 'flex';
+                userItem.querySelector('.user-avatar').appendChild(indicator);
+            }
+
+            // If this user is currently selected, mark it as active
+            if (user.userId === currentlySelectedUserId) {
+                userItem.classList.add('active');
+            }
+
+            inboxList.appendChild(userItem);
+        });
+    }
+
+    // Switch between active users and inbox tabs
+    function setupTabSwitching() {
+        const tabs = document.querySelectorAll('.sidebar-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Show/hide tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabName + 'Tab').classList.add('active');
+
+                activeTab = tabName;
+
+                // Refresh the list when switching tabs
+                if (tabName === 'inbox') {
+                    refreshInboxList();
+                }
+
+                // Apply current filters to the active tab
+                filterUsers();
+            });
+        });
+    }
+
+    // Setup search and filter functionality
+    function setupSearchAndFilter() {
+        const searchInput = document.getElementById('userSearch');
+        const genderFilter = document.getElementById('genderFilter');
+        const countryFilter = document.getElementById('countryFilter');
+
+        function filterUsers() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const genderValue = genderFilter.value;
+            const countryValue = countryFilter.value.toLowerCase();
+
+            const currentListId = activeTab === 'active' ? 'userList' : 'inboxList';
+            const userItems = document.querySelectorAll(`#${currentListId} .user-item`);
+
+            userItems.forEach(item => {
+                const userName = item.querySelector('.user-name').textContent.toLowerCase();
+                const userGender = item.querySelector('.gender-icon').className.includes('fa-venus') ? 'FEMALE' : 'MALE';
+                const userCountry = item.querySelector('.user-info-small span:last-child').textContent.toLowerCase();
+
+                const matchesSearch = userName.includes(searchTerm);
+                const matchesGender = !genderValue || userGender === genderValue;
+                const matchesCountry = !countryValue || userCountry.includes(countryValue);
+
+                if (matchesSearch && matchesGender && matchesCountry) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', filterUsers);
+        genderFilter.addEventListener('change', filterUsers);
+        countryFilter.addEventListener('input', filterUsers);
     }
 
     // Function to move user to top of the list
@@ -818,7 +1299,7 @@
 
     // Show message indicator for a user
     function showMessageIndicator(senderId) {
-        // Update unread count
+        // Update unread count (only for received messages)
         if (!unreadMessages[senderId]) {
             unreadMessages[senderId] = 0;
         }
@@ -892,81 +1373,73 @@
         }
 
         // Reset unread count
-        unreadMessages[userId] = 0;
+        if (unreadMessages[userId]) {
+            unreadMessages[userId] = 0;
+        }
     }
 
     // Handle user status updates
-  // Handle user status updates - UPDATED
-function handleStatusUpdate(statusUpdate) {
-    console.log("🔄 Processing status update:", statusUpdate);
+    function handleStatusUpdate(statusUpdate) {
+        console.log("🔄 Processing status update:", statusUpdate);
 
-    if (statusUpdate.type === "USER_STATUS_UPDATE") {
-        if (statusUpdate.status === "ONLINE") {
-            // User came online - use the complete user data from statusUpdate
-            addUserToList({
-                userId: statusUpdate.userId,
-                userName: statusUpdate.userName,
-                status: "online",
-                gender: statusUpdate.gender || "MALE", // Use actual gender from statusUpdate
-                country: statusUpdate.country || 'Unknown'
-            });
-        } else if (statusUpdate.status === "OFFLINE") {
-            // User went offline
-            updateUserStatus(statusUpdate.userId, "offline");
+        if (statusUpdate.type === "USER_STATUS_UPDATE") {
+            if (statusUpdate.status === "ONLINE") {
+                // User came online - add to list regardless of existing
+                const existingUser = document.querySelector(`[data-user-id="${statusUpdate.userId}"]`);
+
+                if (!existingUser) {
+                    // User doesn't exist in list, add them
+                    addUserToList({
+                        userId: statusUpdate.userId,
+                        userName: statusUpdate.userName,
+                        status: "online",
+                        gender: statusUpdate.gender || "MALE",
+                        country: statusUpdate.country || 'Unknown'
+                    });
+                    console.log("✅ Added new user from status update:", statusUpdate.userName);
+                } else {
+                    // User exists, just update status
+                    updateUserStatus(statusUpdate.userId, "online");
+                }
+            } else if (statusUpdate.status === "OFFLINE") {
+                // User went offline
+                updateUserStatus(statusUpdate.userId, "offline");
+            }
         }
     }
-}
 
     // Add user to sidebar list
     function addUserToList(user) {
-        // Skip if it's current user or user already exists
-        if (user.userId == userId) return;
+        // Skip if it's current user
+        if (user.userId == userId) {
+            console.log("⏩ Skipping current user:", user.userName);
+            return;
+        }
 
         const existingUser = document.querySelector(`[data-user-id="${user.userId}"]`);
         if (existingUser) {
+            console.log("⏩ User already exists, updating status:", user.userName);
             updateUserStatus(user.userId, "online");
             return;
         }
 
         const userList = document.getElementById("userList");
-        const userItem = document.createElement("li");
-        userItem.className = "user-item";
-        userItem.dataset.userId = user.userId;
 
-        const genderIcon = user.gender === 'FEMALE' ? 'fas fa-venus' : 'fas fa-mars';
-        const genderText = user.gender === 'FEMALE' ? 'Female' : 'Male';
+        // Ensure user has online status since they're from active users list
+        if (!user.status) {
+            user.status = 'online';
+        }
 
-        userItem.innerHTML = `
-            <div class="user-avatar">${user.userName.charAt(0).toUpperCase()}</div>
-            <div class="user-details">
-                <div class="user-name">${user.userName}</div>
-                <div class="user-info-small">
-                    <i class="${genderIcon} gender-icon"></i>
-                    <span>${genderText}</span>
-                    <span>•</span>
-                    <i class="fas fa-globe country-flag"></i>
-                    <span>${user.country || 'Unknown'}</span>
-                </div>
-                <div class="user-status">
-                    <span class="status-indicator"></span>
-                    Online
-                </div>
-            </div>
-        `;
-
-        userItem.addEventListener('click', function() {
-            document.querySelectorAll('.user-item').forEach(item => item.classList.remove('active'));
-            this.classList.add('active');
-            setCurrentChatUser(user);
-            loadChatHistory(user.userId);
-
-            // Clear message indicators when user is selected
-            clearMessageIndicators(user.userId);
-        });
+        const userItem = createUserListItem(user);
 
         // Add new user to the TOP of the list
         userList.insertBefore(userItem, userList.firstChild);
-        console.log("✅ Added user to top of list:", user.userName);
+        console.log("✅ Added NEW user to top of list:", user.userName);
+
+        // If this is the first user, automatically select them
+        if (userList.children.length === 1 && !currentlySelectedUserId) {
+            selectUser(user);
+        }
     }
 
     // Update user status in sidebar
@@ -991,20 +1464,28 @@ function handleStatusUpdate(statusUpdate) {
             }
             console.log("✅ Updated user status:", userId, status);
         }
+
+        // Also update status in inbox if user exists there
+        if (inboxUsers.has(userId)) {
+            const inboxItem = inboxUsers.get(userId);
+            inboxItem.userData.status = status;
+            if (activeTab === 'inbox') {
+                refreshInboxList();
+            }
+        }
     }
 
-    // Send message function
+    // Send message function - SIMPLIFIED AND FIXED
     function sendMessage() {
         const msgBox = document.getElementById("messageInput");
         const msg = msgBox.value.trim();
-        const activeUserItem = document.querySelector('.user-item.active');
 
-        if (!msg || !activeUserItem) {
+        if (!msg || !currentlySelectedUserId) {
             alert("Please select a user and type a message!");
             return;
         }
 
-        const receiverId = activeUserItem.dataset.userId;
+        const receiverId = currentlySelectedUserId;
 
         const messageRequest = {
             msg: msg,
@@ -1019,11 +1500,16 @@ function handleStatusUpdate(statusUpdate) {
                 stompClient.send("/app/chat.send", {}, JSON.stringify(messageRequest));
                 console.log("✅ Message sent");
 
+                // Add to inbox (for sent messages - but no red dot)
+                addToInbox(parseInt(receiverId), messageRequest, false);
+
                 // Move the receiver to top of the list
                 moveUserToTop(parseInt(receiverId));
 
                 msgBox.value = "";
                 msgBox.style.height = 'auto';
+
+                // The user remains selected because we're using currentlySelectedUserId
 
             } catch (error) {
                 console.error("❌ Error sending message:", error);
@@ -1037,13 +1523,12 @@ function handleStatusUpdate(statusUpdate) {
     // Display message in chat
     function displayMessage(messageData) {
         const messages = document.getElementById("messages");
-        const activeUserItem = document.querySelector('.user-item.active');
-        const activeUserId = activeUserItem ? parseInt(activeUserItem.dataset.userId) : null;
+        const senderId = parseInt(messageData.senderId);
 
         // Determine if message should be displayed
         const shouldDisplay =
-            parseInt(messageData.senderId) === userId ||
-            (parseInt(messageData.senderId) === activeUserId && parseInt(messageData.receiverId) === userId);
+            senderId === userId ||
+            (senderId === currentlySelectedUserId && parseInt(messageData.receiverId) === userId);
 
         if (shouldDisplay) {
             // Clear "no chat" message if it exists
@@ -1052,7 +1537,7 @@ function handleStatusUpdate(statusUpdate) {
             }
 
             const newMsg = document.createElement("div");
-            const isFromYou = parseInt(messageData.senderId) === userId;
+            const isFromYou = senderId === userId;
             newMsg.className = isFromYou ? "message sent" : "message received";
 
             // Format timestamp
@@ -1076,7 +1561,14 @@ function handleStatusUpdate(statusUpdate) {
         .then(response => response.json())
         .then(users => {
             console.log('👥 Active users:', users);
-            populateUserList(users);
+
+            // Add online status to all users since they're from the online endpoint
+            const usersWithStatus = users.map(user => ({
+                ...user,
+                status: 'online'
+            }));
+
+            populateUserList(usersWithStatus);
         })
         .catch(error => {
             console.error('Error fetching users:', error);
@@ -1089,50 +1581,25 @@ function handleStatusUpdate(statusUpdate) {
         const userList = document.getElementById("userList");
         userList.innerHTML = '';
 
+        if (users.length === 0) {
+            userList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-users"></i>
+                    <p>No active users found</p>
+                </div>
+            `;
+            return;
+        }
+
         users.forEach(user => {
             if (user.userId == userId) return;
 
-            const userItem = document.createElement("li");
-            userItem.className = "user-item";
-            userItem.dataset.userId = user.userId;
+            const userItem = createUserListItem(user);
 
             // Set first user as active by default
-            if (users.indexOf(user) === 0) {
-                userItem.classList.add("active");
-                setCurrentChatUser(user);
-                loadChatHistory(user.userId); // Load history for first user
+            if (users.indexOf(user) === 0 && !currentlySelectedUserId) {
+                selectUser(user);
             }
-
-            const genderIcon = user.gender === 'FEMALE' ? 'fas fa-venus' : 'fas fa-mars';
-            const genderText = user.gender === 'FEMALE' ? 'Female' : 'Male';
-
-            userItem.innerHTML = `
-                <div class="user-avatar">${user.userName.charAt(0).toUpperCase()}</div>
-                <div class="user-details">
-                    <div class="user-name">${user.userName}</div>
-                    <div class="user-info-small">
-                        <i class="${genderIcon} gender-icon"></i>
-                        <span>${genderText}</span>
-                        <span>•</span>
-                        <i class="fas fa-globe country-flag"></i>
-                        <span>${user.country || 'Unknown'}</span>
-                    </div>
-                    <div class="user-status">
-                        <span class="status-indicator"></span>
-                        Online
-                    </div>
-                </div>
-            `;
-
-            userItem.addEventListener('click', function() {
-                document.querySelectorAll('.user-item').forEach(item => item.classList.remove('active'));
-                this.classList.add('active');
-                setCurrentChatUser(user);
-                loadChatHistory(user.userId);
-
-                // Clear message indicators when user is selected
-                clearMessageIndicators(user.userId);
-            });
 
             userList.appendChild(userItem);
         });
@@ -1143,7 +1610,7 @@ function handleStatusUpdate(statusUpdate) {
         currentChatUser = user;
         document.getElementById("currentChatName").textContent = user.userName;
         document.getElementById("currentChatAvatar").textContent = user.userName.charAt(0).toUpperCase();
-        document.getElementById("currentChatStatus").textContent = "Online";
+        document.getElementById("currentChatStatus").textContent = user.status === 'online' ? 'Online' : 'Offline';
         document.getElementById("currentChatGender").textContent = user.gender === 'FEMALE' ? 'Female' : 'Male';
         document.getElementById("currentChatCountry").textContent = user.country || 'Unknown';
     }
@@ -1176,7 +1643,7 @@ function handleStatusUpdate(statusUpdate) {
         });
     }
 
-    // Display chat history in the messages container - UPDATED WITH SORTING AND CORRECT SENDER/RECEIVER
+    // Display chat history in the messages container
     function displayChatHistory(messages, targetUserId) {
         const messagesContainer = document.getElementById("messages");
         messagesContainer.innerHTML = '';
@@ -1214,8 +1681,8 @@ function handleStatusUpdate(statusUpdate) {
     // Mock data fallback
     function populateUserListWithMockData() {
         const mockUsers = [
-            { userId: 1, userName: "John Doe", gender: "MALE", country: "USA" },
-            { userId: 2, userName: "Jane Smith", gender: "FEMALE", country: "Canada" }
+            { userId: 1, userName: "John Doe", gender: "MALE", country: "USA", status: "online" },
+            { userId: 2, userName: "Jane Smith", gender: "FEMALE", country: "Canada", status: "online" }
         ];
         populateUserList(mockUsers);
     }
@@ -1236,17 +1703,37 @@ function handleStatusUpdate(statusUpdate) {
         });
     });
 
-    // Initialize app
+    // Initialize app - IMPROVED VERSION
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 Initializing ConnectChat...');
+
         checkUserSession()
-            .then(() => {
+            .then((userData) => {
+                console.log('🎯 User session validated:', userData);
                 console.log('🎯 User ID:', userId);
+
+                // Setup UI components
+                setupTabSwitching();
+                setupSearchAndFilter();
+
+                // Connect WebSocket first and wait for it to be ready
+                return connectWebSocket();
+            })
+            .then(() => {
+                console.log('✅ WebSocket connected and subscriptions active');
+
+                // Now fetch active users - WebSocket is ready to receive status updates
                 fetchActiveUsers();
-                connectWebSocket();
+
+                // Start connection monitoring
+                monitorConnection();
+
+                console.log('✅ ConnectChat fully initialized');
             })
             .catch(error => {
-                console.error('❌ Failed to initialize:', error);
+                console.error('❌ Failed to initialize ConnectChat:', error);
+                // Show user-friendly error message
+                alert('Failed to connect to chat service. Please refresh the page.');
             });
     });
 </script>
