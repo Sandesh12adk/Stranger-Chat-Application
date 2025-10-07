@@ -4,6 +4,7 @@ import com.example.chatservice.dto.MessageResponse;
 import com.example.chatservice.mapper.MessageToMessageResponse;
 import com.example.chatservice.model.ChatRoom;
 import com.example.chatservice.model.Message;
+import com.example.chatservice.service.ChatLimitService;
 import com.example.chatservice.service.ChatService;
 import com.example.chatservice.service.MessageService;
 import jakarta.ws.rs.core.Response;
@@ -28,13 +29,16 @@ public class ChatController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final MessageService messageService;
     private final MessageToMessageResponse messageToMessageResponse;
+    private final ChatLimitService chatLimitService;
 
     public ChatController(ChatService chatService, SimpMessagingTemplate simpMessagingTemplate,
-                          MessageService messageService, MessageToMessageResponse messageToMessageResponse){
+                          MessageService messageService, MessageToMessageResponse messageToMessageResponse,
+                          ChatLimitService chatLimitService){
         this.chatService = chatService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.messageService= messageService;
         this.messageToMessageResponse= messageToMessageResponse;
+        this.chatLimitService= chatLimitService;
     }
 
     @GetMapping("/get-chat-room")
@@ -59,6 +63,7 @@ public class ChatController {
         try {
             // Use the senderId from the message request instead of session
             Long senderId = messageRequest.getSenderId();
+            Long receiverId= messageRequest.getReceiverId();
 
             if(messageRequest.getReceiverId() != 0 && senderId != null) {
                 Map<String, Object> response = new HashMap<>();
@@ -66,13 +71,28 @@ public class ChatController {
                 response.put("senderId", senderId);
                 response.put("receiverId", messageRequest.getReceiverId());
                 response.put("timestamp", LocalDateTime.now());
-                // Send to RECEIVER's topic
                 String receiverTopic = "/topic/user/" + messageRequest.getReceiverId();
-                simpMessagingTemplate.convertAndSend(receiverTopic, response);
-                // Also send back to sender for UI update (FIXED PATH)
                 String senderTopic = "/topic/user/" + senderId;
-                simpMessagingTemplate.convertAndSend(senderTopic, response);
-                messageService.saveMessage(messageRequest);
+
+                boolean hasReply= messageService.hasReply(receiverId,senderId);
+                if(hasReply){
+                    chatLimitService.setMessageCountPermanentlyZero(senderId,receiverId); //Set premanently zero
+                }
+                if(chatLimitService.canSend(senderId,receiverId)) {
+                    chatLimitService.increaseMessageCount(senderId,receiverId);
+                    // Send to RECEIVER's topic
+                    simpMessagingTemplate.convertAndSend(receiverTopic, response);
+                    // Also send back to sender for UI update (FIXED PATH)
+                    simpMessagingTemplate.convertAndSend(senderTopic, response);
+                    messageService.saveMessage(messageRequest);
+                }
+                else{
+                    String message= "System: Please wait for the receiver to respond before sending more messages";
+                    response.put("msg", message);
+                    response.put("type", "system"); // Add this line
+                    response.put("senderId", 0); // Use 0 or null for system messages
+                    simpMessagingTemplate.convertAndSend(senderTopic, response);
+                }
             }
         } catch (Exception e) {
             System.err.println("Error sending message: " + e.getMessage());

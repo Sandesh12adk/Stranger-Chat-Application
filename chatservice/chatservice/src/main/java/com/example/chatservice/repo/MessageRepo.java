@@ -17,4 +17,7 @@ public interface MessageRepo extends JpaRepository<Message, Long> {
                 "(m.senderId = :user2 AND m.receiverId = :user1) " +
                 "ORDER BY m.sentDateAndTime DESC")
         List<Message> findChatHistory(long user1, long user2, Pageable pageable);
+        boolean existsBySenderIdAndReceiverId(long senderId, long receiverId);
+
 }
+

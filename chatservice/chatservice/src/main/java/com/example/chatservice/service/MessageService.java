@@ -35,4 +35,7 @@ public class MessageService {
     public List<Message> chatHistory(long senderId,long receiverId){
         return messageRepo.findChatHistory(senderId,receiverId,limit);
     }
+    public boolean hasReply(long senderId, long receiverId){
+        return messageRepo.existsBySenderIdAndReceiverId(senderId,receiverId);
+    }
 }

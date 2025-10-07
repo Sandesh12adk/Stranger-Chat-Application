@@ -809,6 +809,56 @@
         .empty-state p {
             font-size: 0.85rem;
         }
+        /* System Notification Styles */
+.system-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    max-width: 350px;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    border-left: 4px solid #ff4757;
+}
+
+.system-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.notification-content i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* Alternative styling for different message types */
+.system-notification.info {
+    background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+    border-left-color: #2f4fdd;
+}
+
+.system-notification.warning {
+    background: linear-gradient(135deg, #f8961e 0%, #e67e22 100%);
+    border-left-color: #d35400;
+}
+
+.system-notification.success {
+    background: linear-gradient(135deg, #4cc9f0 0%, #3498db 100%);
+    border-left-color: #2980b9;
+}
     </style>
 </head>
 <body>
@@ -1289,10 +1339,15 @@
 
     // Handle incoming messages
     function handleIncomingMessage(messageData) {
+
         const senderId = parseInt(messageData.senderId);
-
+        const messageType = messageData.type;
         console.log('📨 Processing incoming message from:', senderId, 'currently selected user:', currentlySelectedUserId);
-
+         // Handle system messages differently
+    if (messageType === 'system') {
+        displaySystemMessage(messageData);
+        return;
+    }
         // Add to inbox users (only for received messages)
         if (senderId !== userId) {
             addToInbox(senderId, messageData, true);
@@ -1812,37 +1867,42 @@
     }
 
     // Display message in chat
-    function displayMessage(messageData) {
-        const messages = document.getElementById("messages");
-        const senderId = parseInt(messageData.senderId);
-
-        // Determine if message should be displayed
-        const shouldDisplay =
-            senderId === userId ||
-            (senderId === currentlySelectedUserId && parseInt(messageData.receiverId) === userId);
-
-        if (shouldDisplay) {
-            // Clear "no chat" message if it exists
-            if (messages.querySelector('.no-chat')) {
-                messages.innerHTML = '';
-            }
-
-            const newMsg = document.createElement("div");
-            const isFromYou = senderId === userId;
-            newMsg.className = isFromYou ? "message sent" : "message received";
-
-            // Format timestamp
-            let timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            newMsg.innerHTML = `
-                <div class="message-bubble">${messageData.msg}</div>
-                <div class="message-time">${timeString}</div>
-            `;
-            messages.appendChild(newMsg);
-            messages.scrollTop = messages.scrollHeight;
-        }
+  // Update displayMessage function to handle regular messages only
+function displayMessage(messageData) {
+    // Skip if it's a system message
+    if (messageData.type === 'system') {
+        return;
     }
 
+    const messages = document.getElementById("messages");
+    const senderId = parseInt(messageData.senderId);
+
+    // Determine if message should be displayed
+    const shouldDisplay =
+        senderId === userId ||
+        (senderId === currentlySelectedUserId && parseInt(messageData.receiverId) === userId);
+
+    if (shouldDisplay) {
+        // Clear "no chat" message if it exists
+        if (messages.querySelector('.no-chat')) {
+            messages.innerHTML = '';
+        }
+
+        const newMsg = document.createElement("div");
+        const isFromYou = senderId === userId;
+        newMsg.className = isFromYou ? "message sent" : "message received";
+
+        // Format timestamp
+        let timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        newMsg.innerHTML = `
+            <div class="message-bubble">${messageData.msg}</div>
+            <div class="message-time">${timeString}</div>
+        `;
+        messages.appendChild(newMsg);
+        messages.scrollTop = messages.scrollHeight;
+    }
+}
     // Fetch active users from server
     function fetchActiveUsers() {
         fetch(`${userApiUrl}/find-by-status/online`, {
@@ -1866,6 +1926,39 @@
             populateUserListWithMockData();
         });
     }
+// Display system message with special styling
+// Display system message as temporary alert
+function displaySystemMessage(messageData) {
+    // Create notification element
+    const notification = document.createElement("div");
+    notification.className = "system-notification";
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-info-circle"></i>
+            <span>${messageData.msg}</span>
+        </div>
+    `;
+
+    // Add to the page
+    document.body.appendChild(notification);
+
+    // Show notification with animation
+    setTimeout(() => {
+        notification.classList.add("show");
+    }, 100);
+
+    // Remove notification after 5 seconds
+    setTimeout(() => {
+        notification.classList.remove("show");
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+
+    console.log("✅ System notification displayed");
+}
 
     // Populate user list initially
     function populateUserList(users) {
