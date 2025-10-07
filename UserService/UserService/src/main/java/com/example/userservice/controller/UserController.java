@@ -1,7 +1,10 @@
 package com.example.userservice.controller;
 
+import com.example.userservice.dto.BlockedUserRequest;
+import com.example.userservice.dto.BlockedUserResponse;
 import com.example.userservice.dto.UserRequest;
 import com.example.userservice.dto.UserResponse;
+import com.example.userservice.service.BlockedUserService;
 import com.example.userservice.service.GeoService;
 import com.example.userservice.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +24,8 @@ import java.util.Map;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
+    @Autowired
+    private BlockedUserService blockedUserService;
     @Autowired
     public UserController(UserService userService){
         this.userService=userService;
@@ -67,4 +73,20 @@ public class UserController {
     public void setStatus(@RequestParam long userId, @RequestParam String status){
         userService.setStatus(userId,status);
    }
+   @GetMapping("get-all-blocked-users")
+    public ResponseEntity<List<BlockedUserResponse>> findAllBlockedUsers(){
+        return ResponseEntity.ok(blockedUserService.findAll());
+   }
+    @GetMapping("/isblocked/{blockedBy}/{blockedTo}")
+    public ResponseEntity<Boolean> isBlocked(@PathVariable long blockedBy, @PathVariable long blockedTo){
+        return ResponseEntity.ok(blockedUserService.isBlocekd(blockedBy,blockedTo));
+    }
+   @PostMapping("/block")
+    public void block(@RequestBody BlockedUserRequest blockedUserRequest){
+        blockedUserService.block(blockedUserRequest);
+   }
+    @PostMapping("/unblock/{blockedBy}/{blockedTo}")
+    public void block(@PathVariable long blockedBy, @PathVariable long blockedTo){
+        blockedUserService.unBlock(blockedBy,blockedTo);
+    }
 }
