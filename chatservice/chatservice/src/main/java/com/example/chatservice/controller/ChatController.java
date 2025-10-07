@@ -7,6 +7,7 @@ import com.example.chatservice.model.Message;
 import com.example.chatservice.service.ChatLimitService;
 import com.example.chatservice.service.ChatService;
 import com.example.chatservice.service.MessageService;
+import com.example.chatservice.service.UserServiceClient;
 import jakarta.ws.rs.core.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -30,15 +31,18 @@ public class ChatController {
     private final MessageService messageService;
     private final MessageToMessageResponse messageToMessageResponse;
     private final ChatLimitService chatLimitService;
+    private final UserServiceClient userServiceClient;
 
     public ChatController(ChatService chatService, SimpMessagingTemplate simpMessagingTemplate,
                           MessageService messageService, MessageToMessageResponse messageToMessageResponse,
-                          ChatLimitService chatLimitService){
+                          ChatLimitService chatLimitService,
+                          UserServiceClient userServiceClient){
         this.chatService = chatService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.messageService= messageService;
         this.messageToMessageResponse= messageToMessageResponse;
         this.chatLimitService= chatLimitService;
+        this.userServiceClient= userServiceClient;
     }
 
     @GetMapping("/get-chat-room")
@@ -78,16 +82,25 @@ public class ChatController {
                 if(hasReply){
                     chatLimitService.setMessageCountPermanentlyZero(senderId,receiverId); //Set premanently zero
                 }
-                if(chatLimitService.canSend(senderId,receiverId)) {
-                    chatLimitService.increaseMessageCount(senderId,receiverId);
-                    // Send to RECEIVER's topic
-                    simpMessagingTemplate.convertAndSend(receiverTopic, response);
-                    // Also send back to sender for UI update (FIXED PATH)
-                    simpMessagingTemplate.convertAndSend(senderTopic, response);
-                    messageService.saveMessage(messageRequest);
+                if(!userServiceClient.isBlocked(messageRequest.getSenderId(),messageRequest.getReceiverId()).getBody()&&
+                !userServiceClient.isBlocked(messageRequest.getReceiverId(),messageRequest.getSenderId()).getBody()) {
+                    if (chatLimitService.canSend(senderId, receiverId)) {
+                        chatLimitService.increaseMessageCount(senderId, receiverId);
+                        // Send to RECEIVER's topic
+                        simpMessagingTemplate.convertAndSend(receiverTopic, response);
+                        // Also send back to sender for UI update (FIXED PATH)
+                        simpMessagingTemplate.convertAndSend(senderTopic, response);
+                        messageService.saveMessage(messageRequest);
+                    } else {
+                        String message = "System: Please wait for the receiver to respond before sending more messages";
+                        response.put("msg", message);
+                        response.put("type", "system"); // Add this line
+                        response.put("senderId", 0); // Use 0 or null for system messages
+                        simpMessagingTemplate.convertAndSend(senderTopic, response);
+                    }
                 }
                 else{
-                    String message= "System: Please wait for the receiver to respond before sending more messages";
+                    String message = "User: Blocked";
                     response.put("msg", message);
                     response.put("type", "system"); // Add this line
                     response.put("senderId", 0); // Use 0 or null for system messages

@@ -82,11 +82,13 @@ public class UserController {
         return ResponseEntity.ok(blockedUserService.isBlocekd(blockedBy,blockedTo));
     }
    @PostMapping("/block")
-    public void block(@RequestBody BlockedUserRequest blockedUserRequest){
+    public ResponseEntity<String> block(@RequestBody BlockedUserRequest blockedUserRequest){
         blockedUserService.block(blockedUserRequest);
+       return ResponseEntity.ok("Blocked");
    }
     @PostMapping("/unblock/{blockedBy}/{blockedTo}")
-    public void block(@PathVariable long blockedBy, @PathVariable long blockedTo){
+    public ResponseEntity<String> block(@PathVariable long blockedBy, @PathVariable long blockedTo){
         blockedUserService.unBlock(blockedBy,blockedTo);
+        return ResponseEntity.ok("Unblocked"+ blockedTo +"by"+ blockedBy);
     }
 }

@@ -28,8 +28,20 @@ public class BlockedUserService {
     }
 
     public void block(BlockedUserRequest blockedUserRequest) {
-        blockedUserRepo.save(blockedUserRequestToBlockedUser
-                .convert(blockedUserRequest));
+        // Check if the block relationship already exists
+        User user=userRepo.findById(  blockedUserRequest.getBlockedBy())
+                .orElseThrow(()-> new UserNotFoundException("User Not found"));
+        boolean alreadyExists = blockedUserRepo.existsByBlockedByAndBlockedTo(
+              user,
+                blockedUserRequest.getBlockedTo()
+        );
+
+        // Only save if it doesn't already exist
+        if (!alreadyExists) {
+            blockedUserRepo.save(blockedUserRequestToBlockedUser
+                    .convert(blockedUserRequest));
+        }
+        // If it already exists, do nothing (idempotent)
     }
     public BlockedUserResponse findById(long id){
         return blockedeUserToBlockedUserResponse.convert(blockedUserRepo.findById(id)

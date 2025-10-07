@@ -481,6 +481,7 @@
             border-bottom: 1px solid var(--light-gray);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
             background: white;
         }
@@ -520,6 +521,40 @@
             gap: 4px;
             font-size: 0.7rem;
             color: var(--gray);
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .block-btn {
+            background: none;
+            border: 1px solid var(--light-gray);
+            color: var(--gray);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .block-btn:hover {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .block-btn.blocked {
+            background: #ffebee;
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .block-btn.blocked:hover {
+            background: #ffcdd2;
         }
 
         .messages {
@@ -770,6 +805,16 @@
                 height: 22px;
                 font-size: 0.85rem;
             }
+
+            .chat-actions {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .block-btn {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+            }
         }
 
         /* Scrollbar Styling */
@@ -858,6 +903,17 @@
 .system-notification.success {
     background: linear-gradient(135deg, #4cc9f0 0%, #3498db 100%);
     border-left-color: #2980b9;
+}
+
+/* Blocked user message styling */
+.blocked-message {
+    text-align: center;
+    padding: 20px;
+    color: var(--gray);
+    font-style: italic;
+    background: var(--light-gray);
+    border-radius: var(--border-radius);
+    margin: 10px 0;
 }
     </style>
 </head>
@@ -956,6 +1012,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="chat-actions" id="chatActions" style="display: none;">
+                    <button class="block-btn" id="blockUserBtn">
+                        <i class="fas fa-ban"></i>
+                        <span>Block</span>
+                    </button>
+                </div>
             </div>
 
             <div class="messages" id="messages">
@@ -983,1155 +1045,1157 @@
 </div>
 <script>
     // Separate URLs for different microservices
-    const userApiUrl = "http://localhost:1111/user/api/user"; //UserBase URL
-    const chatApiUrl = "http://localhost:1111/chat"; // Chat Service base URL
-
-    // Global variables
-    let stompClient = null;
-    let isWebSocketConnected = false;
-    let userName = null;
-    let userId = null;
-    let unreadMessages = {}; // Track unread messages per user
-    let currentChatUser = null; // Track currently open chat
-    let gender = null;
-    let country = null;
-    let connectionRetryCount = 0;
-    const MAX_RETRIES = 3;
-    let activeTab = 'active'; // 'active' or 'inbox'
-    let inboxUsers = new Map(); // Track users in inbox: {userId: {userData, unread}}
-    let inboxUnreadCount = 0; // Total unread messages in inbox
-    let currentlySelectedUserId = null; // Track currently selected user ID
-
-    // Emoji data
-   const emojis = [
-  '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
-  '🙂', '🙃', '😉', '😌',
-
-  // Expanded love/heart emojis
-  '😍', '🥰', '😘', '😗', '😙', '😚', '💖', '💗', '💓', '💞',
-  '💕', '💘', '💝', '💟', '🥲', '🤎', '🧡', '❤️‍🔥', '❤️‍🩹', '💌',
-  '❤️', '💛', '💚', '💙', '💜', '🖤', '🤍', '💋', '👩‍❤️‍👨', '👨‍❤️‍👨',
-
-  // Additional facial expressions & people
-  '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩',
-  '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣',
-  '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬',
-  '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗',
-  '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯',
-  '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐',
-  '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈',
-
-  // Fantasy & characters
-  '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾',
-  '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿',
-  '😾',
-
-  // Hand gestures & body parts
-  '👋', '🤚', '🖐️', '✋', '🖖', '👌', '🤌', '🤏', '✌️', '🤞',
-  '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👍',
-  '👎', '✊', '👊', '🤛', '🤜', '👏', '🙌', '👐', '🤲', '🤝',
-  '🙏', '✍️', '💅', '🤳', '💪', '🦾', '🦵', '🦿', '🦶', '👂',
-  '🦻', '👃', '🧠', '🦷', '🦴', '👀', '👁️', '👅', '👄',
-
-  // Animals & nature
-  '🐵', '🐒', '🦍', '🦧', '🐶', '🐕', '🦮', '🐩', '🐺', '🦊',
-  '🦝', '🐱', '🐈', '🦁', '🐯', '🐅', '🐆', '🐴', '🐎', '🦄',
-  '🦓', '🦌', '🐮', '🐂', '🐃', '🐄', '🐷', '🐖', '🐗', '🐽',
-  '🐏', '🐑', '🐐', '🐪', '🐫', '🦙', '🦒', '🐘', '🦏', '🦛',
-  '🐭', '🐁', '🐀', '🐹', '🐰', '🐇', '🐿️', '🦫', '🦔', '🦇',
-  '🐻', '🐨', '🐼', '🦥', '🦦', '🦨', '🦘', '🦡', '🐾', '🦃',
-  '🐔', '🐓', '🐣', '🐤', '🐥', '🐦', '🐧', '🕊️', '🦅', '🦆',
-  '🦢', '🦉', '🦤', '🦩', '🦚', '🦜', '🐸', '🐊', '🐢', '🦎',
-  '🐍', '🐲', '🐉', '🦕', '🦖', '🐳', '🐋', '🐬', '🦭', '🐟',
-  '🐠', '🐡', '🦈', '🐙', '🐚', '🐌', '🦋', '🐛', '🐜', '🐝',
-  '🪲', '🐞', '🦗', '🕷️', '🕸️', '🦂', '🦟', '🦠', '💐', '🌸',
-  '💮', '🏵️', '🌹', '🥀', '🌺', '🌻', '🌼', '🌷', '🌱', '🪴',
-  '🌲', '🌳', '🌴', '🌵', '🌾', '🌿', '☘️', '🍀', '🍁', '🍂',
-  '🍃', '🍄', '🌰', '🦀', '🦞', '🦐', '🦑', '🌍', '🌎', '🌏',
-  '🌐', '🪐', '💫', '⭐', '🌟', '✨', '⚡', '☄️', '💥', '🔥',
-  '🌪️', '🌈', '☀️', '🌤️', '⛅', '🌥️', '☁️', '🌦️', '🌧️', '⛈️',
-  '🌩️', '🌨️', '❄️', '☃️', '⛄', '🌬️', '💨', '💧', '💦', '☔',
-  '☂️', '🌊', '🌫️',
-
-  // Food & drinks
-  '🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐',
-  '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑',
-  '🥦', '🥬', '🥒', '🌶️', '🫑', '🌽', '🥕', '🫒', '🧄', '🧅',
-  '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳',
-  '🧈', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🦴', '🌭', '🍔',
-  '🍟', '🍕', '🫓', '🥪', '🥙', '🧆', '🌮', '🌯', '🫔', '🥗',
-  '🥘', '🫕', '🥫', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟',
-  '🦪', '🍤', '🍙', '🍚', '🍘', '🍥', '🥠', '🥮', '🍢', '🍡',
-  '🍧', '🍨', '🍦', '🥧', '🧁', '🍰', '🎂', '🍮', '🍭', '🍬',
-  '🍫', '🍿', '🍩', '🍪', '🌰', '🥜', '🫘', '🍯', '🥛', '🍼',
-  '🫖', '☕', '🍵', '🧃', '🥤', '🧋', '🍶', '🍺', '🍻', '🥂',
-  '🍷', '🥃', '🍸', '🍹', '🧉', '🍾', '🧊', '🥄', '🍴', '🍽️',
-  '🥣', '🥡', '🥢', '🧂',
-
-  // Activities & sports
-  '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱',
-  '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🎿', '⛷️', '🏂',
-  '🪂', '🏋️', '🤼', '🤸', '⛹️', '🤾', '🏌️', '🏇', '🧘', '🏄',
-  '🏊', '🤽', '🚣', '🧗', '🚴', '🚵', '🤹', '🤺', '🥊', '🥋',
-  '🎯', '🪃', '🥅', '🛹', '🛼', '🎲', '♟️', '🎮', '🎳', '🎭',
-  '🩰', '🎨', '🎪', '🎤', '🎧', '🎼', '🎹', '🥁', '🪘', '🎷',
-  '🎺', '🎸', '🪕', '🎻', '🎬', '🏆', '🎫', '🎗️', '🎟️', '🎭',
-
-  // Travel & places
-  '🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐',
-  '🛻', '🚚', '🚛', '🚜', '🏍️', '🛵', '🚲', '🛴', '🛹', '🛼',
-  '🚁', '✈️', '🛩️', '🛫', '🛬', '🪂', '💺', '🚀', '🛸', '🚉',
-  '🚊', '🚝', '🚄', '🚅', '🚈', '🚂', '🚆', '🚇', '🚋', '🚌',
-  '🚎', '🚐', '🚑', '🚒', '🚓', '🚔', '🚕', '🚖', '🚗', '🚘',
-  '🚙', '🚚', '🚛', '🚜', '🏠', '🏡', '🏢', '🏣', '🏤', '🏥',
-  '🏦', '🏨', '🏩', '🏪', '🏫', '🏬', '🏭', '🏯', '🏰', '💒',
-  '🗼', '🗽', '⛪', '🕌', '🛕', '🕍', '⛩️', '🕋', '🌄', '🌅',
-  '🌆', '🌇', '🌃', '🎠', '🎡', '🎢', '💈', '🌌', '🎇', '🎆',
-  '🌠', '🎑', '💎', '⚱️', '🚂', '🌉', '🎠', '⚓', '🚢', '⛵',
-  '🛶', '🚤', '🛳️', '⛴️', '🛥️', '🚟', '🚠', '🚡', '🛰️', '🚁',
-
-  // Objects & symbols
-  '❤️', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️',
-  '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟', '☮️', '✝️',
-  '☪️', '🕉️', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐', '⛎',
-  '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑',
-  '♒', '♓', '🆔', '⚛️', '🉑', '☢️', '☣️', '📴', '📳', '🈶',
-  '🈚', '🈸', '🈺', '🈷️', '✴️', '🆚', '💮', '🉐', '㊙️', '㊗️',
-  '🈴', '🈵', '🈹', '🈲', '🅰️', '🅱️', '🆎', '🆑', '🅾️', '🆘',
-  '❌', '⭕', '🛑', '⛔', '📛', '🚫', '💯', '💢', '♨️', '🚷',
-  '🚯', '🚳', '🚱', '🔞', '📵', '🚭', '❗', '❕', '❓', '❔',
-  '‼️', '⁉️', '🔅', '🔆', '〽️', '⚠️', '🚸', '🔱', '⚜️', '🔰',
-  '♻️', '✅', '🈯', '💹', '❇️', '✳️', '❎', '🌐', '💠', 'Ⓜ️',
-  '🌀', '💤', '🏧', '🚾', '♿', '🅿️', '🈳', '🈂️', '🛂', '🛃',
-  '🛄', '🛅', '🚹', '🚺', '🚼', '🚻', '🚮', '🎦', '📶', '🈁',
-  '🔣', 'ℹ️', '🔤', '🔡', '🔠', '🆖', '🆗', '🆙', '🆒', '🆕',
-  '🆓', '0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣',
-  '9️⃣', '🔟', '🔢', '#️⃣', '*️⃣', '⏏️', '▶️', '⏸️', '⏯️', '⏹️',
-  '⏺️', '⏭️', '⏮️', '⏩', '⏪', '⏫', '⏬', '◀️', '🔼', '🔽',
-  '➡️', '⬅️', '⬆️', '⬇️', '↗️', '↘️', '↙️', '↖️', '↕️', '↔️',
-  '↪️', '↩️', '⤴️', '⤵️', '🔀', '🔁', '🔂', '🔄', '🔃', '🎵',
-  '🎶', '➕', '➖', '➗', '✖️', '♾️', '💲', '💱', '™️', '©️',
-  '®️', '〰️', '➰', '➿', '🔚', '🔙', '🔛', '🔝', '🔜', '✔️',
-  '☑️', '🔘', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '⚫', '⚪',
-  '🟤', '🔺', '🔻', '🔸', '🔹', '🔶', '🔷', '🔳', '🔲', '▪️',
-  '▫️', '◾', '◽', '◼️', '◻️', '🟥', '🟧', '🟨', '🟩', '🟦',
-  '🟪', '⬛', '⬜', '🟫', '🔈', '🔇', '🔉', '🔊', '🔔', '🔕',
-  '📣', '📢', '👁️‍🗨️', '💬', '💭', '🗯️', '♠️', '♣️', '♥️', '♦️',
-  '🃏', '🎴', '🀄', '📩', '📨', '📧', '💌', '📥', '📤', '📦',
-  '🏷️', '📪', '📫', '📬', '📭', '📮', '📯', '📜', '📃', '📄',
-  '📑', '🧾', '📊', '📈', '📉', '🗒️', '🗓️', '📆', '📅', '🗑️',
-  '📇', '🗃️', '🗳️', '🗄️', '📋', '📁', '📂', '🗂️', '🗞️', '📰',
-  '📓', '📔', '📒', '📕', '📗', '📘', '📙', '📚', '📖', '🔖',
-  '🧷', '🔗', '📎', '🖇️', '📐', '📏', '🧮', '📌', '📍', '✂️',
-  '🖊️', '🖋️', '✒️', '🖌️', '🖍️', '📝', '✏️', '🔍', '🔎', '🔏',
-  '🔐', '🔒', '🔓', '❤️‍🔥', '❤️‍🩹', '🧡', '💛', '💚', '💙', '💜'
-];
-
-
-    // Initialize emoji picker with scrolling
-    function initializeEmojiPicker() {
-        const emojiPicker = document.getElementById('emojiPicker');
-        const emojiButton = document.getElementById('emojiButton');
-
-        // Clear any existing emojis
-        emojiPicker.innerHTML = '';
-
-        // Populate emoji picker with all emojis
-        emojis.forEach(emoji => {
-            const emojiElement = document.createElement('span');
-            emojiElement.className = 'emoji';
-            emojiElement.textContent = emoji;
-            emojiElement.title = emoji; // Show emoji on hover
-            emojiElement.addEventListener('click', () => {
-                insertEmoji(emoji);
-            });
-            emojiPicker.appendChild(emojiElement);
-        });
-
-        // Toggle emoji picker visibility
-        emojiButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            emojiPicker.classList.toggle('active');
-
-            // Scroll to top when opening
-            if (emojiPicker.classList.contains('active')) {
-                emojiPicker.scrollTop = 0;
-            }
-        });
-
-        // Close emoji picker when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!emojiPicker.contains(e.target) && e.target !== emojiButton) {
-                emojiPicker.classList.remove('active');
-            }
-        });
-
-        // Prevent emoji picker from closing when scrolling inside it
-        emojiPicker.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-
-        console.log('✅ Emoji picker initialized with', emojis.length, 'emojis');
-    }
-
-    // Insert emoji into message input
-    function insertEmoji(emoji) {
-        const messageInput = document.getElementById('messageInput');
-        const startPos = messageInput.selectionStart;
-        const endPos = messageInput.selectionEnd;
-
-        messageInput.value = messageInput.value.substring(0, startPos) +
-                            emoji +
-                            messageInput.value.substring(endPos);
-
-        // Set cursor position after the inserted emoji
-        messageInput.selectionStart = messageInput.selectionEnd = startPos + emoji.length;
-        messageInput.focus();
-
-        // Close emoji picker
-        document.getElementById('emojiPicker').classList.remove('active');
-    }
-
-    // Check session and get user data
-    function checkUserSession() {
-        return fetch(`${userApiUrl}/session-check`, {
-            method: "GET",
-            credentials: "include"
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Session invalid');
-            return response.json();
-        })
-        .then(userData => {
-            console.log('✅ Session valid, user data:', userData);
-
-            userName = userData.userName;
-            userId = userData.userId;
-            gender = userData.gender;
-            country = userData.country;
-
-            document.getElementById("username").textContent = userName;
-            document.getElementById("userAvatar").textContent = userName.charAt(0).toUpperCase();
-
-            return userData;
-        })
-        .catch(error => {
-            console.error('❌ Session check failed:', error);
-            // REDIRECT TO DASHBOARD INSTEAD OF SIGNIN
-            window.location.href = "dashboard.html";
-        });
-    }
-
-    // WebSocket connection with Promise
-    function connectWebSocket() {
-        return new Promise((resolve, reject) => {
-            if (!userId) {
-                console.error('❌ Cannot connect WebSocket: userId is null');
-                reject(new Error('userId is null'));
-                return;
-            }
-
-            // Clear any existing connection
-            if (stompClient && isWebSocketConnected) {
-                console.log('🔄 Disconnecting existing WebSocket...');
-                stompClient.disconnect();
-            }
-
-            try {
-                console.log('🔌 Connecting WebSocket for userId:', userId);
-
-                const socket = new SockJS('http://localhost:1111/chat/ws-chat'); //URL from chatservice
-                stompClient = Stomp.over(socket);
-
-                // Set a connection timeout
-                const connectionTimeout = setTimeout(() => {
-                    console.error('❌ WebSocket connection timeout');
-                    reject(new Error('Connection timeout'));
-                }, 10000); // 10 seconds timeout
-
-                stompClient.connect(
-                    {
-                        'userId': userId.toString(),
-                        'userName': userName,
-                        'gender': gender,
-                        'country': country
-                    },
-                    function(frame) {
-                        clearTimeout(connectionTimeout);
-                        console.log('✅ WebSocket Connected');
-                        isWebSocketConnected = true;
-                        connectionRetryCount = 0; // Reset retry count on successful connection
-
-                        // Subscribe to receive private messages
-                        const privateTopic = "/topic/user/" + userId;
-                        console.log('📡 Subscribing to private messages:', privateTopic);
-
-                        stompClient.subscribe(privateTopic, function(message) {
-                            console.log("📨 Message received:", message.body);
-                            try {
-                                const messageData = JSON.parse(message.body);
-                                handleIncomingMessage(messageData);
-                            } catch (e) {
-                                console.error("❌ Error parsing message:", e);
-                            }
-                        });
-
-                        // Subscribe to user status changes
-                        const statusTopic = "/topic/status-change";
-                        console.log('📡 Subscribing to status updates:', statusTopic);
-
-                        const statusSubscription = stompClient.subscribe(statusTopic, function(message) {
-                            console.log("🔄 Status update received:", message.body);
-                            try {
-                                const statusUpdate = JSON.parse(message.body);
-                                handleStatusUpdate(statusUpdate);
-                            } catch (e) {
-                                console.error("❌ Error parsing status update:", e);
-                            }
-                        });
-
-                        // Verify subscription is active
-                        if (statusSubscription) {
-                            console.log('✅ Status subscription active');
-                        } else {
-                            console.error('❌ Status subscription failed');
-                        }
-
-                        resolve(frame);
-                    },
-                    function(error) {
-                        clearTimeout(connectionTimeout);
-                        console.error('❌ WebSocket connection error:', error);
-                        isWebSocketConnected = false;
-
-                        // Retry logic
-                        if (connectionRetryCount < MAX_RETRIES) {
-                            connectionRetryCount++;
-                            console.log(`🔄 Retrying connection (${connectionRetryCount}/${MAX_RETRIES})...`);
-                            setTimeout(() => {
-                                connectWebSocket().then(resolve).catch(reject);
-                            }, 2000 * connectionRetryCount); // Exponential backoff
-                        } else {
-                            reject(error);
-                        }
-                    }
-                );
-
-            } catch (error) {
-                console.error('❌ Error in WebSocket setup:', error);
-                reject(error);
-            }
-        });
-    }
-
-    // Connection monitoring
-    function monitorConnection() {
-        setInterval(() => {
-            if (!isWebSocketConnected) {
-                console.log('🔄 WebSocket disconnected, attempting reconnect...');
-                connectWebSocket()
-                    .then(() => console.log('✅ WebSocket reconnected'))
-                    .catch(error => console.error('❌ WebSocket reconnect failed:', error));
-            }
-        }, 30000); // Check every 30 seconds
-    }
-
-    // Handle incoming messages
-    function handleIncomingMessage(messageData) {
-
-        const senderId = parseInt(messageData.senderId);
-        const messageType = messageData.type;
-        console.log('📨 Processing incoming message from:', senderId, 'currently selected user:', currentlySelectedUserId);
-         // Handle system messages differently
-    if (messageType === 'system') {
-        displaySystemMessage(messageData);
-        return;
-    }
-        // Add to inbox users (only for received messages)
-        if (senderId !== userId) {
-            addToInbox(senderId, messageData, true);
-        }
-
-        // Check if message is from currently active chat
-        const isFromActiveChat = senderId === currentlySelectedUserId;
-
-        if (isFromActiveChat) {
-            // Display message immediately if it's from active chat
-            displayMessage(messageData);
-        } else if (senderId !== userId) {
-            // Show message indicator only for received messages (not sent)
-            showMessageIndicator(senderId);
-
-            // Move user to top of the list
-            moveUserToTop(senderId);
-        }
-
-        // Also display if it's your own message (sent message echo)
-        if (senderId === userId) {
-            displayMessage(messageData);
-        }
-    }
-
-    // Add user to inbox
-    function addToInbox(userId, messageData, isReceived = false) {
-        // Get user data from active list or create basic user object
-        const userItem = document.querySelector(`[data-user-id="${userId}"]`);
-        let userData;
-
-        if (userItem) {
-            const userName = userItem.querySelector('.user-name').textContent;
-            const genderIcon = userItem.querySelector('.gender-icon');
-            const country = userItem.querySelector('.user-info-small span:last-child').textContent;
-
-            userData = {
-                userId: userId,
-                userName: userName,
-                gender: genderIcon.classList.contains('fa-venus') ? 'FEMALE' : 'MALE',
-                country: country,
-                status: 'online' // All active users should be online
-            };
-        } else {
-            // Create basic user data if not found in active list
-            userData = {
-                userId: userId,
-                userName: `User ${userId}`,
-                gender: 'MALE',
-                country: 'Unknown',
-                status: 'online' // Default to online for inbox users
-            };
-        }
-
-        // Add or update in inbox
-        if (!inboxUsers.has(userId)) {
-            inboxUsers.set(userId, {
-                userData: userData,
-                unread: isReceived ? 1 : 0,
-                hasUnread: isReceived
-            });
-        } else {
-            const existing = inboxUsers.get(userId);
-            if (isReceived) {
-                existing.unread = (existing.unread || 0) + 1;
-                existing.hasUnread = true;
-            }
-            // Update user data in case it changed
-            existing.userData = userData;
-        }
-
-        // Update inbox tab indicator only for received messages
-        if (isReceived) {
-            inboxUnreadCount++;
-            updateInboxTabIndicator();
-        }
-
-        // Refresh inbox list if active
-        if (activeTab === 'inbox') {
-            refreshInboxList();
-        }
-    }
-
-    // Update inbox tab indicator
-    function updateInboxTabIndicator() {
-        const indicator = document.getElementById('inboxTabIndicator');
-        const hasUnread = inboxUnreadCount > 0;
-
-        if (hasUnread) {
-            indicator.classList.add('active');
-        } else {
-            indicator.classList.remove('active');
-        }
-    }
-
-    // Create user list item with proper click handler
-    function createUserListItem(user) {
-        const userItem = document.createElement("li");
-        userItem.className = "user-item";
-        userItem.dataset.userId = user.userId;
-
-        const genderIcon = user.gender === 'FEMALE' ? 'fas fa-venus' : 'fas fa-mars';
-        const genderText = user.gender === 'FEMALE' ? 'Female' : 'Male';
-
-        // All users from active users list should be online
-        const statusClass = user.status === 'online' ? '' : 'offline';
-        const statusText = user.status === 'online' ? 'Online' : 'Offline';
-
-        userItem.innerHTML = `
-            <div class="user-avatar">${user.userName.charAt(0).toUpperCase()}</div>
-            <div class="user-details">
-                <div class="user-name">${user.userName}</div>
-                <div class="user-info-small">
-                    <i class="${genderIcon} gender-icon"></i>
-                    <span>${genderText}</span>
-                    <span>•</span>
-                    <i class="fas fa-globe country-flag"></i>
-                    <span>${user.country || 'Unknown'}</span>
-                </div>
-                <div class="user-status">
-                    <span class="status-indicator ${statusClass}"></span>
-                    ${statusText}
-                </div>
-            </div>
-        `;
-
-        userItem.addEventListener('click', function() {
-            selectUser(user);
-        });
-
-        return userItem;
-    }
-
-    // Select a user (called when user is clicked)
-    function selectUser(user) {
-        // Remove active class from all users in both lists
-        document.querySelectorAll('.user-item').forEach(item => {
-            item.classList.remove('active');
-        });
-
-        // Add active class to this user
-        const clickedUserItem = document.querySelector(`[data-user-id="${user.userId}"]`);
-        if (clickedUserItem) {
-            clickedUserItem.classList.add('active');
-        }
-
-        // Store the currently selected user ID
-        currentlySelectedUserId = user.userId;
-
-        setCurrentChatUser(user);
-        loadChatHistory(user.userId);
-
-        // Clear message indicators when user is selected
-        clearMessageIndicators(user.userId);
-
-        // Mark as read in inbox
-        if (inboxUsers.has(user.userId)) {
-            const inboxItem = inboxUsers.get(user.userId);
-            if (inboxItem.hasUnread) {
-                inboxUnreadCount -= inboxItem.unread;
-                inboxItem.unread = 0;
-                inboxItem.hasUnread = false;
-                updateInboxTabIndicator();
-                refreshInboxList();
-            }
-        }
-    }
-
-    // Refresh inbox list
-    function refreshInboxList() {
-        const inboxList = document.getElementById('inboxList');
-        inboxList.innerHTML = '';
-
-        if (inboxUsers.size === 0) {
-            inboxList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    <p>No conversations yet</p>
-                    <p style="font-size: 0.7rem; margin-top: 5px;">Start chatting to see users here</p>
-                </div>
-            `;
-            return;
-        }
-
-        // Convert Map to array and sort by last activity
-        const inboxArray = Array.from(inboxUsers.values());
-
-        inboxArray.forEach(inboxItem => {
-            const user = inboxItem.userData;
-            const userItem = createUserListItem(user);
-
-            // Add message indicator for unread messages
-            if (inboxItem.hasUnread && inboxItem.unread > 0) {
-                let indicator = document.createElement('div');
-                indicator.className = 'message-indicator';
-                if (inboxItem.unread > 1) {
-                    indicator.textContent = inboxItem.unread > 9 ? '9+' : inboxItem.unread;
-                    indicator.className = 'message-indicator with-count';
-                    indicator.setAttribute('data-count', inboxItem.unread);
-                }
-                indicator.style.display = 'flex';
-                userItem.querySelector('.user-avatar').appendChild(indicator);
-            }
-
-            // If this user is currently selected, mark it as active
-            if (user.userId === currentlySelectedUserId) {
-                userItem.classList.add('active');
-            }
-
-            inboxList.appendChild(userItem);
-        });
-    }
-
-    // Switch between active users and inbox tabs
-    function setupTabSwitching() {
-        const tabs = document.querySelectorAll('.sidebar-tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                const tabName = this.dataset.tab;
-
-                // Update active tab
-                tabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-
-                // Show/hide tab content
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                document.getElementById(tabName + 'Tab').classList.add('active');
-
-                activeTab = tabName;
-
-                // Refresh the list when switching tabs
-                if (tabName === 'inbox') {
-                    refreshInboxList();
-                }
-
-                // Apply current filters to the active tab
-                filterUsers();
-            });
-        });
-    }
-
-    // Setup search and filter functionality
-    function setupSearchAndFilter() {
-        const searchInput = document.getElementById('userSearch');
-        const genderFilter = document.getElementById('genderFilter');
-        const countryFilter = document.getElementById('countryFilter');
-
-        function filterUsers() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const genderValue = genderFilter.value;
-            const countryValue = countryFilter.value.toLowerCase();
-
-            const currentListId = activeTab === 'active' ? 'userList' : 'inboxList';
-            const userItems = document.querySelectorAll(`#${currentListId} .user-item`);
-
-            userItems.forEach(item => {
-                const userName = item.querySelector('.user-name').textContent.toLowerCase();
-                const userGender = item.querySelector('.gender-icon').className.includes('fa-venus') ? 'FEMALE' : 'MALE';
-                const userCountry = item.querySelector('.user-info-small span:last-child').textContent.toLowerCase();
-
-                const matchesSearch = userName.includes(searchTerm);
-                const matchesGender = !genderValue || userGender === genderValue;
-                const matchesCountry = !countryValue || userCountry.includes(countryValue);
-
-                if (matchesSearch && matchesGender && matchesCountry) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-
-        searchInput.addEventListener('input', filterUsers);
-        genderFilter.addEventListener('change', filterUsers);
-        countryFilter.addEventListener('input', filterUsers);
-    }
-
-    // Function to move user to top of the list
-    function moveUserToTop(userId) {
-        const userList = document.getElementById("userList");
-        const userItem = document.querySelector(`[data-user-id="${userId}"]`);
-
-        if (userItem && userList.firstChild !== userItem) {
-            // Remove the user from current position
-            userItem.remove();
-
-            // Insert at the top of the list
-            userList.insertBefore(userItem, userList.firstChild);
-
-            console.log("✅ Moved user to top:", userId);
-        }
-    }
-
-    // Show message indicator for a user
-    function showMessageIndicator(senderId) {
-        // Update unread count (only for received messages)
-        if (!unreadMessages[senderId]) {
-            unreadMessages[senderId] = 0;
-        }
-        unreadMessages[senderId]++;
-
-        // Find the user item in sidebar
-        const userItem = document.querySelector(`[data-user-id="${senderId}"]`);
-        if (userItem) {
-            let indicator = userItem.querySelector('.message-indicator');
-
-            if (!indicator) {
-                // Create indicator if it doesn't exist
-                indicator = document.createElement('div');
-                indicator.className = 'message-indicator';
-                userItem.querySelector('.user-avatar').appendChild(indicator);
-            }
-
-            // Update indicator with count
-            const count = unreadMessages[senderId];
-            if (count > 1) {
-                indicator.textContent = count > 9 ? '9+' : count;
-                indicator.className = 'message-indicator with-count';
-
-                // Add data attribute for special styling
-                indicator.setAttribute('data-count', count);
-            } else {
-                indicator.textContent = '';
-                indicator.className = 'message-indicator';
-            }
-
-            indicator.style.display = 'flex';
-
-            // Add "New Message" label for first message
-            if (unreadMessages[senderId] === 1) {
-                const newLabel = document.createElement('div');
-                newLabel.className = 'new-message-label';
-                newLabel.textContent = 'New';
-                newLabel.style.display = 'block';
-
-                // Remove existing label if any
-                const existingLabel = userItem.querySelector('.new-message-label');
-                if (existingLabel) {
-                    existingLabel.remove();
-                }
-
-                userItem.querySelector('.user-details').appendChild(newLabel);
-
-                // Remove label after 3 seconds
-                setTimeout(() => {
-                    if (newLabel.parentNode) {
-                        newLabel.style.display = 'none';
-                    }
-                }, 3000);
-            }
-        }
-    }
-
-    // Clear message indicators when user is selected
-    function clearMessageIndicators(userId) {
-        const userItem = document.querySelector(`[data-user-id="${userId}"]`);
-        if (userItem) {
-            const indicator = userItem.querySelector('.message-indicator');
-            const newLabel = userItem.querySelector('.new-message-label');
-
-            if (indicator) {
-                indicator.style.display = 'none';
-            }
-            if (newLabel) {
-                newLabel.style.display = 'none';
-            }
-        }
-
-        // Reset unread count
-        if (unreadMessages[userId]) {
-            unreadMessages[userId] = 0;
-        }
-    }
-
-    // Handle user status updates
-    function handleStatusUpdate(statusUpdate) {
-        console.log("🔄 Processing status update:", statusUpdate);
-
-        if (statusUpdate.type === "USER_STATUS_UPDATE") {
-            if (statusUpdate.status === "ONLINE") {
-                // User came online - add to list regardless of existing
-                const existingUser = document.querySelector(`[data-user-id="${statusUpdate.userId}"]`);
-
-                if (!existingUser) {
-                    // User doesn't exist in list, add them
-                    addUserToList({
-                        userId: statusUpdate.userId,
-                        userName: statusUpdate.userName,
-                        status: "online",
-                        gender: statusUpdate.gender || "MALE",
-                        country: statusUpdate.country || 'Unknown'
-                    });
-                    console.log("✅ Added new user from status update:", statusUpdate.userName);
-                } else {
-                    // User exists, just update status
-                    updateUserStatus(statusUpdate.userId, "online");
-                }
-            } else if (statusUpdate.status === "OFFLINE") {
-                // User went offline
-                updateUserStatus(statusUpdate.userId, "offline");
-            }
-        }
-    }
-
-    // Add user to sidebar list
-    function addUserToList(user) {
-        // Skip if it's current user
-        if (user.userId == userId) {
-            console.log("⏩ Skipping current user:", user.userName);
-            return;
-        }
-
-        const existingUser = document.querySelector(`[data-user-id="${user.userId}"]`);
-        if (existingUser) {
-            console.log("⏩ User already exists, updating status:", user.userName);
-            updateUserStatus(user.userId, "online");
-            return;
-        }
-
-        const userList = document.getElementById("userList");
-
-        // Ensure user has online status since they're from active users list
-        if (!user.status) {
-            user.status = 'online';
-        }
-
-        const userItem = createUserListItem(user);
-
-        // Add new user to the TOP of the list
-        userList.insertBefore(userItem, userList.firstChild);
-        console.log("✅ Added NEW user to top of list:", user.userName);
-
-        // If this is the first user, automatically select them
-        if (userList.children.length === 1 && !currentlySelectedUserId) {
-            selectUser(user);
-        }
-    }
-
-    // Update user status in sidebar
-    function updateUserStatus(userId, status) {
-        const userItem = document.querySelector(`[data-user-id="${userId}"]`);
-        if (userItem) {
-            const statusElement = userItem.querySelector('.user-status');
-            const indicator = userItem.querySelector('.status-indicator');
-
-            if (status === "online") {
-                statusElement.innerHTML = '<span class="status-indicator"></span> Online';
-                if (indicator) {
-                    indicator.style.backgroundColor = '#4CAF50';
-                    indicator.classList.remove('offline');
-                }
-            } else {
-                statusElement.innerHTML = '<span class="status-indicator offline"></span> Offline';
-                if (indicator) {
-                    indicator.style.backgroundColor = '#ccc';
-                    indicator.classList.add('offline');
-                }
-            }
-            console.log("✅ Updated user status:", userId, status);
-        }
-
-        // Also update status in inbox if user exists there
-        if (inboxUsers.has(userId)) {
-            const inboxItem = inboxUsers.get(userId);
-            inboxItem.userData.status = status;
-            if (activeTab === 'inbox') {
-                refreshInboxList();
-            }
-        }
-    }
-
-    // Send message function - SIMPLIFIED AND FIXED
-    function sendMessage() {
-        const msgBox = document.getElementById("messageInput");
-        const msg = msgBox.value.trim();
-
-        if (!msg || !currentlySelectedUserId) {
-            alert("Please select a user and type a message!");
-            return;
-        }
-
-        const receiverId = currentlySelectedUserId;
-
-        const messageRequest = {
-            msg: msg,
-            receiverId: parseInt(receiverId),
-            senderId: userId
-        };
-
-        console.log("📤 Sending message to:", receiverId);
-
-        if (stompClient && isWebSocketConnected) {
-            try {
-                stompClient.send("/app/chat.send", {}, JSON.stringify(messageRequest));
-                console.log("✅ Message sent");
-
-                // Add to inbox (for sent messages - but no red dot)
-                addToInbox(parseInt(receiverId), messageRequest, false);
-
-                // Move the receiver to top of the list
-                moveUserToTop(parseInt(receiverId));
-
-                msgBox.value = "";
-                msgBox.style.height = 'auto';
-
-                // The user remains selected because we're using currentlySelectedUserId
-
-            } catch (error) {
-                console.error("❌ Error sending message:", error);
-            }
-        } else {
-            console.error("❌ WebSocket not connected");
-            connectWebSocket();
-        }
-    }
-
-    // Display message in chat
-  // Update displayMessage function to handle regular messages only
-function displayMessage(messageData) {
-    // Skip if it's a system message
-    if (messageData.type === 'system') {
-        return;
-    }
-
-    const messages = document.getElementById("messages");
-    const senderId = parseInt(messageData.senderId);
-
-    // Determine if message should be displayed
-    const shouldDisplay =
-        senderId === userId ||
-        (senderId === currentlySelectedUserId && parseInt(messageData.receiverId) === userId);
-
-    if (shouldDisplay) {
-        // Clear "no chat" message if it exists
-        if (messages.querySelector('.no-chat')) {
-            messages.innerHTML = '';
-        }
-
-        const newMsg = document.createElement("div");
-        const isFromYou = senderId === userId;
-        newMsg.className = isFromYou ? "message sent" : "message received";
-
-        // Format timestamp
-        let timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        newMsg.innerHTML = `
-            <div class="message-bubble">${messageData.msg}</div>
-            <div class="message-time">${timeString}</div>
-        `;
-        messages.appendChild(newMsg);
-        messages.scrollTop = messages.scrollHeight;
-    }
-}
-    // Fetch active users from server
-    function fetchActiveUsers() {
-        fetch(`${userApiUrl}/find-by-status/online`, {
-            method: "GET",
-            credentials: "include"
-        })
-        .then(response => response.json())
-        .then(users => {
-            console.log('👥 Active users:', users);
-
-            // Add online status to all users since they're from the online endpoint
-            const usersWithStatus = users.map(user => ({
-                ...user,
-                status: 'online'
-            }));
-
-            populateUserList(usersWithStatus);
-        })
-        .catch(error => {
-            console.error('Error fetching users:', error);
-            populateUserListWithMockData();
-        });
-    }
-// Display system message with special styling
-// Display system message as temporary alert
-function displaySystemMessage(messageData) {
-    // Create notification element
-    const notification = document.createElement("div");
-    notification.className = "system-notification";
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas fa-info-circle"></i>
-            <span>${messageData.msg}</span>
-        </div>
-    `;
-
-    // Add to the page
-    document.body.appendChild(notification);
-
-    // Show notification with animation
-    setTimeout(() => {
-        notification.classList.add("show");
-    }, 100);
-
-    // Remove notification after 5 seconds
-    setTimeout(() => {
-        notification.classList.remove("show");
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }, 5000);
-
-    console.log("✅ System notification displayed");
-}
-
-    // Populate user list initially
-    function populateUserList(users) {
-        const userList = document.getElementById("userList");
-        userList.innerHTML = '';
-
-        if (users.length === 0) {
-            userList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-users"></i>
-                    <p>No active users found</p>
-                </div>
-            `;
-            return;
-        }
-
-        users.forEach(user => {
-            if (user.userId == userId) return;
-
-            const userItem = createUserListItem(user);
-
-            // Set first user as active by default
-            if (users.indexOf(user) === 0 && !currentlySelectedUserId) {
-                selectUser(user);
-            }
-
-            userList.appendChild(userItem);
-        });
-    }
-
-    // Set current chat user
-    function setCurrentChatUser(user) {
-        currentChatUser = user;
-        document.getElementById("currentChatName").textContent = user.userName;
-        document.getElementById("currentChatAvatar").textContent = user.userName.charAt(0).toUpperCase();
-        document.getElementById("currentChatStatus").textContent = user.status === 'online' ? 'Online' : 'Offline';
-        document.getElementById("currentChatGender").textContent = user.gender === 'FEMALE' ? 'Female' : 'Male';
-        document.getElementById("currentChatCountry").textContent = user.country || 'Unknown';
-    }
-
-    // Load chat history for a user
-    function loadChatHistory(targetUserId) {
-        console.log('💬 Loading chat history for user:', targetUserId);
-
-        const messagesContainer = document.getElementById("messages");
-        messagesContainer.innerHTML = '<div class="no-chat">Loading messages...</div>';
-
-        // Fetch chat history from your endpoint
-        fetch(`${chatApiUrl}/get-chat-history/${userId}/${targetUserId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(messages => {
-            console.log('📚 Chat history loaded:', messages);
-            displayChatHistory(messages, targetUserId);
-
-            // Clear message indicators when loading history
-            clearMessageIndicators(targetUserId);
-        })
-        .catch(error => {
-            console.error('❌ Error loading chat history:', error);
-            messagesContainer.innerHTML = '<div class="no-chat">No messages yet. Start the conversation!</div>';
-        });
-    }
-
-    // Display chat history in the messages container
-    function displayChatHistory(messages, targetUserId) {
-        const messagesContainer = document.getElementById("messages");
-        messagesContainer.innerHTML = '';
-
-        if (messages.length === 0) {
-            messagesContainer.innerHTML = '<div class="no-chat">No messages yet. Start the conversation!</div>';
-            return;
-        }
-
-        // Sort messages by ID (smaller ID = older message)
-        messages.sort((a, b) => a.id - b.id);
-
-        messages.forEach(message => {
-            const messageElement = document.createElement("div");
-
-            // Determine if message is sent by current user or received from other user
-            const isFromYou = parseInt(message.senderId) === userId;
-            messageElement.className = isFromYou ? "message sent" : "message received";
-
-            // Simple timestamp - since sentDateAndTime is null, use current time or just show message
-            let timeString = message.sentTime;
-
-            messageElement.innerHTML = `
-                <div class="message-bubble">${message.msg}</div>
-                <div class="message-time">${timeString}</div>
-            `;
-            messagesContainer.appendChild(messageElement);
-        });
-
-        // Scroll to bottom to show latest messages
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        console.log(`✅ Displayed ${messages.length} messages from history in correct order`);
-    }
-
-    // Mock data fallback
-    function populateUserListWithMockData() {
-        const mockUsers = [
-            { userId: 1, userName: "John Doe", gender: "MALE", country: "USA", status: "online" },
-            { userId: 2, userName: "Jane Smith", gender: "FEMALE", country: "Canada", status: "online" }
-        ];
-        populateUserList(mockUsers);
-    }
-
-    // Event listeners
-    function setupEventListeners() {
-        document.getElementById("messageInput").addEventListener("keydown", function(e) {
-            if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        document.getElementById("logoutBtn").addEventListener("click", function() {
-            if (stompClient) stompClient.disconnect();
-            fetch(`${userApiUrl}/logout`, { method: "GET", credentials: "include" })
-            .then(() => {
-                window.location.href = "signin.html";
-            });
-        });
-
-        // ADD DASHBOARD BUTTON EVENT LISTENER
-        document.getElementById("dashboardBtn").addEventListener("click", function() {
-            // Redirect to dashboard
-            window.location.href = "dashboard.html";
-        });
-    }
-
-    // Initialize app - IMPROVED VERSION
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Initializing BlinkRandom...');
-
-        // Initialize emoji picker first
-        initializeEmojiPicker();
-
-        checkUserSession()
-            .then((userData) => {
-                console.log('🎯 User session validated:', userData);
-                console.log('🎯 User ID:', userId);
-
-                // Setup UI components
-                setupTabSwitching();
-                setupSearchAndFilter();
-                setupEventListeners();
-
-                // Connect WebSocket first and wait for it to be ready
-                return connectWebSocket();
-            })
-            .then(() => {
-                console.log('✅ WebSocket connected and subscriptions active');
-
-                // Now fetch active users - WebSocket is ready to receive status updates
-                fetchActiveUsers();
-
-                // Start connection monitoring
-                monitorConnection();
-
-                console.log('✅ BlinkRandom fully initialized');
-            })
-            .catch(error => {
-                console.error('❌ Failed to initialize BlinkRandom:', error);
-                // Show user-friendly error message
-                alert('Failed to connect to chat service. Please refresh the page.');
-            });
-    });
+ const userApiUrl = "http://localhost:1111/user/api/user"; //UserBase URL
+ const chatApiUrl = "http://localhost:1111/chat"; // Chat Service base URL
+
+ // Global variables
+ let stompClient = null;
+ let isWebSocketConnected = false;
+ let userName = null;
+ let userId = null;
+ let unreadMessages = {}; // Track unread messages per user
+ let currentChatUser = null; // Track currently open chat
+ let gender = null;
+ let country = null;
+ let connectionRetryCount = 0;
+ const MAX_RETRIES = 3;
+ let activeTab = 'active'; // 'active' or 'inbox'
+ let inboxUsers = new Map(); // Track users in inbox: {userId: {userData, unread}}
+ let inboxUnreadCount = 0; // Total unread messages in inbox
+ let currentlySelectedUserId = null; // Track currently selected user ID
+ let isBlockedStatus = false; // Track if current chat user is blocked
+
+ // Emoji data
+ const emojis = [
+     '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
+     '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
+     '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩',
+     '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣',
+     '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬',
+     '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗',
+     '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯',
+     '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐',
+     '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈',
+     '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾',
+     '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿',
+     '😾', '💋', '💌', '💘', '💝', '💖', '💗', '💓', '💞', '💕',
+     '💟', '❣️', '💔', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤',
+     '🤍', '🤎', '💯', '✨', '🌟', '⭐', '🔥', '💥', '👍', '👎'
+ ];
+
+ // Initialize emoji picker with scrolling
+ function initializeEmojiPicker() {
+     const emojiPicker = document.getElementById('emojiPicker');
+     const emojiButton = document.getElementById('emojiButton');
+
+     // Clear any existing emojis
+     emojiPicker.innerHTML = '';
+
+     // Populate emoji picker with all emojis
+     emojis.forEach(emoji => {
+         const emojiElement = document.createElement('span');
+         emojiElement.className = 'emoji';
+         emojiElement.textContent = emoji;
+         emojiElement.title = emoji;
+         emojiElement.addEventListener('click', () => {
+             insertEmoji(emoji);
+         });
+         emojiPicker.appendChild(emojiElement);
+     });
+
+     // Toggle emoji picker visibility
+     emojiButton.addEventListener('click', (e) => {
+         e.preventDefault();
+         e.stopPropagation();
+         emojiPicker.classList.toggle('active');
+
+         // Scroll to top when opening
+         if (emojiPicker.classList.contains('active')) {
+             emojiPicker.scrollTop = 0;
+         }
+     });
+
+     // Close emoji picker when clicking outside
+     document.addEventListener('click', (e) => {
+         if (!emojiPicker.contains(e.target) && e.target !== emojiButton) {
+             emojiPicker.classList.remove('active');
+         }
+     });
+
+     // Prevent emoji picker from closing when scrolling inside it
+     emojiPicker.addEventListener('click', (e) => {
+         e.stopPropagation();
+     });
+
+     console.log('✅ Emoji picker initialized with', emojis.length, 'emojis');
+ }
+
+ // Insert emoji into message input
+ function insertEmoji(emoji) {
+     const messageInput = document.getElementById('messageInput');
+     const startPos = messageInput.selectionStart;
+     const endPos = messageInput.selectionEnd;
+
+     messageInput.value = messageInput.value.substring(0, startPos) +
+                         emoji +
+                         messageInput.value.substring(endPos);
+
+     // Set cursor position after the inserted emoji
+     messageInput.selectionStart = messageInput.selectionEnd = startPos + emoji.length;
+     messageInput.focus();
+
+     // Close emoji picker
+     document.getElementById('emojiPicker').classList.remove('active');
+ }
+
+ // Check session and get user data
+ function checkUserSession() {
+     return fetch(`${userApiUrl}/session-check`, {
+         method: "GET",
+         credentials: "include"
+     })
+     .then(response => {
+         if (!response.ok) throw new Error('Session invalid');
+         return response.json();
+     })
+     .then(userData => {
+         console.log('✅ Session valid, user data:', userData);
+
+         userName = userData.userName;
+         userId = userData.userId;
+         gender = userData.gender;
+         country = userData.country;
+
+         document.getElementById("username").textContent = userName;
+         document.getElementById("userAvatar").textContent = userName.charAt(0).toUpperCase();
+
+         return userData;
+     })
+     .catch(error => {
+         console.error('❌ Session check failed:', error);
+         window.location.href = "dashboard.html";
+     });
+ }
+
+ // WebSocket connection with Promise
+ function connectWebSocket() {
+     return new Promise((resolve, reject) => {
+         if (!userId) {
+             console.error('❌ Cannot connect WebSocket: userId is null');
+             reject(new Error('userId is null'));
+             return;
+         }
+
+         // Clear any existing connection
+         if (stompClient && isWebSocketConnected) {
+             console.log('🔄 Disconnecting existing WebSocket...');
+             stompClient.disconnect();
+         }
+
+         try {
+             console.log('🔌 Connecting WebSocket for userId:', userId);
+
+             const socket = new SockJS('http://localhost:1111/chat/ws-chat');
+             stompClient = Stomp.over(socket);
+
+             // Set a connection timeout
+             const connectionTimeout = setTimeout(() => {
+                 console.error('❌ WebSocket connection timeout');
+                 reject(new Error('Connection timeout'));
+             }, 10000);
+
+             stompClient.connect(
+                 {
+                     'userId': userId.toString(),
+                     'userName': userName,
+                     'gender': gender,
+                     'country': country
+                 },
+                 function(frame) {
+                     clearTimeout(connectionTimeout);
+                     console.log('✅ WebSocket Connected');
+                     isWebSocketConnected = true;
+                     connectionRetryCount = 0;
+
+                     // Subscribe to receive private messages
+                     const privateTopic = "/topic/user/" + userId;
+                     console.log('📡 Subscribing to private messages:', privateTopic);
+
+                     stompClient.subscribe(privateTopic, function(message) {
+                         console.log("📨 Message received:", message.body);
+                         try {
+                             const messageData = JSON.parse(message.body);
+                             handleIncomingMessage(messageData);
+                         } catch (e) {
+                             console.error("❌ Error parsing message:", e);
+                         }
+                     });
+
+                     // Subscribe to user status changes
+                     const statusTopic = "/topic/status-change";
+                     console.log('📡 Subscribing to status updates:', statusTopic);
+
+                     const statusSubscription = stompClient.subscribe(statusTopic, function(message) {
+                         console.log("🔄 Status update received:", message.body);
+                         try {
+                             const statusUpdate = JSON.parse(message.body);
+                             handleStatusUpdate(statusUpdate);
+                         } catch (e) {
+                             console.error("❌ Error parsing status update:", e);
+                         }
+                     });
+
+                     resolve(frame);
+                 },
+                 function(error) {
+                     clearTimeout(connectionTimeout);
+                     console.error('❌ WebSocket connection error:', error);
+                     isWebSocketConnected = false;
+
+                     // Retry logic
+                     if (connectionRetryCount < MAX_RETRIES) {
+                         connectionRetryCount++;
+                         console.log(`🔄 Retrying connection (${connectionRetryCount}/${MAX_RETRIES})...`);
+                         setTimeout(() => {
+                             connectWebSocket().then(resolve).catch(reject);
+                         }, 2000 * connectionRetryCount);
+                     } else {
+                         reject(error);
+                     }
+                 }
+             );
+
+         } catch (error) {
+             console.error('❌ Error in WebSocket setup:', error);
+             reject(error);
+         }
+     });
+ }
+
+ // Connection monitoring
+ function monitorConnection() {
+     setInterval(() => {
+         if (!isWebSocketConnected) {
+             console.log('🔄 WebSocket disconnected, attempting reconnect...');
+             connectWebSocket()
+                 .then(() => console.log('✅ WebSocket reconnected'))
+                 .catch(error => console.error('❌ WebSocket reconnect failed:', error));
+         }
+     }, 30000);
+ }
+
+ // Handle incoming messages
+ function handleIncomingMessage(messageData) {
+     const senderId = parseInt(messageData.senderId);
+     const messageType = messageData.type;
+     console.log('📨 Processing incoming message from:', senderId, 'currently selected user:', currentlySelectedUserId);
+
+     // Handle system messages differently
+     if (messageType === 'system') {
+         displaySystemMessage(messageData);
+         return;
+     }
+
+     // Add to inbox users (only for received messages)
+     if (senderId !== userId) {
+         addToInbox(senderId, messageData, true);
+     }
+
+     // Check if message is from currently active chat
+     const isFromActiveChat = senderId === currentlySelectedUserId;
+
+     if (isFromActiveChat) {
+         // Display message immediately if it's from active chat
+         displayMessage(messageData);
+     } else if (senderId !== userId) {
+         // Show message indicator only for received messages (not sent)
+         showMessageIndicator(senderId);
+
+         // Move user to top of the list
+         moveUserToTop(senderId);
+     }
+
+     // Also display if it's your own message (sent message echo)
+     if (senderId === userId) {
+         displayMessage(messageData);
+     }
+ }
+
+ // Add user to inbox
+ function addToInbox(userId, messageData, isReceived = false) {
+     // Get user data from active list or create basic user object
+     const userItem = document.querySelector(`[data-user-id="${userId}"]`);
+     let userData;
+
+     if (userItem) {
+         const userName = userItem.querySelector('.user-name').textContent;
+         const genderIcon = userItem.querySelector('.gender-icon');
+         const country = userItem.querySelector('.user-info-small span:last-child').textContent;
+
+         userData = {
+             userId: userId,
+             userName: userName,
+             gender: genderIcon.classList.contains('fa-venus') ? 'FEMALE' : 'MALE',
+             country: country,
+             status: 'online'
+         };
+     } else {
+         // Create basic user data if not found in active list
+         userData = {
+             userId: userId,
+             userName: `User ${userId}`,
+             gender: 'MALE',
+             country: 'Unknown',
+             status: 'online'
+         };
+     }
+
+     // Add or update in inbox
+     if (!inboxUsers.has(userId)) {
+         inboxUsers.set(userId, {
+             userData: userData,
+             unread: isReceived ? 1 : 0,
+             hasUnread: isReceived
+         });
+     } else {
+         const existing = inboxUsers.get(userId);
+         if (isReceived) {
+             existing.unread = (existing.unread || 0) + 1;
+             existing.hasUnread = true;
+         }
+         existing.userData = userData;
+     }
+
+     // Update inbox tab indicator only for received messages
+     if (isReceived) {
+         inboxUnreadCount++;
+         updateInboxTabIndicator();
+     }
+
+     // Refresh inbox list if active
+     if (activeTab === 'inbox') {
+         refreshInboxList();
+     }
+ }
+
+ // Update inbox tab indicator
+ function updateInboxTabIndicator() {
+     const indicator = document.getElementById('inboxTabIndicator');
+     const hasUnread = inboxUnreadCount > 0;
+
+     if (hasUnread) {
+         indicator.classList.add('active');
+     } else {
+         indicator.classList.remove('active');
+     }
+ }
+
+ // Create user list item with proper click handler
+ function createUserListItem(user) {
+     const userItem = document.createElement("li");
+     userItem.className = "user-item";
+     userItem.dataset.userId = user.userId;
+
+     const genderIcon = user.gender === 'FEMALE' ? 'fas fa-venus' : 'fas fa-mars';
+     const genderText = user.gender === 'FEMALE' ? 'Female' : 'Male';
+
+     const statusClass = user.status === 'online' ? '' : 'offline';
+     const statusText = user.status === 'online' ? 'Online' : 'Offline';
+
+     userItem.innerHTML = `
+         <div class="user-avatar">${user.userName.charAt(0).toUpperCase()}</div>
+         <div class="user-details">
+             <div class="user-name">${user.userName}</div>
+             <div class="user-info-small">
+                 <i class="${genderIcon} gender-icon"></i>
+                 <span>${genderText}</span>
+                 <span>•</span>
+                 <i class="fas fa-globe country-flag"></i>
+                 <span>${user.country || 'Unknown'}</span>
+             </div>
+             <div class="user-status">
+                 <span class="status-indicator ${statusClass}"></span>
+                 ${statusText}
+             </div>
+         </div>
+     `;
+
+     userItem.addEventListener('click', function() {
+         selectUser(user);
+     });
+
+     return userItem;
+ }
+
+ // Select a user (called when user is clicked)
+ function selectUser(user) {
+     // Remove active class from all users in both lists
+     document.querySelectorAll('.user-item').forEach(item => {
+         item.classList.remove('active');
+     });
+
+     // Add active class to this user
+     const clickedUserItem = document.querySelector(`[data-user-id="${user.userId}"]`);
+     if (clickedUserItem) {
+         clickedUserItem.classList.add('active');
+     }
+
+     // Store the currently selected user ID
+     currentlySelectedUserId = user.userId;
+
+     setCurrentChatUser(user);
+     loadChatHistory(user.userId);
+
+     // Clear message indicators when user is selected
+     clearMessageIndicators(user.userId);
+
+     // Mark as read in inbox
+     if (inboxUsers.has(user.userId)) {
+         const inboxItem = inboxUsers.get(user.userId);
+         if (inboxItem.hasUnread) {
+             inboxUnreadCount -= inboxItem.unread;
+             inboxItem.unread = 0;
+             inboxItem.hasUnread = false;
+             updateInboxTabIndicator();
+             refreshInboxList();
+         }
+     }
+ }
+
+ // Refresh inbox list
+ function refreshInboxList() {
+     const inboxList = document.getElementById('inboxList');
+     inboxList.innerHTML = '';
+
+     if (inboxUsers.size === 0) {
+         inboxList.innerHTML = `
+             <div class="empty-state">
+                 <i class="fas fa-inbox"></i>
+                 <p>No conversations yet</p>
+                 <p style="font-size: 0.7rem; margin-top: 5px;">Start chatting to see users here</p>
+             </div>
+         `;
+         return;
+     }
+
+     // Convert Map to array and sort by last activity
+     const inboxArray = Array.from(inboxUsers.values());
+
+     inboxArray.forEach(inboxItem => {
+         const user = inboxItem.userData;
+         const userItem = createUserListItem(user);
+
+         // Add message indicator for unread messages
+         if (inboxItem.hasUnread && inboxItem.unread > 0) {
+             let indicator = document.createElement('div');
+             indicator.className = 'message-indicator';
+             if (inboxItem.unread > 1) {
+                 indicator.textContent = inboxItem.unread > 9 ? '9+' : inboxItem.unread;
+                 indicator.className = 'message-indicator with-count';
+                 indicator.setAttribute('data-count', inboxItem.unread);
+             }
+             indicator.style.display = 'flex';
+             userItem.querySelector('.user-avatar').appendChild(indicator);
+         }
+
+         // If this user is currently selected, mark it as active
+         if (user.userId === currentlySelectedUserId) {
+             userItem.classList.add('active');
+         }
+
+         inboxList.appendChild(userItem);
+     });
+ }
+
+ // Switch between active users and inbox tabs
+ function setupTabSwitching() {
+     const tabs = document.querySelectorAll('.sidebar-tab');
+     tabs.forEach(tab => {
+         tab.addEventListener('click', function() {
+             const tabName = this.dataset.tab;
+
+             // Update active tab
+             tabs.forEach(t => t.classList.remove('active'));
+             this.classList.add('active');
+
+             // Show/hide tab content
+             document.querySelectorAll('.tab-content').forEach(content => {
+                 content.classList.remove('active');
+             });
+             document.getElementById(tabName + 'Tab').classList.add('active');
+
+             activeTab = tabName;
+
+             // Refresh the list when switching tabs
+             if (tabName === 'inbox') {
+                 refreshInboxList();
+             }
+
+             // Apply current filters to the active tab
+             filterUsers();
+         });
+     });
+ }
+
+ // Setup search and filter functionality
+ function setupSearchAndFilter() {
+     const searchInput = document.getElementById('userSearch');
+     const genderFilter = document.getElementById('genderFilter');
+     const countryFilter = document.getElementById('countryFilter');
+
+     function filterUsers() {
+         const searchTerm = searchInput.value.toLowerCase();
+         const genderValue = genderFilter.value;
+         const countryValue = countryFilter.value.toLowerCase();
+
+         const currentListId = activeTab === 'active' ? 'userList' : 'inboxList';
+         const userItems = document.querySelectorAll(`#${currentListId} .user-item`);
+
+         userItems.forEach(item => {
+             const userName = item.querySelector('.user-name').textContent.toLowerCase();
+             const userGender = item.querySelector('.gender-icon').className.includes('fa-venus') ? 'FEMALE' : 'MALE';
+             const userCountry = item.querySelector('.user-info-small span:last-child').textContent.toLowerCase();
+
+             const matchesSearch = userName.includes(searchTerm);
+             const matchesGender = !genderValue || userGender === genderValue;
+             const matchesCountry = !countryValue || userCountry.includes(countryValue);
+
+             if (matchesSearch && matchesGender && matchesCountry) {
+                 item.style.display = 'flex';
+             } else {
+                 item.style.display = 'none';
+             }
+         });
+     }
+
+     searchInput.addEventListener('input', filterUsers);
+     genderFilter.addEventListener('change', filterUsers);
+     countryFilter.addEventListener('input', filterUsers);
+ }
+
+ // Function to move user to top of the list
+ function moveUserToTop(userId) {
+     const userList = document.getElementById("userList");
+     const userItem = document.querySelector(`[data-user-id="${userId}"]`);
+
+     if (userItem && userList.firstChild !== userItem) {
+         userItem.remove();
+         userList.insertBefore(userItem, userList.firstChild);
+         console.log("✅ Moved user to top:", userId);
+     }
+ }
+
+ // Show message indicator for a user
+ function showMessageIndicator(senderId) {
+     // Update unread count (only for received messages)
+     if (!unreadMessages[senderId]) {
+         unreadMessages[senderId] = 0;
+     }
+     unreadMessages[senderId]++;
+
+     // Find the user item in sidebar
+     const userItem = document.querySelector(`[data-user-id="${senderId}"]`);
+     if (userItem) {
+         let indicator = userItem.querySelector('.message-indicator');
+
+         if (!indicator) {
+             indicator = document.createElement('div');
+             indicator.className = 'message-indicator';
+             userItem.querySelector('.user-avatar').appendChild(indicator);
+         }
+
+         // Update indicator with count
+         const count = unreadMessages[senderId];
+         if (count > 1) {
+             indicator.textContent = count > 9 ? '9+' : count;
+             indicator.className = 'message-indicator with-count';
+             indicator.setAttribute('data-count', count);
+         } else {
+             indicator.textContent = '';
+             indicator.className = 'message-indicator';
+         }
+
+         indicator.style.display = 'flex';
+
+         // Add "New Message" label for first message
+         if (unreadMessages[senderId] === 1) {
+             const newLabel = document.createElement('div');
+             newLabel.className = 'new-message-label';
+             newLabel.textContent = 'New';
+             newLabel.style.display = 'block';
+
+             const existingLabel = userItem.querySelector('.new-message-label');
+             if (existingLabel) {
+                 existingLabel.remove();
+             }
+
+             userItem.querySelector('.user-details').appendChild(newLabel);
+
+             setTimeout(() => {
+                 if (newLabel.parentNode) {
+                     newLabel.style.display = 'none';
+                 }
+             }, 3000);
+         }
+     }
+ }
+
+ // Clear message indicators when user is selected
+ function clearMessageIndicators(userId) {
+     const userItem = document.querySelector(`[data-user-id="${userId}"]`);
+     if (userItem) {
+         const indicator = userItem.querySelector('.message-indicator');
+         const newLabel = userItem.querySelector('.new-message-label');
+
+         if (indicator) {
+             indicator.style.display = 'none';
+         }
+         if (newLabel) {
+             newLabel.style.display = 'none';
+         }
+     }
+
+     // Reset unread count
+     if (unreadMessages[userId]) {
+         unreadMessages[userId] = 0;
+     }
+ }
+
+ // Handle user status updates
+ function handleStatusUpdate(statusUpdate) {
+     console.log("🔄 Processing status update:", statusUpdate);
+
+     if (statusUpdate.type === "USER_STATUS_UPDATE") {
+         if (statusUpdate.status === "ONLINE") {
+             const existingUser = document.querySelector(`[data-user-id="${statusUpdate.userId}"]`);
+
+             if (!existingUser) {
+                 addUserToList({
+                     userId: statusUpdate.userId,
+                     userName: statusUpdate.userName,
+                     status: "online",
+                     gender: statusUpdate.gender || "MALE",
+                     country: statusUpdate.country || 'Unknown'
+                 });
+                 console.log("✅ Added new user from status update:", statusUpdate.userName);
+             } else {
+                 updateUserStatus(statusUpdate.userId, "online");
+             }
+         } else if (statusUpdate.status === "OFFLINE") {
+             updateUserStatus(statusUpdate.userId, "offline");
+         }
+     }
+ }
+
+ // Add user to sidebar list
+ function addUserToList(user) {
+     // Skip if it's current user
+     if (user.userId == userId) {
+         console.log("⏩ Skipping current user:", user.userName);
+         return;
+     }
+
+     const existingUser = document.querySelector(`[data-user-id="${user.userId}"]`);
+     if (existingUser) {
+         console.log("⏩ User already exists, updating status:", user.userName);
+         updateUserStatus(user.userId, "online");
+         return;
+     }
+
+     const userList = document.getElementById("userList");
+
+     if (!user.status) {
+         user.status = 'online';
+     }
+
+     const userItem = createUserListItem(user);
+
+     userList.insertBefore(userItem, userList.firstChild);
+     console.log("✅ Added NEW user to top of list:", user.userName);
+
+     if (userList.children.length === 1 && !currentlySelectedUserId) {
+         selectUser(user);
+     }
+ }
+
+ // Update user status in sidebar
+ function updateUserStatus(userId, status) {
+     const userItem = document.querySelector(`[data-user-id="${userId}"]`);
+     if (userItem) {
+         const statusElement = userItem.querySelector('.user-status');
+         const indicator = userItem.querySelector('.status-indicator');
+
+         if (status === "online") {
+             statusElement.innerHTML = '<span class="status-indicator"></span> Online';
+             if (indicator) {
+                 indicator.style.backgroundColor = '#4CAF50';
+                 indicator.classList.remove('offline');
+             }
+         } else {
+             statusElement.innerHTML = '<span class="status-indicator offline"></span> Offline';
+             if (indicator) {
+                 indicator.style.backgroundColor = '#ccc';
+                 indicator.classList.add('offline');
+             }
+         }
+         console.log("✅ Updated user status:", userId, status);
+     }
+
+     if (inboxUsers.has(userId)) {
+         const inboxItem = inboxUsers.get(userId);
+         inboxItem.userData.status = status;
+         if (activeTab === 'inbox') {
+             refreshInboxList();
+         }
+     }
+ }
+
+ // Send message function - REMOVED BLOCK CHECK
+ function sendMessage() {
+     const msgBox = document.getElementById("messageInput");
+     const msg = msgBox.value.trim();
+
+     if (!msg || !currentlySelectedUserId) {
+         alert("Please select a user and type a message!");
+         return;
+     }
+
+     const receiverId = currentlySelectedUserId;
+
+     const messageRequest = {
+         msg: msg,
+         receiverId: parseInt(receiverId),
+         senderId: userId
+     };
+
+     console.log("📤 Sending message to:", receiverId);
+
+     if (stompClient && isWebSocketConnected) {
+         try {
+             stompClient.send("/app/chat.send", {}, JSON.stringify(messageRequest));
+             console.log("✅ Message sent");
+
+             // Add to inbox (for sent messages - but no red dot)
+             addToInbox(parseInt(receiverId), messageRequest, false);
+
+             // Move the receiver to top of the list
+             moveUserToTop(parseInt(receiverId));
+
+             msgBox.value = "";
+             msgBox.style.height = 'auto';
+
+         } catch (error) {
+             console.error("❌ Error sending message:", error);
+         }
+     } else {
+         console.error("❌ WebSocket not connected");
+         connectWebSocket();
+     }
+ }
+
+ // Display message in chat
+ function displayMessage(messageData) {
+     if (messageData.type === 'system') {
+         return;
+     }
+
+     const messages = document.getElementById("messages");
+     const senderId = parseInt(messageData.senderId);
+
+     const shouldDisplay =
+         senderId === userId ||
+         (senderId === currentlySelectedUserId && parseInt(messageData.receiverId) === userId);
+
+     if (shouldDisplay) {
+         if (messages.querySelector('.no-chat')) {
+             messages.innerHTML = '';
+         }
+
+         const newMsg = document.createElement("div");
+         const isFromYou = senderId === userId;
+         newMsg.className = isFromYou ? "message sent" : "message received";
+
+         let timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+         newMsg.innerHTML = `
+             <div class="message-bubble">${messageData.msg}</div>
+             <div class="message-time">${timeString}</div>
+         `;
+         messages.appendChild(newMsg);
+         messages.scrollTop = messages.scrollHeight;
+     }
+ }
+
+ // Fetch active users from server
+ function fetchActiveUsers() {
+     fetch(`${userApiUrl}/find-by-status/online`, {
+         method: "GET",
+         credentials: "include"
+     })
+     .then(response => response.json())
+     .then(users => {
+         console.log('👥 Active users:', users);
+
+         const usersWithStatus = users.map(user => ({
+             ...user,
+             status: 'online'
+         }));
+
+         populateUserList(usersWithStatus);
+     })
+     .catch(error => {
+         console.error('Error fetching users:', error);
+         populateUserListWithMockData();
+     });
+ }
+
+ // Display system message as temporary alert
+ function displaySystemMessage(messageData) {
+     const notification = document.createElement("div");
+     notification.className = "system-notification";
+     notification.innerHTML = `
+         <div class="notification-content">
+             <i class="fas fa-info-circle"></i>
+             <span>${messageData.msg}</span>
+         </div>
+     `;
+
+     document.body.appendChild(notification);
+
+     setTimeout(() => {
+         notification.classList.add("show");
+     }, 100);
+
+     setTimeout(() => {
+         notification.classList.remove("show");
+         setTimeout(() => {
+             if (notification.parentNode) {
+                 notification.parentNode.removeChild(notification);
+             }
+         }, 300);
+     }, 5000);
+
+     console.log("✅ System notification displayed");
+ }
+
+ // Populate user list initially
+ function populateUserList(users) {
+     const userList = document.getElementById("userList");
+     userList.innerHTML = '';
+
+     if (users.length === 0) {
+         userList.innerHTML = `
+             <div class="empty-state">
+                 <i class="fas fa-users"></i>
+                 <p>No active users found</p>
+             </div>
+         `;
+         return;
+     }
+
+     users.forEach(user => {
+         if (user.userId == userId) return;
+
+         const userItem = createUserListItem(user);
+
+         if (users.indexOf(user) === 0 && !currentlySelectedUserId) {
+             selectUser(user);
+         }
+
+         userList.appendChild(userItem);
+     });
+ }
+
+ // Set current chat user
+ function setCurrentChatUser(user) {
+     currentChatUser = user;
+     document.getElementById("currentChatName").textContent = user.userName;
+     document.getElementById("currentChatAvatar").textContent = user.userName.charAt(0).toUpperCase();
+     document.getElementById("currentChatStatus").textContent = user.status === 'online' ? 'Online' : 'Offline';
+     document.getElementById("currentChatGender").textContent = user.gender === 'FEMALE' ? 'Female' : 'Male';
+     document.getElementById("currentChatCountry").textContent = user.country || 'Unknown';
+
+     // Show chat actions and check block status
+     document.getElementById("chatActions").style.display = 'flex';
+     checkBlockStatus(user.userId);
+ }
+
+ // Load chat history for a user
+ function loadChatHistory(targetUserId) {
+     console.log('💬 Loading chat history for user:', targetUserId);
+
+     const messagesContainer = document.getElementById("messages");
+     messagesContainer.innerHTML = '<div class="no-chat">Loading messages...</div>';
+
+     fetch(`${chatApiUrl}/get-chat-history/${userId}/${targetUserId}`)
+     .then(response => {
+         if (!response.ok) {
+             throw new Error(`HTTP error! status: ${response.status}`);
+         }
+         return response.json();
+     })
+     .then(messages => {
+         console.log('📚 Chat history loaded:', messages);
+         displayChatHistory(messages, targetUserId);
+         clearMessageIndicators(targetUserId);
+     })
+     .catch(error => {
+         console.error('❌ Error loading chat history:', error);
+         messagesContainer.innerHTML = '<div class="no-chat">No messages yet. Start the conversation!</div>';
+     });
+ }
+
+ // Display chat history in the messages container
+ function displayChatHistory(messages, targetUserId) {
+     const messagesContainer = document.getElementById("messages");
+     messagesContainer.innerHTML = '';
+
+     if (messages.length === 0) {
+         messagesContainer.innerHTML = '<div class="no-chat">No messages yet. Start the conversation!</div>';
+         return;
+     }
+
+     messages.sort((a, b) => a.id - b.id);
+
+     messages.forEach(message => {
+         const messageElement = document.createElement("div");
+         const isFromYou = parseInt(message.senderId) === userId;
+         messageElement.className = isFromYou ? "message sent" : "message received";
+
+         let timeString = message.sentTime;
+
+         messageElement.innerHTML = `
+             <div class="message-bubble">${message.msg}</div>
+             <div class="message-time">${timeString}</div>
+         `;
+         messagesContainer.appendChild(messageElement);
+     });
+
+     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+     console.log(`✅ Displayed ${messages.length} messages from history in correct order`);
+ }
+
+ // Check if current chat user is blocked
+ function checkBlockStatus(targetUserId) {
+     const url = `http://localhost:1111/user/api/user/isblocked/${userId}/${targetUserId}`;
+     console.log('🔍 Checking block status with URL:', url);
+
+     fetch(url, {
+         method: "GET",
+         credentials: "include"
+     })
+     .then(response => {
+         console.log('📊 Block status response - Status:', response.status, 'OK:', response.ok);
+         if (!response.ok) {
+             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+         }
+         return response.json();
+     })
+     .then(isBlocked => {
+         console.log('✅ Block status result:', isBlocked);
+         isBlockedStatus = isBlocked;
+         updateBlockButton(isBlocked);
+
+         // Show blocked message if user is blocked
+         if (isBlocked) {
+             showBlockedMessage();
+         }
+     })
+     .catch(error => {
+         console.error('❌ Error checking block status:', error);
+         isBlockedStatus = false;
+         updateBlockButton(false);
+     });
+ }
+
+ // Block or unblock user
+ function toggleBlockUser() {
+     if (!currentlySelectedUserId) {
+         console.error('❌ No user selected to block/unblock');
+         return;
+     }
+
+     const targetUserId = currentlySelectedUserId;
+
+     console.log('🔍 Debugging block operation:');
+     console.log('  - Current userId (should be blockedBy):', userId);
+     console.log('  - Target userId (should be blockedTo):', targetUserId);
+     console.log('  - Current block status:', isBlockedStatus);
+
+     if (isBlockedStatus) {
+         // Unblock user
+         const url = `http://localhost:1111/user/api/user/unblock/${userId}/${targetUserId}`;
+         console.log('🔓 Unblocking user with URL:', url);
+
+         fetch(url, {
+             method: "POST",
+             credentials: "include"
+         })
+         .then(response => {
+             console.log('📊 Unblock response - Status:', response.status, 'OK:', response.ok);
+
+             if (response.ok) {
+                 console.log('✅ User unblocked successfully');
+                 isBlockedStatus = false;
+                 updateBlockButton(false);
+                 removeBlockedMessage();
+                 // Refresh the block status
+                 checkBlockStatus(targetUserId);
+             } else {
+                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+             }
+         })
+         .catch(error => {
+             console.error('❌ Error unblocking user:', error);
+             displaySystemMessage({
+                 msg: 'Failed to unblock user. Please try again.',
+                 type: 'system'
+             });
+         });
+     } else {
+         // Block user
+         const blockRequest = {
+             blockedTo: targetUserId,
+             blockedBy: userId
+         };
+
+         const url = `http://localhost:1111/user/api/user/block`;
+         console.log('🚫 Blocking user with URL:', url, 'Request:', blockRequest);
+
+         fetch(url, {
+             method: "POST",
+             headers: {
+                 'Content-Type': 'application/json'
+             },
+             body: JSON.stringify(blockRequest),
+             credentials: "include"
+         })
+         .then(response => {
+             console.log('📊 Block response - Status:', response.status, 'OK:', response.ok);
+
+             if (response.ok) {
+                 console.log('✅ User blocked successfully');
+                 isBlockedStatus = true;
+                 updateBlockButton(true);
+                 showBlockedMessage();
+                 // Refresh the block status
+                 checkBlockStatus(targetUserId);
+             } else {
+                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+             }
+         })
+         .catch(error => {
+             console.error('❌ Error blocking user:', error);
+             displaySystemMessage({
+                 msg: 'Failed to block user. Please try again.',
+                 type: 'system'
+             });
+         });
+     }
+ }
+
+ // Update block button appearance based on current status
+ function updateBlockButton(isBlocked) {
+     const blockBtn = document.getElementById('blockUserBtn');
+     if (!blockBtn) {
+         console.error('❌ Block button not found');
+         return;
+     }
+
+     if (isBlocked) {
+         blockBtn.classList.add('blocked');
+         blockBtn.innerHTML = '<i class="fas fa-user-check"></i><span>Unblock</span>';
+     } else {
+         blockBtn.classList.remove('blocked');
+         blockBtn.innerHTML = '<i class="fas fa-ban"></i><span>Block</span>';
+     }
+     console.log('✅ Block button updated, isBlocked:', isBlocked);
+ }
+
+ // Show blocked message in chat
+ function showBlockedMessage() {
+     const messagesContainer = document.getElementById("messages");
+     const blockedMessage = messagesContainer.querySelector('.blocked-message');
+
+     if (!blockedMessage) {
+         const messageElement = document.createElement("div");
+         messageElement.className = "blocked-message";
+         messageElement.textContent = "You have blocked this user. You won't receive messages from them.";
+         messagesContainer.appendChild(messageElement);
+     }
+ }
+
+ // Remove blocked message from chat
+ function removeBlockedMessage() {
+     const messagesContainer = document.getElementById("messages");
+     const blockedMessage = messagesContainer.querySelector('.blocked-message');
+     if (blockedMessage) {
+         blockedMessage.remove();
+     }
+ }
+
+ // Mock data fallback
+ function populateUserListWithMockData() {
+     const mockUsers = [
+         { userId: 1, userName: "John Doe", gender: "MALE", country: "USA", status: "online" },
+         { userId: 2, userName: "Jane Smith", gender: "FEMALE", country: "Canada", status: "online" }
+     ];
+     populateUserList(mockUsers);
+ }
+
+ // Event listeners
+ function setupEventListeners() {
+     document.getElementById("messageInput").addEventListener("keydown", function(e) {
+         if (e.key === "Enter" && !e.shiftKey) {
+             e.preventDefault();
+             sendMessage();
+         }
+     });
+
+     document.getElementById("logoutBtn").addEventListener("click", function() {
+         if (stompClient) stompClient.disconnect();
+         fetch(`${userApiUrl}/logout`, { method: "GET", credentials: "include" })
+         .then(() => {
+             window.location.href = "signin.html";
+         });
+     });
+
+     document.getElementById("dashboardBtn").addEventListener("click", function() {
+         window.location.href = "dashboard.html";
+     });
+
+     // Keep block button event listener
+     document.getElementById("blockUserBtn").addEventListener("click", toggleBlockUser);
+ }
+
+ // Initialize app
+ document.addEventListener('DOMContentLoaded', function() {
+     console.log('🚀 Initializing BlinkRandom...');
+
+     initializeEmojiPicker();
+
+     checkUserSession()
+         .then((userData) => {
+             console.log('🎯 User session validated:', userData);
+             console.log('🎯 User ID:', userId);
+
+             setupTabSwitching();
+             setupSearchAndFilter();
+             setupEventListeners();
+
+             return connectWebSocket();
+         })
+         .then(() => {
+             console.log('✅ WebSocket connected and subscriptions active');
+             fetchActiveUsers();
+             monitorConnection();
+             console.log('✅ BlinkRandom fully initialized');
+         })
+         .catch(error => {
+             console.error('❌ Failed to initialize BlinkRandom:', error);
+             alert('Failed to connect to chat service. Please refresh the page.');
+         });
+ });
 </script>
 </body>
 </html>

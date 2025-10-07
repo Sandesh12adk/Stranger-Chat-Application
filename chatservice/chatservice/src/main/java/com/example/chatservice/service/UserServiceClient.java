@@ -15,4 +15,6 @@ public interface UserServiceClient {
     public UserResponse findById(@PathVariable long id);
     @PostMapping("/api/user/set-status")
     public void setStatus(@RequestParam long userId, @RequestParam String status);
+    @GetMapping("api/user/isblocked/{blockedBy}/{blockedTo}")
+    public ResponseEntity<Boolean> isBlocked(@PathVariable long blockedBy, @PathVariable long blockedTo);
 }
