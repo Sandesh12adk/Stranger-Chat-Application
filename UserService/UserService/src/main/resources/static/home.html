@@ -1754,12 +1754,6 @@
  function sendMessage() {
      const msgBox = document.getElementById("messageInput");
      const msg = msgBox.value.trim();
-
-     if (!msg || !currentlySelectedUserId) {
-         alert("Please select a user and type a message!");
-         return;
-     }
-
      const receiverId = currentlySelectedUserId;
 
      const messageRequest = {

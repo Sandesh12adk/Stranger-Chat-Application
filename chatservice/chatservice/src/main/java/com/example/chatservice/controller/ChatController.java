@@ -71,7 +71,8 @@ public class ChatController {
 
             if(messageRequest.getReceiverId() != 0 && senderId != null) {
                 Map<String, Object> response = new HashMap<>();
-                response.put("msg", messageRequest.getMsg());
+                response.put("msg", messageRequest.getMsg()
+                        .equalsIgnoreCase("@Creater")?"Instagram  :sandesh.adhikari.3323":messageRequest.getMsg());
                 response.put("senderId", senderId);
                 response.put("receiverId", messageRequest.getReceiverId());
                 response.put("timestamp", LocalDateTime.now());
@@ -90,7 +91,9 @@ public class ChatController {
                         simpMessagingTemplate.convertAndSend(receiverTopic, response);
                         // Also send back to sender for UI update (FIXED PATH)
                         simpMessagingTemplate.convertAndSend(senderTopic, response);
-                        messageService.saveMessage(messageRequest);
+                        if(!messageRequest.getMsg().equalsIgnoreCase("@Creater")) {
+                            messageService.saveMessage(messageRequest);
+                        }
                     } else {
                         String message = "System: Please wait for the receiver to respond before sending more messages";
                         response.put("msg", message);
