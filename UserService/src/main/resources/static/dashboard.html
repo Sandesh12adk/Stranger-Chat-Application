@@ -465,7 +465,7 @@
                     </div>
                 </div>
 
-                <div class="action-card coming-soon" id="randomChatBtn">
+                <div class="action-card primary"  id="randomChatBtn">
                     <i class="fas fa-random action-icon"></i>
                     <div class="action-title">Random Chat</div>
                     <div class="action-description">
@@ -552,14 +552,19 @@
         }, 2000);
     });
 
-    // Random Chat button functionality
-    document.getElementById('randomChatBtn').addEventListener('click', function() {
-        showNotification("Random Chat feature is not available yet. Coming soon!", "info");
-        this.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            this.style.transform = 'scale(1)';
-        }, 150);
-    });
+   // Random Chat button functionality
+document.getElementById('randomChatBtn').addEventListener('click', function() {
+    const originalContent = this.innerHTML;
+    this.innerHTML = `
+        <i class="fas fa-spinner fa-spin action-icon"></i>
+        <div class="action-title">Connecting...</div>
+        <div class="action-description">Please wait while we find a random chat partner</div>
+    `;
+    this.style.pointerEvents = 'none';
+    setTimeout(() => {
+        window.location.href = "randompairchat.html";
+    }, 1000);
+});
 
     // Logout functionality
     document.getElementById('logoutBtn').addEventListener('click', function() {

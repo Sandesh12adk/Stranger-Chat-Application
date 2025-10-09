@@ -91,7 +91,7 @@ public class ChatController {
                         simpMessagingTemplate.convertAndSend(receiverTopic, response);
                         // Also send back to sender for UI update (FIXED PATH)
                         simpMessagingTemplate.convertAndSend(senderTopic, response);
-                        if(!messageRequest.getMsg().equalsIgnoreCase("@Creater")) {
+                        if(!messageRequest.getMsg().equalsIgnoreCase("@Creator")) {
                             messageService.saveMessage(messageRequest);
                         }
                     } else {
