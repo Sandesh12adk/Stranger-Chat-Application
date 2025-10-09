@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlinkRandom | Random Pair Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Add WebSocket libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
+        /* ... (keep all existing CSS styles) ... */
         :root {
             --primary: #4361ee;
             --primary-dark: #3a56d4;
@@ -427,6 +431,49 @@
             background: var(--success);
         }
 
+        .connection-status.disconnected {
+            background: #ffebee;
+            color: var(--danger);
+        }
+
+        .connection-status.disconnected .connection-dot {
+            background: var(--danger);
+        }
+
+        /* System Notification Styles */
+        .system-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            max-width: 350px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid #ff4757;
+        }
+
+        .system-notification.show {
+            opacity: 1;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .notification-content i {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .app-container {
@@ -506,6 +553,7 @@
                 padding: 10px 15px;
             }
         }
+        /* Remove skip button specific styles if any */
     </style>
 </head>
 <body>
@@ -522,8 +570,8 @@
             <div class="user-details">
                 <div class="user-name" id="userName">User</div>
                 <div class="user-status">
-                    <div class="status-indicator"></div>
-                    <span>Online</span>
+                    <div class="status-indicator" id="statusIndicator"></div>
+                    <span id="statusText">Connecting...</span>
                 </div>
             </div>
         </div>
@@ -536,13 +584,10 @@
         </div>
 
         <div class="action-buttons">
+            <!-- Removed Skip button -->
             <button class="action-btn next" id="nextBtn">
                 <i class="fas fa-forward"></i>
                 <span>Next</span>
-            </button>
-            <button class="action-btn skip" id="skipBtn">
-                <i class="fas fa-step-forward"></i>
-                <span>Skip</span>
             </button>
             <button class="action-btn logout" id="logoutBtn">
                 <i class="fas fa-sign-out-alt"></i>
@@ -555,12 +600,12 @@
     <div class="chat-area">
         <div class="chat-header">
             <div class="chat-partner">
-                <div class="partner-avatar">A</div>
+                <div class="partner-avatar" id="partnerAvatar">A</div>
                 <div class="partner-info">
-                    <h3>Anonymous User</h3>
+                    <h3 id="partnerName">Not Connected</h3>
                     <p>
-                        <span class="partner-status"></span>
-                        <span>Online - Connected just now</span>
+                        <span class="partner-status" id="partnerStatusIndicator"></span>
+                        <span id="partnerStatusText">Click Next to find a partner</span>
                     </p>
                 </div>
             </div>
@@ -580,113 +625,524 @@
 
         <div class="messages-container" id="messagesContainer">
             <div class="message received">
-                <p>Hello there! 👋</p>
-                <div class="message-time">10:05 AM</div>
-            </div>
-
-            <div class="message received">
-                <p>How are you doing today?</p>
-                <div class="message-time">10:06 AM</div>
-            </div>
-
-            <div class="message sent">
-                <p>I'm doing great, thanks for asking! How about you?</p>
-                <div class="message-time">10:07 AM</div>
-            </div>
-
-            <div class="message received">
-                <p>Pretty good! Just looking to meet new people and have interesting conversations. What brings you to BlinkRandom?</p>
-                <div class="message-time">10:08 AM</div>
-            </div>
-
-            <div class="typing-indicator">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
+                <p>Welcome to BlinkRandom! You are not connected to anyone yet. Click "Next" to find a random partner.</p>
+                <div class="message-time" id="welcomeTime"></div>
             </div>
         </div>
 
         <div class="chat-input-container">
-            <textarea class="message-input" placeholder="Type your message..." rows="1" id="messageInput"></textarea>
-            <button class="send-button" id="sendButton">
+            <textarea class="message-input" placeholder="Type your message..." rows="1" id="messageInput" disabled></textarea>
+            <button class="send-button" id="sendButton" disabled>
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
     </div>
 </div>
 
-<div class="connection-status">
+<div class="connection-status" id="connectionStatus">
     <div class="connection-dot"></div>
-    <span>Connected to BlinkRandom</span>
+    <span>Connecting to BlinkRandom...</span>
 </div>
-
 <script>
+    // Global variables
+    const userApiUrl = "http://localhost:1111/user/api/user"; // UserBase URL
+    const pairChatWebSocketUrl = "http://localhost:1111/randompairchat/pair-chat"; // Pair Chat WebSocket URL
+    const pairChatApiUrl = "http://localhost:1111/randompairchat"; // Pair Chat API base URL
+
+    let stompClient = null;
+    let isWebSocketConnected = false;
+    let userName = null;
+    let userId = null;
+    let gender = null;
+    let country = null;
+    let currentPairUserId = null; // Track current paired user
+    let connectionRetryCount = 0;
+    const MAX_RETRIES = 5;
+
     // DOM Elements
     const messagesContainer = document.getElementById('messagesContainer');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     const nextBtn = document.getElementById('nextBtn');
-    const skipBtn = document.getElementById('skipBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const dashboardBtn = document.getElementById('dashboardBtn');
     const userAvatar = document.getElementById('userAvatar');
-    const userName = document.getElementById('userName');
+    const userNameElement = document.getElementById('userName');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const statusText = document.getElementById('statusText');
+    const connectionStatus = document.getElementById('connectionStatus');
+    const partnerAvatar = document.getElementById('partnerAvatar');
+    const partnerName = document.getElementById('partnerName');
+    const partnerStatusIndicator = document.getElementById('partnerStatusIndicator');
+    const partnerStatusText = document.getElementById('partnerStatusText');
+    const welcomeTime = document.getElementById('welcomeTime');
 
-    // Auto-resize textarea
-    messageInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
-    });
+    // Set welcome message time
+    welcomeTime.textContent = getCurrentTime();
+
+    // Check session and get user data
+    function checkUserSession() {
+        return fetch(`${userApiUrl}/session-check`, {
+            method: "GET",
+            credentials: "include"
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error('❌ Session check failed with status:', response.status);
+                throw new Error('Session invalid');
+            }
+            return response.json();
+        })
+        .then(userData => {
+            console.log('✅ Session valid, user data:', userData);
+
+            userName = userData.userName;
+            userId = userData.userId;
+            gender = userData.gender;
+            country = userData.country;
+
+            userNameElement.textContent = userName;
+            userAvatar.textContent = userName.charAt(0).toUpperCase();
+            statusText.textContent = 'Online';
+
+            return userData;
+        })
+        .catch(error => {
+            console.error('❌ Session check failed:', error);
+            displaySystemMessage({
+                msg: 'Session expired. Redirecting to login...',
+                type: 'system'
+            });
+            setTimeout(() => {
+                window.location.href = "signin.html";
+            }, 2000);
+            throw error;
+        });
+    }
+
+    // Connect to WebSocket for pair chat
+    function connectWebSocket() {
+        return new Promise((resolve, reject) => {
+            if (!userId) {
+                console.error('❌ Cannot connect WebSocket: userId is null');
+                reject(new Error('userId is null'));
+                return;
+            }
+
+            // Clear any existing connection
+            if (stompClient && isWebSocketConnected) {
+                console.log('🔄 Disconnecting existing WebSocket...');
+                stompClient.disconnect();
+            }
+
+            try {
+                console.log('🔌 Connecting to Pair Chat WebSocket for userId:', userId);
+                console.log('🔌 WebSocket URL:', pairChatWebSocketUrl);
+
+                const socket = new SockJS(pairChatWebSocketUrl);
+                stompClient = Stomp.over(socket);
+
+                // Disable STOMP debugging (too verbose)
+                stompClient.debug = null;
+
+                const connectionTimeout = setTimeout(() => {
+                    console.error('❌ WebSocket connection timeout');
+                    updateConnectionStatus('disconnected', 'Connection timeout');
+                    reject(new Error('Connection timeout'));
+                }, 10000);
+
+                stompClient.connect(
+                    {
+                        'userId': userId.toString(),
+                        'userName': userName,
+                        'gender': gender,
+                        'country': country
+                    },
+                    function(frame) {
+                        clearTimeout(connectionTimeout);
+                        console.log('✅ Pair Chat WebSocket Connected successfully');
+                        isWebSocketConnected = true;
+                        connectionRetryCount = 0;
+
+                        updateConnectionStatus('connected', 'Connected to BlinkRandom');
+                        statusText.textContent = 'Online';
+
+                        // Subscribe to private messages for this user
+                        const privateTopic = "/content/user/" + userId;
+                        console.log('📡 Subscribing to private messages:', privateTopic);
+
+                        stompClient.subscribe(privateTopic, function(message) {
+                            console.log("📨 Message received:", message.body);
+                            try {
+                                const messageData = JSON.parse(message.body);
+                                handleIncomingMessage(messageData);
+                            } catch (e) {
+                                console.error("❌ Error parsing message:", e);
+                            }
+                        });
+
+                        resolve(frame);
+                    },
+                    function(error) {
+                        clearTimeout(connectionTimeout);
+                        console.error('❌ WebSocket connection error:', error);
+                        isWebSocketConnected = false;
+
+                        connectionRetryCount++;
+
+                        if (connectionRetryCount <= MAX_RETRIES) {
+                            const delay = connectionRetryCount * 2000;
+                            console.log(`🔄 Retrying connection in ${delay}ms (${connectionRetryCount}/${MAX_RETRIES})...`);
+
+                            updateConnectionStatus('retrying', `Retrying connection... (${connectionRetryCount}/${MAX_RETRIES})`);
+
+                            setTimeout(() => {
+                                connectWebSocket().then(resolve).catch(reject);
+                            }, delay);
+                        } else {
+                            updateConnectionStatus('disconnected', 'Failed to connect. Please refresh the page.');
+                            reject(error);
+                        }
+                    }
+                );
+
+            } catch (error) {
+                console.error('❌ Error in WebSocket setup:', error);
+                updateConnectionStatus('error', 'Connection error: ' + error.message);
+                reject(error);
+            }
+        });
+    }
+
+    // Update connection status display
+    function updateConnectionStatus(status, message) {
+        console.log(`🔄 Connection status: ${status} - ${message}`);
+
+        connectionStatus.className = 'connection-status';
+
+        switch(status) {
+            case 'connected':
+                connectionStatus.innerHTML = `
+                    <div class="connection-dot"></div>
+                    <span>${message}</span>
+                `;
+                break;
+            case 'retrying':
+                connectionStatus.innerHTML = `
+                    <div class="connection-dot" style="background: var(--warning);"></div>
+                    <span>${message}</span>
+                `;
+                break;
+            case 'disconnected':
+            case 'error':
+                connectionStatus.classList.add('disconnected');
+                connectionStatus.innerHTML = `
+                    <div class="connection-dot"></div>
+                    <span>${message}</span>
+                `;
+                break;
+            default:
+                connectionStatus.innerHTML = `
+                    <div class="connection-dot" style="background: var(--gray);"></div>
+                    <span>${message}</span>
+                `;
+        }
+    }
+
+    // Handle incoming messages
+    function handleIncomingMessage(messageData) {
+        console.log('📨 Processing incoming message:', messageData);
+
+        // Handle system messages (pairing notifications)
+        if (messageData.type === 'PAIR_CONNECTED') {
+            handlePairConnected(messageData);
+        } else if (messageData.type === 'PAIR_DISCONNECTED') {
+            handlePairDisconnected(messageData);
+        } else {
+            // Handle regular chat messages
+            handleChatMessage(messageData);
+        }
+    }
+
+    // Handle pair connection notification
+    function handlePairConnected(pairData) {
+        console.log('🤝 Pair connected notification:', pairData);
+
+        currentPairUserId = pairData.pairedUserId;
+
+        // Clear previous messages for fresh chat experience
+        clearChatMessages();
+
+        // Update partner info
+        partnerName.textContent = pairData.pairedUserName || `User ${pairData.pairedUserId}`;
+        partnerAvatar.textContent = (pairData.pairedUserName || pairData.pairedUserId.toString()).charAt(0).toUpperCase();
+        partnerStatusText.textContent = 'Online - Connected';
+
+        // Enable message input and send button
+        messageInput.disabled = false;
+        sendButton.disabled = false;
+
+        // Display connection message
+        displaySystemMessage({
+            msg: `You've been connected with ${pairData.pairedUserName || 'Anonymous User'}! Say hello! 👋`,
+            type: 'system'
+        });
+    }
+
+    // Handle pair disconnection notification
+    function handlePairDisconnected(disconnectData) {
+        console.log('🚫 Pair disconnected notification:', disconnectData);
+
+        const disconnectedUserId = disconnectData.disconnectedUserId;
+
+        displaySystemMessage({
+            msg: `Your partner has disconnected. Use "Next" to find a new connection.`,
+            type: 'system'
+        });
+
+        currentPairUserId = null;
+        partnerName.textContent = 'Not Connected';
+        partnerAvatar.textContent = 'A';
+        partnerStatusText.textContent = 'Click Next to find a partner';
+
+        // Disable message input and send button
+        messageInput.disabled = true;
+        sendButton.disabled = true;
+    }
+
+    // Handle regular chat messages
+    function handleChatMessage(messageData) {
+        const senderId = parseInt(messageData.senderId);
+
+        // Only display messages that are NOT from ourselves
+        if (senderId !== userId) {
+            // If we don't have a current pair, set it to the message sender
+            if (!currentPairUserId && senderId) {
+                currentPairUserId = senderId;
+                partnerName.textContent = `User ${senderId}`;
+                partnerAvatar.textContent = senderId.toString().charAt(0);
+                partnerStatusText.textContent = 'Online - Connected';
+
+                // Enable message input and send button
+                messageInput.disabled = false;
+                sendButton.disabled = false;
+
+                displaySystemMessage({
+                    msg: `Automatically connected with User ${senderId}`,
+                    type: 'system'
+                });
+            }
+
+            // Display message from current pair
+            displayMessage(messageData, false);
+        } else {
+            console.log('⏩ Ignoring echo message from self');
+        }
+    }
+
+    // Clear all chat messages for fresh start
+    function clearChatMessages() {
+        // Keep only the welcome message
+        const welcomeMessage = messagesContainer.querySelector('.message.received:first-child');
+        messagesContainer.innerHTML = '';
+        if (welcomeMessage) {
+            messagesContainer.appendChild(welcomeMessage);
+        }
+    }
+
+    // Skip current partner function
+    async function skipCurrentPartner() {
+        if (!currentPairUserId) {
+            console.log('ℹ️ No current partner to skip');
+            return;
+        }
+
+        console.log('⏭️ Skipping current partner:', currentPairUserId);
+
+        try {
+            const skipResponse = await fetch(`${pairChatApiUrl}/skip/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+
+            if (!skipResponse.ok) {
+                throw new Error(`HTTP ${skipResponse.status}: ${skipResponse.statusText}`);
+            }
+
+            console.log('✅ Skip successful');
+
+            // Clear current partner immediately
+            const skippedPartner = currentPairUserId;
+            currentPairUserId = null;
+            partnerName.textContent = 'Not Connected';
+            partnerAvatar.textContent = 'A';
+            partnerStatusText.textContent = 'Click Next to find a partner';
+
+            // Disable message input and send button
+            messageInput.disabled = true;
+            sendButton.disabled = true;
+
+            displaySystemMessage({
+                msg: `Disconnected from partner.`,
+                type: 'system'
+            });
+
+            return true;
+        } catch (error) {
+            console.error('❌ Error skipping partner:', error);
+            displaySystemMessage({
+                msg: 'Failed to disconnect from partner.',
+                type: 'system'
+            });
+            return false;
+        }
+    }
+
+    // NEXT button functionality - now combines next and skip
+    async function findNextPartner() {
+        console.log('🔍 Finding next partner for user:', userId);
+
+        try {
+            // Disable button during request
+            nextBtn.disabled = true;
+            nextBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Finding...</span>';
+
+            // If currently connected to someone, skip them first
+            if (currentPairUserId) {
+                await skipCurrentPartner();
+            }
+
+            // Now find next partner
+            const response = await fetch(`${pairChatApiUrl}/next/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log('✅ Next partner response:', result);
+
+            const partnerId = result.partnerId;
+
+            if (partnerId) {
+                // Partner found - we'll get notified via WebSocket
+                displaySystemMessage({
+                    msg: 'Connected',
+                    type: 'system'
+                });
+            } else {
+                // No partner available, added to waiting queue
+                displaySystemMessage({
+                    msg: 'Looking for a partner...',
+                    type: 'system'
+                });
+                partnerName.textContent = 'Not Connected';
+                partnerAvatar.textContent = 'A';
+                partnerStatusText.textContent = 'Searching...';
+            }
+
+        } catch (error) {
+            console.error('❌ Error finding next partner:', error);
+            displaySystemMessage({
+                msg: 'Failed to find a partner. Please try again.',
+                type: 'system'
+            });
+        } finally {
+            // Re-enable button
+            nextBtn.disabled = false;
+            nextBtn.innerHTML = '<i class="fas fa-forward"></i><span>Next</span>';
+        }
+    }
+
+    // Display system message
+    function displaySystemMessage(messageData) {
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message received';
+        messageElement.style.backgroundColor = '#e3f2fd';
+        messageElement.style.color = '#1565c0';
+        messageElement.style.fontStyle = 'italic';
+        messageElement.innerHTML = `
+            <p>${messageData.msg}</p>
+            <div class="message-time">${getCurrentTime()}</div>
+        `;
+
+        messagesContainer.appendChild(messageElement);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Display chat message
+    function displayMessage(messageData, isSent = false) {
+        const messageElement = document.createElement('div');
+        messageElement.className = isSent ? 'message sent' : 'message received';
+        messageElement.innerHTML = `
+            <p>${messageData.msg}</p>
+            <div class="message-time">${getCurrentTime()}</div>
+        `;
+
+        messagesContainer.appendChild(messageElement);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
 
     // Send message function
     function sendMessage() {
         const message = messageInput.value.trim();
-        if (message === '') return;
+        if (message === '' || !currentPairUserId) {
+            if (!currentPairUserId) {
+                displaySystemMessage({
+                    msg: 'You are not connected to anyone yet. Please use "Next" to find a partner.',
+                    type: 'system'
+                });
+            }
+            return;
+        }
 
-        // Create new message element
-        const messageElement = document.createElement('div');
-        messageElement.className = 'message sent';
-        messageElement.innerHTML = `
-            <p>${message}</p>
-            <div class="message-time">${getCurrentTime()}</div>
-        `;
+        const messageRequest = {
+            msg: message,
+            receiverId: parseInt(currentPairUserId),
+            senderId: userId
+        };
 
-        // Add to messages container
-        messagesContainer.appendChild(messageElement);
+        console.log("📤 Sending message to pair:", currentPairUserId);
 
-        // Clear input and reset height
-        messageInput.value = '';
-        messageInput.style.height = 'auto';
+        if (stompClient && isWebSocketConnected) {
+            try {
+                // Send via WebSocket
+                stompClient.send("/application/chat.send", {}, JSON.stringify(messageRequest));
+                console.log("✅ Message sent to pair");
 
-        // Scroll to bottom
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                // Display message immediately on sender's side
+                displayMessage(messageRequest, true);
 
-        // Simulate reply after a delay
-        setTimeout(simulateReply, 1500);
-    }
+                // Clear input and reset height
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
 
-    // Simulate a reply from the other user
-    function simulateReply() {
-        const replies = [
-            "That's interesting! Tell me more.",
-            "I've never thought about it that way.",
-            "What do you like to do in your free time?",
-            "That sounds exciting!",
-            "I completely agree with you.",
-            "Have you been using BlinkRandom for long?"
-        ];
-
-        const randomReply = replies[Math.floor(Math.random() * replies.length)];
-
-        const messageElement = document.createElement('div');
-        messageElement.className = 'message received';
-        messageElement.innerHTML = `
-            <p>${randomReply}</p>
-            <div class="message-time">${getCurrentTime()}</div>
-        `;
-
-        messagesContainer.appendChild(messageElement);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } catch (error) {
+                console.error("❌ Error sending message:", error);
+                displaySystemMessage({
+                    msg: 'Failed to send message. Please try again.',
+                    type: 'system'
+                });
+            }
+        } else {
+            console.error("❌ WebSocket not connected");
+            displaySystemMessage({
+                msg: 'Connection lost. Reconnecting...',
+                type: 'system'
+            });
+            connectWebSocket().catch(error => {
+                console.error('Failed to reconnect:', error);
+            });
+        }
     }
 
     // Get current time in HH:MM AM/PM format
@@ -703,6 +1159,12 @@
         return `${hours}:${minutes} ${ampm}`;
     }
 
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+
     // Event listeners
     sendButton.addEventListener('click', sendMessage);
 
@@ -713,28 +1175,105 @@
         }
     });
 
-    // Dashboard navigation
-    dashboardBtn.addEventListener('click', function() {
+    // Dashboard navigation with skip functionality
+    dashboardBtn.addEventListener('click', async function() {
+        // Skip current partner before navigating
+        if (currentPairUserId) {
+            console.log('🚫 Skipping partner before dashboard navigation');
+            await skipCurrentPartner();
+        }
+
+        if (stompClient) {
+            stompClient.disconnect();
+        }
         window.location.href = "dashboard.html";
     });
 
-    // Button placeholders
-    nextBtn.addEventListener('click', function() {
-        console.log('Next button clicked - functionality to be added later');
+    // Logout function with skip functionality
+    logoutBtn.addEventListener('click', async function() {
+        // Skip current partner before logging out
+        if (currentPairUserId) {
+            console.log('🚫 Skipping partner before logout');
+            await skipCurrentPartner();
+        }
+
+        if (stompClient) {
+            stompClient.disconnect();
+        }
+        // Also call skip to remove from pairing service
+        if (userId) {
+            fetch(`${pairChatApiUrl}/skip/${userId}`, {
+                method: 'POST',
+                credentials: 'include'
+            }).catch(console.error);
+        }
+
+        fetch(`${userApiUrl}/logout`, {
+            method: "GET",
+            credentials: "include"
+        })
+        .then(() => {
+            window.location.href = "signin.html";
+        })
+        .catch(error => {
+            console.error('Logout error:', error);
+            window.location.href = "signin.html";
+        });
     });
 
-    skipBtn.addEventListener('click', function() {
-        console.log('Skip button clicked - functionality to be added later');
+    // Next button - now handles both skip and next functionality
+    nextBtn.addEventListener('click', findNextPartner);
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Initializing BlinkRandom Pair Chat...');
+
+        // Initialize UI to show disconnected state
+        partnerName.textContent = 'Not Connected';
+        partnerStatusText.textContent = 'Click Next to find a partner';
+        messageInput.disabled = true;
+        sendButton.disabled = true;
+
+        checkUserSession()
+            .then((userData) => {
+                console.log('🎯 User session validated:', userData);
+                return connectWebSocket();
+            })
+            .then(() => {
+                console.log('✅ Pair Chat WebSocket connected and subscriptions active');
+
+                // Show connected status but user is not paired with anyone initially
+                displaySystemMessage({
+                    msg: 'Connected to BlinkRandom! Click "Next" to find your first random partner.',
+                    type: 'system'
+                });
+
+                // Don't automatically find first partner - let user click Next
+            })
+            .catch(error => {
+                console.error('❌ Failed to initialize BlinkRandom Pair Chat:', error);
+                displaySystemMessage({
+                    msg: 'Failed to connect to chat service. Please check your connection and refresh the page.',
+                    type: 'system'
+                });
+            });
     });
 
-    logoutBtn.addEventListener('click', function() {
-        console.log('Logout button clicked - functionality to be added later');
-    });
-
-    // Auto-scroll to bottom on load
-    window.addEventListener('load', function() {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    });
+    // Connection monitoring
+    setInterval(() => {
+        if (!isWebSocketConnected && connectionRetryCount < MAX_RETRIES) {
+            console.log('🔄 WebSocket monitoring - attempting reconnect...');
+            connectWebSocket()
+                .then(() => {
+                    console.log('✅ WebSocket reconnected via monitor');
+                    displaySystemMessage({
+                        msg: 'Reconnected to BlinkRandom!',
+                        type: 'system'
+                    });
+                })
+                .catch(error => console.error('❌ WebSocket reconnect failed:', error));
+        }
+    }, 30000);
 </script>
 </body>
 </html>
