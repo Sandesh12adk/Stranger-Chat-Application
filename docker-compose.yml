@@ -1,0 +1,126 @@
+services:
+  # ----------------------------
+  # Config Server
+  # ----------------------------
+  configserver:
+    image: sandesh921/configserver:v1.0
+    container_name: configserver_container
+    ports:
+      - "8888:8888"
+    networks:
+      - BlinkRandom_Network
+
+  # ----------------------------
+  # Eureka Server
+  # ----------------------------
+  eurekaserver:
+    image: sandesh921/eurekaserver:v1.0
+    container_name: eurekaserver_container
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=false
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=10
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=2000
+    depends_on:
+      configserver:
+        condition: service_started
+    networks:
+      - BlinkRandom_Network
+
+  # ----------------------------
+  # Gateway Server
+  # ----------------------------
+  gatewayserver:
+    image: sandesh921/gatewayserver:v1.0
+    container_name: gatewayserver_container
+    ports:
+      - "1111:1111"
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
+    depends_on:
+      configserver:
+        condition: service_started
+      eurekaserver:
+        condition: service_started
+    networks:
+      - BlinkRandom_Network
+
+  # ----------------------------
+  # User Service
+  # ----------------------------
+  userservice:
+    image: sandesh921/userservice:v1.0
+    container_name: userservice_container
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/chattingappproject
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=san123@M
+    depends_on:
+      configserver:
+        condition: service_started
+      eurekaserver:
+        condition: service_started
+      gatewayserver:
+        condition: service_started
+      mysqldb:
+        condition: service_started
+    networks:
+      - BlinkRandom_Network
+
+  # ----------------------------
+  # Chat Service
+  # ----------------------------
+  chatservice:
+    image: sandesh921/chatservice:v1.0
+    container_name: chatservice_container
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/chattingappproject
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=san123@M
+    depends_on:
+      configserver:
+        condition: service_started
+      eurekaserver:
+        condition: service_started
+      gatewayserver:
+        condition: service_started
+      mysqldb:
+        condition: service_started
+    networks:
+      - BlinkRandom_Network
+
+  # ----------------------------
+  # MySQL Database
+  # ----------------------------
+  mysqldb:
+    image: mysql:8
+    container_name: mysqldb_container
+    environment:
+      - MYSQL_ROOT_PASSWORD=san123@M
+      - MYSQL_DATABASE=chattingappproject
+    ports:
+      - "3307:3307"
+    networks:
+      - BlinkRandom_Network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+
+# ----------------------------
+# Networks
+# ----------------------------
+networks:
+  BlinkRandom_Network:
+    driver: bridge

@@ -11,6 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>chatservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>chatservice</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -124,6 +125,28 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.0</version>
+				<configuration>
+					<from>
+						<image>eclipse-temurin:17-jdk</image>
+					</from>
+					<to>
+						<image>sandesh921/chatservice:v1.0</image>
+					</to>
+					<container>
+						<ports>
+							<port>8081</port>
+						</ports>
+						<environment>
+							<SPRING_PROFILES_ACTIVE>docker</SPRING_PROFILES_ACTIVE>
+						</environment>
+					</container>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
