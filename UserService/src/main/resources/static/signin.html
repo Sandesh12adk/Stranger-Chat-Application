@@ -342,6 +342,37 @@
             text-decoration: underline;
         }
 
+        /* Legal Links Section */
+        .legal-links {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .legal-link {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: clamp(0.7rem, 2vw, 0.75rem);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legal-link:hover {
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .legal-link i {
+            font-size: 0.7rem;
+        }
+
         .notification {
             position: fixed;
             top: 20px;
@@ -491,6 +522,14 @@
             .gender-options {
                 flex-direction: column;
             }
+
+            .legal-links {
+                gap: 10px;
+            }
+
+            .legal-link {
+                font-size: 0.7rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -542,6 +581,16 @@
             .modal-content {
                 padding: 20px;
             }
+
+            .legal-links {
+                flex-direction: column;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .legal-link {
+                font-size: 0.75rem;
+            }
         }
 
         @media (max-width: 360px) {
@@ -564,6 +613,14 @@
             button {
                 padding: 12px;
             }
+
+            .legal-links {
+                gap: 6px;
+            }
+
+            .legal-link {
+                font-size: 0.7rem;
+            }
         }
 
         /* Extra small devices */
@@ -582,6 +639,14 @@
 
             .feature i {
                 margin-right: 0;
+            }
+
+            .legal-links {
+                gap: 4px;
+            }
+
+            .legal-link {
+                font-size: 0.65rem;
             }
         }
 
@@ -707,59 +772,31 @@
             </form>
 
             <div class="footer">
-                <p>By entering the chat, you agree to our <a id="termsLink">Terms and Conditions</a></p>
+                <p>By entering the chat, you agree to our <a href="terms_and_conditions.html" id="termsLink">Terms and Conditions</a></p>
+
+
+                <!-- Legal Links Section -->
+                <div class="legal-links">
+                    <a href="privacy_policy.html" class="legal-link">
+                        <i class="fas fa-shield-alt"></i> Privacy Policy
+                    </a>
+                    <a href="terms_and_conditions.html" class="legal-link">
+                        <i class="fas fa-file-contract"></i> Terms & Conditions
+                    </a>
+                    <a href="about_us.html" class="legal-link">
+                        <i class="fas fa-info-circle"></i> About Us
+                    </a>
+                    <a href="disclaimer.html" class="legal-link">
+                        <i class="fas fa-exclamation-triangle"></i> Disclaimer
+                    </a>
+                    <a href="frequently_asked_questions.html" class="legal-link">
+                        <i class="fas fa-question-circle"></i> FAQ
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Terms and Conditions Modal -->
-<div class="modal" id="termsModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>BlinkRandom Terms and Conditions</h2>
-            <button class="close-modal">&times;</button>
-        </div>
-        <div class="modal-body">
-            <h3>1. Acceptance of Terms</h3>
-            <p>By accessing and using BlinkRandom, you accept and agree to be bound by the terms and provision of this agreement.</p>
-
-            <h3>2. Use of Service</h3>
-            <p>BlinkRandom provides a platform for users to communicate with each other. You agree to use the service responsibly and in accordance with all applicable laws.</p>
-
-            <h3>3. User Conduct</h3>
-            <p>You agree not to use the service to:</p>
-            <ul>
-                <li>Post any content that is unlawful, harmful, threatening, abusive, harassing, defamatory, or otherwise objectionable</li>
-                <li>Impersonate any person or entity</li>
-                <li>Harass or intimidate other users</li>
-                <li>Share personal information of yourself or others</li>
-                <li>Engage in any activity that could harm the service or its users</li>
-            </ul>
-
-            <h3>4. Privacy</h3>
-            <p>Your privacy is important to us. We collect only minimal information necessary to provide the service and do not share your personal data with third parties without your consent.</p>
-
-            <h3>5. Age Requirement</h3>
-            <p>You must be at least 13 years old to use BlinkRandom. Users between 13-18 should use the service under parental guidance.</p>
-
-            <h3>6. Content</h3>
-            <p>You are solely responsible for the content you post on BlinkRandom. We reserve the right to remove any content that violates these terms.</p>
-
-            <h3>7. Termination</h3>
-            <p>We may terminate or suspend your access to BlinkRandom immediately, without prior notice, for conduct that we believe violates these Terms.</p>
-
-            <h3>8. Changes to Terms</h3>
-            <p>We reserve the right to modify these terms at any time. We will notify users of any material changes via the application.</p>
-
-            <h3>9. Contact</h3>
-            <p>If you have any questions about these Terms, please contact us at support@BlinkRandom.com.</p>
-
-            <p style="margin-top: 20px; font-style: italic;">Last updated: January 2023</p>
-        </div>
-    </div>
-</div>
-
 <div class="notification" id="notification">
     <i class="fas fa-exclamation-circle"></i>
     <span id="notificationText">This is a notification</span>

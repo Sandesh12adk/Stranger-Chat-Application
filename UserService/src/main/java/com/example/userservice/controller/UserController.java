@@ -1,10 +1,8 @@
 package com.example.userservice.controller;
 
-import com.example.userservice.dto.BlockedUserRequest;
-import com.example.userservice.dto.BlockedUserResponse;
-import com.example.userservice.dto.UserRequest;
-import com.example.userservice.dto.UserResponse;
+import com.example.userservice.dto.*;
 import com.example.userservice.service.BlockedUserService;
+import com.example.userservice.service.ContactService;
 import com.example.userservice.service.GeoService;
 import com.example.userservice.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +24,8 @@ public class UserController {
     private final UserService userService;
     @Autowired
     private BlockedUserService blockedUserService;
+    @Autowired
+    private ContactService contactService;
     @Autowired
     public UserController(UserService userService){
         this.userService=userService;
@@ -90,5 +90,9 @@ public class UserController {
     public ResponseEntity<String> block(@PathVariable long blockedBy, @PathVariable long blockedTo){
         blockedUserService.unBlock(blockedBy,blockedTo);
         return ResponseEntity.ok("Unblocked"+ blockedTo +"by"+ blockedBy);
+    }
+    @PostMapping("/contact")
+    public ResponseEntity<ContactResponse> contact(@Valid @RequestBody ContactRequest contactRequest){
+        return ResponseEntity.ok(contactService.save(contactRequest));
     }
 }

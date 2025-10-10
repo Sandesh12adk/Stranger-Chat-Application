@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - BlinkRandom</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: white;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    header {
+        background: linear-gradient(135deg, #4361ee 0%, #7209b7 100%);
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .logo i {
+        font-size: 2rem;
+    }
+
+    .logo h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        color: #4361ee;
+        margin: 30px 0 15px 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .faq-item {
+        margin: 20px 0;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .faq-question {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .faq-question:hover {
+        background: #e9ecef;
+    }
+
+    .faq-question i {
+        transition: transform 0.3s ease;
+    }
+
+    .faq-answer {
+        padding: 0 20px;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .faq-item.active .faq-answer {
+        padding: 20px;
+        max-height: 500px;
+    }
+
+    .faq-item.active .faq-question i {
+        transform: rotate(180deg);
+    }
+
+    .search-box {
+        margin: 20px 0;
+        position: relative;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 12px 45px 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    .search-box input:focus {
+        outline: none;
+        border-color: #4361ee;
+    }
+
+    .search-box i {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+    }
+
+    .category-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    .category-btn {
+        background: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .category-btn.active {
+        background: #4361ee;
+        color: white;
+        border-color: #4361ee;
+    }
+
+    .contact-support {
+        background: #e3f2fd;
+        padding: 25px;
+        border-radius: 10px;
+        margin: 30px 0;
+        text-align: center;
+    }
+
+    .back-button {
+        cursor: pointer;
+        display: inline-block;
+        background: linear-gradient(135deg, #4361ee 0%, #7209b7 100%);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .back-button:hover {
+        transform: translateY(-2px);
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: #666;
+        border-top: 1px solid #eee;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            margin: 10px;
+            padding: 15px;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .category-buttons {
+            justify-content: center;
+        }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">
+      <i class="fas fa-comments"></i>
+      <h1>BlinkRandom</h1>
+    </div>
+    <h1>Frequently Asked Questions</h1>
+  </header>
+
+  <div class="search-box">
+    <input type="text" id="faqSearch" placeholder="Search for questions...">
+    <i class="fas fa-search"></i>
+  </div>
+
+  <div class="category-buttons">
+    <button class="category-btn active" data-category="all">All Questions</button>
+    <button class="category-btn" data-category="getting-started">Getting Started</button>
+    <button class="category-btn" data-category="safety">Safety & Privacy</button>
+    <button class="category-btn" data-category="technical">Technical Issues</button>
+    <button class="category-btn" data-category="account">Account Management</button>
+  </div>
+
+  <section>
+    <h2>Getting Started</h2>
+
+    <div class="faq-item" data-category="getting-started">
+      <div class="faq-question">
+        <span>What is BlinkRandom and how does it work?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>BlinkRandom is a random chat platform that connects you with people from around the world for real-time conversations. When you join, our system matches you with another online user based on your preferences. You can chat via text and enjoy meeting new people in a safe, moderated environment.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="getting-started">
+      <div class="faq-question">
+        <span>Is BlinkRandom free to use?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>Yes! BlinkRandom is completely free to use. You can create an account, chat with random users, and access all basic features without any cost.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="getting-started">
+      <div class="faq-question">
+        <span>What are the age requirements to use BlinkRandom?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>You must be at least 18 years old to use BlinkRandom. We strictly enforce this age policy to ensure a safe environment for all users.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Safety & Privacy</h2>
+
+    <div class="faq-item" data-category="safety">
+      <div class="faq-question">
+        <span>How do you ensure user safety on the platform?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>We take safety seriously with multiple layers of protection:</p>
+        <ul>
+          <li>Automated content moderation systems</li>
+          <li>User reporting and blocking features</li>
+          <li>Community guidelines enforcement</li>
+          <li>Age verification processes</li>
+          <li>Privacy controls and data protection</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="safety">
+      <div class="faq-question">
+        <span>What should I do if I encounter inappropriate behavior?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>If you encounter any inappropriate behavior:</p>
+        <ol>
+          <li>Use the "Block" button to immediately stop communication</li>
+          <li>Contact us with the username at privacy@blinkrandom.com</li>
+          <li>We will investigate and take appropriate action</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="safety">
+      <div class="faq-question">
+        <span>What personal information should I never share?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>For your safety, never share:</p>
+        <ul>
+          <li>Full name and address</li>
+          <li>Phone number</li>
+          <li>Email address</li>
+          <li>Financial information</li>
+          <li>Social security or ID numbers</li>
+          <li>Passwords</li>
+          <li>Specific location details</li>
+        </ul>
+        <p>Remember: genuine connections don't require sharing sensitive personal information.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="safety">
+      <div class="faq-question">
+        <span>How is my data protected and stored?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>We protect your data through:</p>
+        <ul>
+          <li>All data is encrypted in transit and at rest</li>
+          <li>Secure server infrastructure</li>
+          <li>Limited data retention periods</li>
+          <li>Strict access controls</li>
+          <li>Regular security audits</li>
+        </ul>
+        <p>All chat messages and user data are fully encrypted for your privacy and security.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Technical Issues</h2>
+
+    <div class="faq-item" data-category="technical">
+      <div class="faq-question">
+        <span>Why can't I connect to any users?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>Connection issues can be caused by:</p>
+        <ul>
+          <li>Poor internet connection</li>
+          <li>Server maintenance</li>
+          <li>Firewall or network restrictions</li>
+          <li>Temporary service disruptions</li>
+        </ul>
+        <p>Try refreshing the page, checking your connection, or trying again later.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="technical">
+      <div class="faq-question">
+        <span>The chat is lagging or messages are delayed. What should I do?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>If you're experiencing lag or delays:</p>
+        <ol>
+          <li>Check your internet connection speed</li>
+          <li>Close other bandwidth-intensive applications</li>
+          <li>Refresh the chat page</li>
+          <li>Clear your browser cache and cookies</li>
+          <li>Try using a different browser</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="technical">
+      <div class="faq-question">
+        <span>I'm having trouble creating an account. What could be wrong?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>Common registration issues include:</p>
+        <ul>
+          <li>Age verification failure (must be 18+)</li>
+          <li>Browser compatibility issues</li>
+          <li>Temporary server problems</li>
+        </ul>
+        <p>Ensure all fields are filled correctly and try again.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Account Management</h2>
+
+    <div class="faq-item" data-category="account">
+      <div class="faq-question">
+        <span>How can I change my username or profile information?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>We only collect age and gender during registration for privacy reasons. Profile changes are not available as we focus on anonymous, temporary connections. Each session is designed to be a fresh experience.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="account">
+      <div class="faq-question">
+        <span>Can I delete my account? How?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>Yes! Simply logging out will automatically delete your account and all associated data. Our platform is designed for temporary, anonymous connections, so when you logout, your account is permanently removed from our systems.</p>
+        <p><strong>Note:</strong> You cannot log back in with the same account after logging out. You'll need to create a new account for a fresh start.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="account">
+      <div class="faq-question">
+        <span>I forgot my password. How can I reset it?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>Since we don't use passwords or email registration, there's no password to reset. Simply enter your age and gender to create a new account and start chatting immediately.</p>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="account">
+      <div class="faq-question">
+        <span>Why was my account suspended or banned?</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>Accounts may be suspended or banned for:</p>
+        <ul>
+          <li>Violating our Terms of Service</li>
+          <li>Multiple user reports</li>
+          <li>Inappropriate behavior or content</li>
+          <li>Spamming or advertising</li>
+          <li>Harassment or bullying</li>
+          <li>Age verification issues</li>
+        </ul>
+        <p>If you believe this was a mistake, you can contact privacy@blinkrandom.com</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact-support">
+    <h2>Still Have Questions?</h2>
+    <p>We're here to help! If you couldn't find the answer to your question, please don't hesitate to contact our support team.</p>
+    <p><strong>Email:</strong> privacy@blinkrandom.com</p>
+    <p><strong>Response Time:</strong> Typically within 24 hours</p>
+  </div>
+
+  <a href="javascript:void(0)" class="back-button" onclick="goBack()">
+    <i class="fas fa-arrow-left"></i> Back
+  </a>
+
+  <footer>
+    <p>&copy; 2025 BlinkRandom. Frequently updated to provide the most current information.</p>
+  </footer>
+</div>
+
+<script>
+  function goBack() {
+      if (document.referrer && document.referrer.includes(window.location.hostname)) {
+          window.history.back();
+      } else {
+          window.location.href = 'dashboard.html';
+      }
+  }
+
+  // FAQ toggle functionality
+  document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', () => {
+          const faqItem = question.parentElement;
+          faqItem.classList.toggle('active');
+      });
+  });
+
+  // Search functionality
+  document.getElementById('faqSearch').addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      document.querySelectorAll('.faq-item').forEach(item => {
+          const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+          const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+
+          if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+              item.style.display = 'block';
+          } else {
+              item.style.display = 'none';
+          }
+      });
+  });
+
+  // Category filtering
+  document.querySelectorAll('.category-btn').forEach(button => {
+      button.addEventListener('click', function() {
+          // Update active button
+          document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+
+          const category = this.dataset.category;
+
+          document.querySelectorAll('.faq-item').forEach(item => {
+              if (category === 'all' || item.dataset.category === category) {
+                  item.style.display = 'block';
+              } else {
+                  item.style.display = 'none';
+              }
+          });
+      });
+  });
+</script>
+</body>
+</html>
