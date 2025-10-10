@@ -116,18 +116,9 @@
 					</from>
 					<to>
 						<image>sandesh921/userservice:v1.0</image>
-					</to>
-					<container>
-						<ports>
-							<port>8080</port>
-						</ports>
-						<environment>
-							<SPRING_PROFILES_ACTIVE>docker</SPRING_PROFILES_ACTIVE>
-						</environment>
-					</container>
+					</to>t>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 

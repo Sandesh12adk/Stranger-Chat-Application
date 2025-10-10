@@ -136,14 +136,6 @@
 					<to>
 						<image>sandesh921/chatservice:v1.0</image>
 					</to>
-					<container>
-						<ports>
-							<port>8081</port>
-						</ports>
-						<environment>
-							<SPRING_PROFILES_ACTIVE>docker</SPRING_PROFILES_ACTIVE>
-						</environment>
-					</container>
 				</configuration>
 			</plugin>
 

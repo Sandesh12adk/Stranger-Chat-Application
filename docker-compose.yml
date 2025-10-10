@@ -101,6 +101,25 @@ services:
       - BlinkRandom_Network
 
   # ----------------------------
+  # Random Pair Service
+  # ----------------------------
+  randompairservice:
+    image: sandesh921/randompairservice:v1.0
+    container_name: randompairservice_container
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
+    depends_on:
+      configserver:
+        condition: service_started
+      eurekaserver:
+        condition: service_started
+    networks:
+      - BlinkRandom_Network
+
+  # ----------------------------
   # MySQL Database
   # ----------------------------
   mysqldb:
