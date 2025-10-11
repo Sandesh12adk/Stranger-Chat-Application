@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us | BlinkRandom</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -22,12 +25,6 @@
             --transition: all 0.3s ease;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -36,105 +33,25 @@
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header Styles */
-        header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--dark);
-        }
-
-        .logo i {
-            font-size: 1.8rem;
-            color: var(--primary);
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
+        .navbar-brand {
             font-weight: 700;
+            font-size: 1.5rem;
         }
 
-        .nav-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-btn {
-            background: var(--primary);
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .nav-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.back {
-            background: var(--light-gray);
-            color: var(--dark);
-        }
-
-        .nav-btn.back:hover {
-            background: var(--gray);
-            color: white;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 60px 0 40px;
-            text-align: center;
-            color: white;
-            background: linear-gradient(135deg, #4361ee 0%, #7209b7 100%);
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            padding: 80px 0;
+            border-radius: 0 0 20px 20px;
             margin-bottom: 40px;
         }
 
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        .section-title {
+            position: relative;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
         }
 
-        .hero p {
-            font-size: 1.1rem;
-            max-width: 700px;
-            margin: 0 auto;
-            opacity: 0.9;
-        }
-
-        /* Content Section */
         .content-section {
             background: white;
             border-radius: var(--border-radius);
@@ -143,81 +60,28 @@
             margin-bottom: 40px;
         }
 
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 25px;
-            color: var(--primary);
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: var(--primary);
-        }
-
         .intro-text {
             font-size: 1.1rem;
             margin-bottom: 30px;
             line-height: 1.7;
         }
 
-        /* Contact Form */
         .contact-form {
             max-width: 800px;
             margin: 0 auto;
         }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--light-gray);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
         .form-control:focus {
-            outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-
-        textarea.form-control {
-            min-height: 150px;
-            resize: vertical;
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
         }
 
         .submit-btn {
             background: var(--primary);
-            color: white;
             border: none;
-            padding: 14px 30px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
+            padding: 12px 30px;
             font-weight: 600;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 0 auto;
+            transition: var(--transition);
         }
 
         .submit-btn:hover {
@@ -227,31 +91,22 @@
 
         .submit-btn:disabled {
             background: var(--gray);
-            cursor: not-allowed;
             transform: none;
         }
 
-        /* Alert Messages */
         .alert {
-            padding: 15px;
             border-radius: var(--border-radius);
             margin-bottom: 20px;
-            display: none;
         }
 
-        .alert-success {
-            background: rgba(76, 201, 240, 0.2);
-            border: 1px solid var(--success);
-            color: #0c5460;
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .alert-error {
-            background: rgba(247, 37, 133, 0.2);
-            border: 1px solid var(--danger);
-            color: #721c24;
-        }
-
-        /* Footer */
         footer {
             background: var(--dark);
             color: white;
@@ -259,110 +114,73 @@
             margin-top: 60px;
         }
 
-        .legal-links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .legal-link {
+        .legal-links a {
             color: var(--light-gray);
             text-decoration: none;
-            font-size: 0.75rem;
             transition: var(--transition);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
-        .legal-link:hover {
+        .legal-links a:hover {
             color: white;
-            transform: translateY(-1px);
         }
 
-        .legal-link i {
-            font-size: 0.7rem;
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.9rem;
-            color: var(--light-gray);
-        }
-
-        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .nav-buttons {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
+            .hero-section {
+                padding: 60px 0;
             }
 
             .content-section {
                 padding: 25px;
             }
 
-            .section-title {
-                font-size: 1.7rem;
-            }
-
-            .legal-links {
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
+            .floating-btn {
+                bottom: 20px;
+                right: 20px;
             }
         }
     </style>
 </head>
 <body>
-<!-- Header -->
-<header>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container">
-        <nav class="navbar">
-            <a href="dashboard.html" class="logo">
-                <i class="fas fa-comment-dots"></i>
-                <h1>BlinkRandom</h1>
-            </a>
-            <div class="nav-buttons">
-                <a href="dashboard.html" class="nav-btn back">
-                    <i class="fas fa-arrow-left"></i>
-                    Back
-                </a>
-                <a href="dashboard.html" class="nav-btn">
-                    <i class="fas fa-tachometer-alt"></i>
-                    Dashboard
-                </a>
-            </div>
-        </nav>
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-comments me-2"></i>BlinkRandom
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about_us.html">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="frequently_asked_questions.html">FAQ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="contact.html">Contact</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</header>
+</nav>
 
 <!-- Hero Section -->
-<section class="hero">
+<section class="hero-section d-flex align-items-center justify-content-center text-center py-5"
+         style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+          border-radius: 0 0 20px 20px;">
     <div class="container">
-        <h1>Contact Us</h1>
-        <p>We're here to help! Send us a message and we'll respond as soon as possible.</p>
+        <h1 class="fw-semibold mb-3" style="font-size: 2.5rem; color: white;">Contact Us</h1>
+        <p class="text-light mb-0" style="max-width: 600px; margin: 0 auto; font-size: 1.1rem;">
+            We're here to help! Send us a message and we'll respond as soon as possible.
+        </p>
     </div>
 </section>
+
 
 <div class="container">
     <!-- Contact Form Section -->
@@ -374,21 +192,27 @@
         </p>
 
         <!-- Alert Messages -->
-        <div id="successAlert" class="alert alert-success">
-            <i class="fas fa-check-circle"></i> Your message has been sent successfully! We'll get back to you soon.
+        <div id="successAlert" class="alert alert-success d-none">
+            <i class="fas fa-check-circle me-2"></i>
+            <span id="successMessage">Your message has been sent successfully! We'll get back to you soon.</span>
         </div>
-        <div id="errorAlert" class="alert alert-error">
-            <i class="fas fa-exclamation-circle"></i> There was an error sending your message. Please try again.
+        <div id="errorAlert" class="alert alert-danger d-none">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span id="errorMessage">There was an error sending your message. Please try again.</span>
         </div>
 
         <form id="contactForm" class="contact-form">
-            <div class="form-group">
-                <label for="message" class="form-label">Your Message *</label>
-                <textarea id="message" class="form-control" placeholder="Please describe your question, issue, or feedback in detail..." required></textarea>
+            <div class="mb-4">
+                <label for="message" class="form-label fw-semibold">Your Message *</label>
+                <textarea id="message" class="form-control" rows="6"
+                          placeholder="Please describe your question, issue, or feedback in detail..."
+                          required></textarea>
             </div>
-            <button type="submit" class="submit-btn" id="submitBtn">
-                <i class="fas fa-paper-plane"></i> Send Message
-            </button>
+            <div class="text-center">
+                <button type="submit" class="btn submit-btn btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane me-2"></i> Send Message
+                </button>
+            </div>
         </form>
     </section>
 </div>
@@ -396,22 +220,49 @@
 <!-- Footer -->
 <footer>
     <div class="container">
-        <div class="legal-links">
-            <a href="privacy_policy.html" class="legal-link">
-                <i class="fas fa-shield-alt"></i> Privacy Policy
-            </a>
-            <a href="terms_and_conditions.html" class="legal-link">
-                <i class="fas fa-file-contract"></i> Terms & Conditions
-            </a>
-            <a href="frequently_asked_questions.html" class="legal-link">
-                <i class="fas fa-question-circle"></i> Help Center
-            </a>
+        <div class="row">
+            <div class="col-md-6">
+                <h5><i class="fas fa-comments me-2"></i>BlinkRandom</h5>
+                <p>Connecting the world, one chat at a time.</p>
+            </div>
+            <div class="col-md-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="dashboard.html" class="text-light">Home</a></li>
+                    <li><a href="about_us.html" class="text-light">About</a></li>
+                    <li><a href="frequently_asked_questions.html" class="text-light">FAQ</a></li>
+                    <li><a href="contact.html" class="text-light">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Legal</h5>
+                <div class="legal-links">
+                    <a href="privacy_policy.html" class="d-block mb-2">
+                        <i class="fas fa-shield-alt me-1"></i> Privacy Policy
+                    </a>
+                    <a href="terms_and_conditions.html" class="d-block mb-2">
+                        <i class="fas fa-file-contract me-1"></i> Terms & Conditions
+                    </a>
+                    <a href="frequently_asked_questions.html" class="d-block">
+                        <i class="fas fa-question-circle me-1"></i> Help Center
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="copyright">
-            <p>&copy; 2025 BlinkRandom. All rights reserved.</p>
+        <hr class="my-4">
+        <div class="text-center">
+            <p class="mb-0">&copy; 2025 BlinkRandom. All rights reserved.</p>
         </div>
     </div>
 </footer>
+
+<!-- Floating Back Button -->
+<a href="javascript:void(0)" class="btn btn-primary floating-btn rounded-pill" onclick="goBack()">
+    <i class="fas fa-arrow-left me-2"></i> Back
+</a>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // API Configuration
     const apiUrl = "http://localhost:1111/user/api/user";
@@ -422,8 +273,19 @@
     const submitBtn = document.getElementById('submitBtn');
     const successAlert = document.getElementById('successAlert');
     const errorAlert = document.getElementById('errorAlert');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
 
     let currentUserId = null;
+
+    // Go back to previous page
+    function goBack() {
+        if (document.referrer && document.referrer.includes(window.location.hostname)) {
+            window.history.back();
+        } else {
+            window.location.href = 'dashboard.html';
+        }
+    }
 
     // Check user session and get userId
     async function checkSession() {
@@ -450,26 +312,26 @@
 
     // Show success message
     function showSuccess(message) {
-        successAlert.style.display = 'block';
-        errorAlert.style.display = 'none';
         if (message) {
-            successAlert.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            successMessage.textContent = message;
         }
+        successAlert.classList.remove('d-none');
+        errorAlert.classList.add('d-none');
     }
 
     // Show error message
     function showError(message) {
-        errorAlert.style.display = 'block';
-        successAlert.style.display = 'none';
         if (message) {
-            errorAlert.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorMessage.textContent = message;
         }
+        errorAlert.classList.remove('d-none');
+        successAlert.classList.add('d-none');
     }
 
     // Hide all alerts
     function hideAlerts() {
-        successAlert.style.display = 'none';
-        errorAlert.style.display = 'none';
+        successAlert.classList.add('d-none');
+        errorAlert.classList.add('d-none');
     }
 
     // Extract field names from error messages for better user display
@@ -553,7 +415,7 @@
 
         // Disable submit button
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Sending...';
 
         try {
             // Prepare request data
@@ -598,7 +460,7 @@
         } finally {
             // Re-enable submit button
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Send Message';
         }
     }
 

@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Ideas | BlinkRandom</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #4361ee;
-            --primary-dark: #3a56d4;
             --secondary: #7209b7;
             --light: #f8f9fa;
             --dark: #212529;
@@ -22,12 +24,6 @@
             --transition: all 0.3s ease;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -36,135 +32,25 @@
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header Styles */
-        header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--dark);
-        }
-
-        .logo i {
-            font-size: 1.8rem;
-            color: var(--primary);
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
+        .navbar-brand {
             font-weight: 700;
+            font-size: 1.5rem;
         }
 
-        .nav-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-btn {
-            background: var(--primary);
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .nav-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.back {
-            background: var(--light-gray);
-            color: var(--dark);
-        }
-
-        .nav-btn.back:hover {
-            background: var(--gray);
-            color: white;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 80px 0 40px;
-            text-align: center;
-            color: white;
-            background: linear-gradient(135deg, #4361ee 0%, #7209b7 100%);
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            padding: 80px 0;
+            border-radius: 0 0 20px 20px;
             margin-bottom: 40px;
         }
 
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        .section-title {
+            position: relative;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 30px;
-            opacity: 0.9;
-        }
-
-        /* Quick Action Buttons */
-        .quick-actions {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
-
-        .quick-btn {
-            background: white;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-            padding: 12px 25px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .quick-btn:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Content Section */
         .content-section {
             background: white;
             border-radius: var(--border-radius);
@@ -173,31 +59,12 @@
             margin-bottom: 40px;
         }
 
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 25px;
-            color: var(--primary);
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: var(--primary);
-        }
-
         .intro-text {
             font-size: 1.1rem;
             margin-bottom: 30px;
             line-height: 1.7;
         }
 
-        /* Category Tabs */
         .category-tabs {
             display: flex;
             flex-wrap: wrap;
@@ -214,6 +81,7 @@
             cursor: pointer;
             transition: var(--transition);
             font-weight: 500;
+            border: none;
         }
 
         .category-tab:hover {
@@ -226,14 +94,6 @@
             color: white;
         }
 
-        /* Questions Grid */
-        .questions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
         .question-card {
             background: var(--light);
             border-radius: var(--border-radius);
@@ -241,6 +101,7 @@
             box-shadow: var(--shadow);
             transition: var(--transition);
             border-left: 4px solid var(--primary);
+            height: 100%;
         }
 
         .question-card:hover {
@@ -254,22 +115,15 @@
             color: var(--dark);
         }
 
-        .question-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
-
         .question-category {
             background: rgba(67, 97, 238, 0.1);
             color: var(--primary);
             padding: 3px 10px;
             border-radius: 20px;
             font-size: 0.8rem;
+            display: inline-block;
         }
 
-        /* Tips Section */
         .tips-section {
             background: var(--light);
             border-radius: var(--border-radius);
@@ -285,6 +139,7 @@
 
         .tips-list {
             list-style-type: none;
+            padding-left: 0;
         }
 
         .tips-list li {
@@ -300,7 +155,35 @@
             top: 0;
         }
 
-        /* Footer */
+        .quick-btn {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .quick-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
         footer {
             background: var(--dark);
             color: white;
@@ -308,155 +191,76 @@
             margin-top: 60px;
         }
 
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .footer-column h3 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: var(--light);
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-
-        .footer-links a {
+        .legal-links a {
             color: var(--light-gray);
             text-decoration: none;
             transition: var(--transition);
         }
 
-        .footer-links a:hover {
+        .legal-links a:hover {
             color: white;
-            padding-left: 5px;
         }
 
-        .legal-links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .legal-link {
-            color: var(--light-gray);
-            text-decoration: none;
-            font-size: 0.75rem;
-            transition: var(--transition);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .legal-link:hover {
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .legal-link i {
-            font-size: 0.7rem;
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.9rem;
-            color: var(--light-gray);
-        }
-
-        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .nav-buttons {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .quick-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .quick-btn {
-                width: 200px;
-                justify-content: center;
+            .hero-section {
+                padding: 60px 0;
             }
 
             .content-section {
                 padding: 25px;
             }
 
-            .section-title {
-                font-size: 1.7rem;
+            .category-tabs {
+                justify-content: center;
             }
 
-            .questions-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .legal-links {
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
+            .floating-btn {
+                bottom: 20px;
+                right: 20px;
             }
         }
     </style>
 </head>
 <body>
-<!-- Header -->
-<header>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container">
-        <nav class="navbar">
-            <a href="dashboard.html" class="logo">
-                <i class="fas fa-comment-dots"></i>
-                <h1>BlinkRandom</h1>
-            </a>
-            <div class="nav-buttons">
-                <a href="dashboard.html" class="nav-btn">
-                    <i class="fas fa-comments"></i>
-                    Chat
-                </a>
-                <a href="dashboard.html" class="nav-btn">
-                    <i class="fas fa-tachometer-alt"></i>
-                    Dashboard
-                </a>
-            </div>
-        </nav>
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-comments me-2"></i>BlinkRandom
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about_us.html">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="frequently_asked_questions.html">FAQ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="demoquestions.html">Chat Ideas</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</header>
-
+</nav>
 <!-- Hero Section -->
-<section class="hero">
+<section class="hero-section d-flex align-items-center justify-content-center text-center py-5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border-radius: 0 0 20px 20px;">
     <div class="container">
-        <h1>Chat Conversation Starters</h1>
-        <p>Discover engaging questions and topics to make your BlinkRandom chats more interesting and meaningful</p>
-        <div class="quick-actions">
+        <h1 class="fw-semibold mb-3" style="font-size: 2.5rem; color: white;">Chat Conversation Starters</h1>
+        <p class="text-light mb-4" style="max-width: 700px; margin: 0 auto; font-size: 1.1rem;">
+            Discover engaging questions and topics to make your BlinkRandom chats more interesting and meaningful.
+        </p>
+
+        <div class="d-flex flex-wrap justify-content-center gap-3">
             <a href="#icebreakers" class="quick-btn">
                 <i class="fas fa-snowflake"></i>
                 Ice Breakers
@@ -473,6 +277,7 @@
     </div>
 </section>
 
+
 <div class="container">
     <!-- Main Content -->
     <section class="content-section">
@@ -481,9 +286,6 @@
             Starting a conversation with a stranger can sometimes feel challenging. Use these categorized questions
             as inspiration to break the ice and create meaningful connections with people from around the world.
             Whether you're looking for lighthearted fun or deep discussions, you'll find plenty of ideas here.
-            Our comprehensive collection of conversation starters has been carefully curated to help you navigate
-            any chat situation, from casual small talk to profound philosophical discussions. With over 100 unique
-            questions organized by category, you'll never run out of interesting topics to explore with your chat partners.
         </p>
         <p class="intro-text">
             Engaging in meaningful conversations is one of the most rewarding aspects of using BlinkRandom. These questions
@@ -493,316 +295,316 @@
 
         <!-- Category Tabs -->
         <div class="category-tabs">
-            <div class="category-tab active" data-category="all">All Questions</div>
-            <div class="category-tab" data-category="icebreakers">Ice Breakers</div>
-            <div class="category-tab" data-category="personal">Personal</div>
-            <div class="category-tab" data-category="fun">Fun & Creative</div>
-            <div class="category-tab" data-category="deep">Deep Questions</div>
-            <div class="category-tab" data-category="culture">Culture & Travel</div>
-            <div class="category-tab" data-category="future">Future & Dreams</div>
-            <div class="category-tab" data-category="hypothetical">Hypothetical</div>
+            <button class="category-tab active" data-category="all">All Questions</button>
+            <button class="category-tab" data-category="icebreakers">Ice Breakers</button>
+            <button class="category-tab" data-category="personal">Personal</button>
+            <button class="category-tab" data-category="fun">Fun & Creative</button>
+            <button class="category-tab" data-category="deep">Deep Questions</button>
+            <button class="category-tab" data-category="culture">Culture & Travel</button>
+            <button class="category-tab" data-category="future">Future & Dreams</button>
+            <button class="category-tab" data-category="hypothetical">Hypothetical</button>
         </div>
 
         <!-- Questions Grid -->
-        <div class="questions-grid">
+        <div class="row g-4 mb-5" id="questionsGrid">
             <!-- Ice Breakers -->
-            <div class="question-card" data-category="icebreakers">
-                <div class="question-text">What's the most interesting thing you've done this week?</div>
-                <div class="question-meta">
-                    <span class="question-category">Ice Breaker</span>
+            <div class="col-md-6 col-lg-4" data-category="icebreakers">
+                <div class="question-card">
+                    <div class="question-text">What's the most interesting thing you've done this week?</div>
+                    <div class="question-category">Ice Breaker</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="icebreakers">
-                <div class="question-text">If you could have any superpower, what would it be and why?</div>
-                <div class="question-meta">
-                    <span class="question-category">Ice Breaker</span>
+            <div class="col-md-6 col-lg-4" data-category="icebreakers">
+                <div class="question-card">
+                    <div class="question-text">If you could have any superpower, what would it be and why?</div>
+                    <div class="question-category">Ice Breaker</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="icebreakers">
-                <div class="question-text">What's your favorite way to spend a weekend?</div>
-                <div class="question-meta">
-                    <span class="question-category">Ice Breaker</span>
+            <div class="col-md-6 col-lg-4" data-category="icebreakers">
+                <div class="question-card">
+                    <div class="question-text">What's your favorite way to spend a weekend?</div>
+                    <div class="question-category">Ice Breaker</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="icebreakers">
-                <div class="question-text">If you could instantly become an expert in something, what would it be?</div>
-                <div class="question-meta">
-                    <span class="question-category">Ice Breaker</span>
+            <div class="col-md-6 col-lg-4" data-category="icebreakers">
+                <div class="question-card">
+                    <div class="question-text">If you could instantly become an expert in something, what would it be?</div>
+                    <div class="question-category">Ice Breaker</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="icebreakers">
-                <div class="question-text">What's the best piece of advice you've ever received?</div>
-                <div class="question-meta">
-                    <span class="question-category">Ice Breaker</span>
+            <div class="col-md-6 col-lg-4" data-category="icebreakers">
+                <div class="question-card">
+                    <div class="question-text">What's the best piece of advice you've ever received?</div>
+                    <div class="question-category">Ice Breaker</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="icebreakers">
-                <div class="question-text">What's your favorite season and why?</div>
-                <div class="question-meta">
-                    <span class="question-category">Ice Breaker</span>
+            <div class="col-md-6 col-lg-4" data-category="icebreakers">
+                <div class="question-card">
+                    <div class="question-text">What's your favorite season and why?</div>
+                    <div class="question-category">Ice Breaker</div>
                 </div>
             </div>
 
             <!-- Personal Questions -->
-            <div class="question-card" data-category="personal">
-                <div class="question-text">What's something you're passionate about that not many people know?</div>
-                <div class="question-meta">
-                    <span class="question-category">Personal</span>
+            <div class="col-md-6 col-lg-4" data-category="personal">
+                <div class="question-card">
+                    <div class="question-text">What's something you're passionate about that not many people know?</div>
+                    <div class="question-category">Personal</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="personal">
-                <div class="question-text">What personal achievement are you most proud of?</div>
-                <div class="question-meta">
-                    <span class="question-category">Personal</span>
+            <div class="col-md-6 col-lg-4" data-category="personal">
+                <div class="question-card">
+                    <div class="question-text">What personal achievement are you most proud of?</div>
+                    <div class="question-category">Personal</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="personal">
-                <div class="question-text">What's the most important lesson you've learned in life so far?</div>
-                <div class="question-meta">
-                    <span class="question-category">Personal</span>
+            <div class="col-md-6 col-lg-4" data-category="personal">
+                <div class="question-card">
+                    <div class="question-text">What's the most important lesson you've learned in life so far?</div>
+                    <div class="question-category">Personal</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="personal">
-                <div class="question-text">How have you changed as a person over the last five years?</div>
-                <div class="question-meta">
-                    <span class="question-category">Personal</span>
+            <div class="col-md-6 col-lg-4" data-category="personal">
+                <div class="question-card">
+                    <div class="question-text">How have you changed as a person over the last five years?</div>
+                    <div class="question-category">Personal</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="personal">
-                <div class="question-text">What qualities do you value most in your close friendships?</div>
-                <div class="question-meta">
-                    <span class="question-category">Personal</span>
+            <div class="col-md-6 col-lg-4" data-category="personal">
+                <div class="question-card">
+                    <div class="question-text">What qualities do you value most in your close friendships?</div>
+                    <div class="question-category">Personal</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="personal">
-                <div class="question-text">What's something you've overcome that made you stronger?</div>
-                <div class="question-meta">
-                    <span class="question-category">Personal</span>
+            <div class="col-md-6 col-lg-4" data-category="personal">
+                <div class="question-card">
+                    <div class="question-text">What's something you've overcome that made you stronger?</div>
+                    <div class="question-category">Personal</div>
                 </div>
             </div>
 
             <!-- Fun & Creative -->
-            <div class="question-card" data-category="fun">
-                <div class="question-text">If you were a character in a movie, who would you be and why?</div>
-                <div class="question-meta">
-                    <span class="question-category">Fun & Creative</span>
+            <div class="col-md-6 col-lg-4" data-category="fun">
+                <div class="question-card">
+                    <div class="question-text">If you were a character in a movie, who would you be and why?</div>
+                    <div class="question-category">Fun & Creative</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="fun">
-                <div class="question-text">What would your perfect day look like from start to finish?</div>
-                <div class="question-meta">
-                    <span class="question-category">Fun & Creative</span>
+            <div class="col-md-6 col-lg-4" data-category="fun">
+                <div class="question-card">
+                    <div class="question-text">What would your perfect day look like from start to finish?</div>
+                    <div class="question-category">Fun & Creative</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="fun">
-                <div class="question-text">If you could have dinner with any three people, living or dead, who would they be?</div>
-                <div class="question-meta">
-                    <span class="question-category">Fun & Creative</span>
+            <div class="col-md-6 col-lg-4" data-category="fun">
+                <div class="question-card">
+                    <div class="question-text">If you could have dinner with any three people, living or dead, who would they be?</div>
+                    <div class="question-category">Fun & Creative</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="fun">
-                <div class="question-text">What's the most spontaneous thing you've ever done?</div>
-                <div class="question-meta">
-                    <span class="question-category">Fun & Creative</span>
+            <div class="col-md-6 col-lg-4" data-category="fun">
+                <div class="question-card">
+                    <div class="question-text">What's the most spontaneous thing you've ever done?</div>
+                    <div class="question-category">Fun & Creative</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="fun">
-                <div class="question-text">If you could time travel, would you go to the past or the future? Why?</div>
-                <div class="question-meta">
-                    <span class="question-category">Fun & Creative</span>
+            <div class="col-md-6 col-lg-4" data-category="fun">
+                <div class="question-card">
+                    <div class="question-text">If you could time travel, would you go to the past or the future? Why?</div>
+                    <div class="question-category">Fun & Creative</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="fun">
-                <div class="question-text">What fictional world would you most like to live in?</div>
-                <div class="question-meta">
-                    <span class="question-category">Fun & Creative</span>
+            <div class="col-md-6 col-lg-4" data-category="fun">
+                <div class="question-card">
+                    <div class="question-text">What fictional world would you most like to live in?</div>
+                    <div class="question-category">Fun & Creative</div>
                 </div>
             </div>
 
             <!-- Deep Questions -->
-            <div class="question-card" data-category="deep">
-                <div class="question-text">What do you think is the meaning or purpose of life?</div>
-                <div class="question-meta">
-                    <span class="question-category">Deep Questions</span>
+            <div class="col-md-6 col-lg-4" data-category="deep">
+                <div class="question-card">
+                    <div class="question-text">What do you think is the meaning or purpose of life?</div>
+                    <div class="question-category">Deep Questions</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="deep">
-                <div class="question-text">What's something you've changed your mind about in recent years?</div>
-                <div class="question-meta">
-                    <span class="question-category">Deep Questions</span>
+            <div class="col-md-6 col-lg-4" data-category="deep">
+                <div class="question-card">
+                    <div class="question-text">What's something you've changed your mind about in recent years?</div>
+                    <div class="question-category">Deep Questions</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="deep">
-                <div class="question-text">What do you think happens after we die?</div>
-                <div class="question-meta">
-                    <span class="question-category">Deep Questions</span>
+            <div class="col-md-6 col-lg-4" data-category="deep">
+                <div class="question-card">
+                    <div class="question-text">What do you think happens after we die?</div>
+                    <div class="question-category">Deep Questions</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="deep">
-                <div class="question-text">What does true happiness mean to you?</div>
-                <div class="question-meta">
-                    <span class="question-category">Deep Questions</span>
+            <div class="col-md-6 col-lg-4" data-category="deep">
+                <div class="question-card">
+                    <div class="question-text">What does true happiness mean to you?</div>
+                    <div class="question-category">Deep Questions</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="deep">
-                <div class="question-text">How do you define success in life?</div>
-                <div class="question-meta">
-                    <span class="question-category">Deep Questions</span>
+            <div class="col-md-6 col-lg-4" data-category="deep">
+                <div class="question-card">
+                    <div class="question-text">How do you define success in life?</div>
+                    <div class="question-category">Deep Questions</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="deep">
-                <div class="question-text">What do you think is the most important problem facing humanity today?</div>
-                <div class="question-meta">
-                    <span class="question-category">Deep Questions</span>
+            <div class="col-md-6 col-lg-4" data-category="deep">
+                <div class="question-card">
+                    <div class="question-text">What do you think is the most important problem facing humanity today?</div>
+                    <div class="question-category">Deep Questions</div>
                 </div>
             </div>
 
             <!-- Culture & Travel -->
-            <div class="question-card" data-category="culture">
-                <div class="question-text">What's unique about the culture in your country or region?</div>
-                <div class="question-meta">
-                    <span class="question-category">Culture & Travel</span>
+            <div class="col-md-6 col-lg-4" data-category="culture">
+                <div class="question-card">
+                    <div class="question-text">What's unique about the culture in your country or region?</div>
+                    <div class="question-category">Culture & Travel</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="culture">
-                <div class="question-text">If I were to visit your country, what's one thing I must experience?</div>
-                <div class="question-meta">
-                    <span class="question-category">Culture & Travel</span>
+            <div class="col-md-6 col-lg-4" data-category="culture">
+                <div class="question-card">
+                    <div class="question-text">If I were to visit your country, what's one thing I must experience?</div>
+                    <div class="question-category">Culture & Travel</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="culture">
-                <div class="question-text">What's the most interesting cultural difference you've encountered?</div>
-                <div class="question-meta">
-                    <span class="question-category">Culture & Travel</span>
+            <div class="col-md-6 col-lg-4" data-category="culture">
+                <div class="question-card">
+                    <div class="question-text">What's the most interesting cultural difference you've encountered?</div>
+                    <div class="question-category">Culture & Travel</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="culture">
-                <div class="question-text">What place in the world has had the biggest impact on you?</div>
-                <div class="question-meta">
-                    <span class="question-category">Culture & Travel</span>
+            <div class="col-md-6 col-lg-4" data-category="culture">
+                <div class="question-card">
+                    <div class="question-text">What place in the world has had the biggest impact on you?</div>
+                    <div class="question-category">Culture & Travel</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="culture">
-                <div class="question-text">What traditional food from your culture would you recommend to a visitor?</div>
-                <div class="question-meta">
-                    <span class="question-category">Culture & Travel</span>
+            <div class="col-md-6 col-lg-4" data-category="culture">
+                <div class="question-card">
+                    <div class="question-text">What traditional food from your culture would you recommend to a visitor?</div>
+                    <div class="question-category">Culture & Travel</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="culture">
-                <div class="question-text">How do people typically greet each other in your culture?</div>
-                <div class="question-meta">
-                    <span class="question-category">Culture & Travel</span>
+            <div class="col-md-6 col-lg-4" data-category="culture">
+                <div class="question-card">
+                    <div class="question-text">How do people typically greet each other in your culture?</div>
+                    <div class="question-category">Culture & Travel</div>
                 </div>
             </div>
 
             <!-- Future & Dreams -->
-            <div class="question-card" data-category="future">
-                <div class="question-text">Where do you see yourself in five years?</div>
-                <div class="question-meta">
-                    <span class="question-category">Future & Dreams</span>
+            <div class="col-md-6 col-lg-4" data-category="future">
+                <div class="question-card">
+                    <div class="question-text">Where do you see yourself in five years?</div>
+                    <div class="question-category">Future & Dreams</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="future">
-                <div class="question-text">What's one dream you haven't accomplished yet but hope to?</div>
-                <div class="question-meta">
-                    <span class="question-category">Future & Dreams</span>
+            <div class="col-md-6 col-lg-4" data-category="future">
+                <div class="question-card">
+                    <div class="question-text">What's one dream you haven't accomplished yet but hope to?</div>
+                    <div class="question-category">Future & Dreams</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="future">
-                <div class="question-text">If money were no object, what would you do with your life?</div>
-                <div class="question-meta">
-                    <span class="question-category">Future & Dreams</span>
+            <div class="col-md-6 col-lg-4" data-category="future">
+                <div class="question-card">
+                    <div class="question-text">If money were no object, what would you do with your life?</div>
+                    <div class="question-category">Future & Dreams</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="future">
-                <div class="question-text">What skill would you like to learn in the future?</div>
-                <div class="question-meta">
-                    <span class="question-category">Future & Dreams</span>
+            <div class="col-md-6 col-lg-4" data-category="future">
+                <div class="question-card">
+                    <div class="question-text">What skill would you like to learn in the future?</div>
+                    <div class="question-category">Future & Dreams</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="future">
-                <div class="question-text">How do you hope the world will change in the next 20 years?</div>
-                <div class="question-meta">
-                    <span class="question-category">Future & Dreams</span>
+            <div class="col-md-6 col-lg-4" data-category="future">
+                <div class="question-card">
+                    <div class="question-text">How do you hope the world will change in the next 20 years?</div>
+                    <div class="question-category">Future & Dreams</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="future">
-                <div class="question-text">What legacy would you like to leave behind?</div>
-                <div class="question-meta">
-                    <span class="question-category">Future & Dreams</span>
+            <div class="col-md-6 col-lg-4" data-category="future">
+                <div class="question-card">
+                    <div class="question-text">What legacy would you like to leave behind?</div>
+                    <div class="question-category">Future & Dreams</div>
                 </div>
             </div>
 
             <!-- Hypothetical Questions -->
-            <div class="question-card" data-category="hypothetical">
-                <div class="question-text">If you could live in any historical period, when would you choose?</div>
-                <div class="question-meta">
-                    <span class="question-category">Hypothetical</span>
+            <div class="col-md-6 col-lg-4" data-category="hypothetical">
+                <div class="question-card">
+                    <div class="question-text">If you could live in any historical period, when would you choose?</div>
+                    <div class="question-category">Hypothetical</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="hypothetical">
-                <div class="question-text">If you could switch lives with anyone for a day, who would it be?</div>
-                <div class="question-meta">
-                    <span class="question-category">Hypothetical</span>
+            <div class="col-md-6 col-lg-4" data-category="hypothetical">
+                <div class="question-card">
+                    <div class="question-text">If you could switch lives with anyone for a day, who would it be?</div>
+                    <div class="question-category">Hypothetical</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="hypothetical">
-                <div class="question-text">If you were granted three wishes, what would you wish for?</div>
-                <div class="question-meta">
-                    <span class="question-category">Hypothetical</span>
+            <div class="col-md-6 col-lg-4" data-category="hypothetical">
+                <div class="question-card">
+                    <div class="question-text">If you were granted three wishes, what would you wish for?</div>
+                    <div class="question-category">Hypothetical</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="hypothetical">
-                <div class="question-text">If you could eliminate one problem in the world, what would it be?</div>
-                <div class="question-meta">
-                    <span class="question-category">Hypothetical</span>
+            <div class="col-md-6 col-lg-4" data-category="hypothetical">
+                <div class="question-card">
+                    <div class="question-text">If you could eliminate one problem in the world, what would it be?</div>
+                    <div class="question-category">Hypothetical</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="hypothetical">
-                <div class="question-text">If you could invent something to make life easier, what would it be?</div>
-                <div class="question-meta">
-                    <span class="question-category">Hypothetical</span>
+            <div class="col-md-6 col-lg-4" data-category="hypothetical">
+                <div class="question-card">
+                    <div class="question-text">If you could invent something to make life easier, what would it be?</div>
+                    <div class="question-category">Hypothetical</div>
                 </div>
             </div>
 
-            <div class="question-card" data-category="hypothetical">
-                <div class="question-text">If you could communicate with animals, which animal would you talk to first?</div>
-                <div class="question-meta">
-                    <span class="question-category">Hypothetical</span>
+            <div class="col-md-6 col-lg-4" data-category="hypothetical">
+                <div class="question-card">
+                    <div class="question-text">If you could communicate with animals, which animal would you talk to first?</div>
+                    <div class="question-category">Hypothetical</div>
                 </div>
             </div>
         </div>
@@ -822,30 +624,24 @@
                 <li>Be patient with language barriers - communication across cultures takes extra effort</li>
                 <li>Know when to change topics if a conversation isn't flowing naturally</li>
             </ul>
-            <p style="margin-top: 20px; font-style: italic;">
+            <p class="mt-4 fst-italic">
                 The art of conversation lies in balancing speaking and listening, asking and sharing. With these questions and tips,
                 you're well-equipped to create meaningful connections that could turn into lasting friendships. Happy chatting!
             </p>
         </div>
 
-        <!-- Additional Content for Word Count -->
-        <div style="margin-top: 40px; padding: 20px; background: var(--light-gray); border-radius: var(--border-radius);">
-            <h3 style="color: var(--primary); margin-bottom: 15px;">Making the Most of Your BlinkRandom Experience</h3>
-            <p style="margin-bottom: 15px;">
+        <!-- Additional Content -->
+        <div class="mt-5 p-4 bg-light rounded">
+            <h4 class="text-primary mb-3">Making the Most of Your BlinkRandom Experience</h4>
+            <p class="mb-3">
                 BlinkRandom connects you with people from all around the world, offering a unique opportunity to learn about different cultures,
                 perspectives, and life experiences. The platform is designed to foster genuine human connections in an increasingly digital world.
             </p>
-            <p style="margin-bottom: 15px;">
+            <p class="mb-3">
                 When using these conversation starters, remember that the goal isn't just to ask questions but to build rapport. Pay attention to
-                the responses you receive and use them as springboards for deeper discussion. If someone shares something interesting about their
-                hobby, ask how they got started with it. If they mention a challenging experience, ask what they learned from it.
+                the responses you receive and use them as springboards for deeper discussion.
             </p>
-            <p style="margin-bottom: 15px;">
-                The most memorable conversations often happen when both participants feel comfortable sharing and exploring ideas together.
-                Don't treat these questions like an interview checklist - instead, use them as tools to discover common interests and
-                appreciate differences.
-            </p>
-            <p>
+            <p class="mb-0">
                 Whether you're looking to make new friends, practice a language, or simply pass time with interesting people, BlinkRandom
                 provides the platform for meaningful interactions. With an open mind and these conversation resources, you're sure to have
                 engaging chats that might just change your perspective on the world.
@@ -857,38 +653,62 @@
 <!-- Footer -->
 <footer>
     <div class="container">
-        <div class="footer-content">
-            <div class="footer-column">
-                <h3>Connect</h3>
-                <ul class="footer-links">
-                    <li><a href="https://www.facebook.com/sandesh.adhikari.3323">Facebook</a></li>
-                    <li><a href="https://instagram.com/sandesh.adhikari.3323">Instagram</a></li>
-                    <li><a href="https://www.linkedin.com/in/sandesh-adhikari-4521a6271/">LinkedIn</a></li>
+        <div class="row">
+            <div class="col-md-6">
+                <h5><i class="fas fa-comments me-2"></i>BlinkRandom</h5>
+                <p>Connecting the world, one chat at a time.</p>
+            </div>
+            <div class="col-md-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="dashboard.html" class="text-light">Dashboard</a></li>
+                    <li><a href="about_us.html" class="text-light">About</a></li>
+                    <li><a href="frequently_asked_questions.html" class="text-light">FAQ</a></li>
+                    <li><a href="contact.html" class="text-light">Contact</a></li>
                 </ul>
             </div>
+            <div class="col-md-3">
+                <h5>Legal</h5>
+                <div class="legal-links">
+                    <a href="privacy_policy.html" class="d-block mb-2 text-light">
+                        <i class="fas fa-shield-alt me-1"></i> Privacy Policy
+                    </a>
+                    <a href="terms_and_conditions.html" class="d-block mb-2 text-light">
+                        <i class="fas fa-file-contract me-1"></i> Terms & Conditions
+                    </a>
+                    <a href="demoquestions.html" class="d-block text-light">
+                        <i class="fas fa-lightbulb me-1"></i> Chat Ideas
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="legal-links">
-            <a href="privacy_policy.html" class="legal-link">
-                <i class="fas fa-shield-alt"></i> Privacy Policy
-            </a>
-            <a href="terms_and_conditions.html" class="legal-link">
-                <i class="fas fa-file-contract"></i> Terms & Conditions
-            </a>
-            <a href="frequently_asked_questions.html" class="legal-link">
-                <i class="fas fa-question-circle"></i> Help Center
-            </a>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2025 BlinkRandom. All rights reserved.</p>
+        <hr class="my-4">
+        <div class="text-center">
+            <p class="mb-0">&copy; 2025 BlinkRandom. All rights reserved.</p>
         </div>
     </div>
 </footer>
 
+<!-- Floating Back Button -->
+<a href="javascript:void(0)" class="btn btn-primary floating-btn rounded-pill" onclick="goBack()">
+    <i class="fas fa-arrow-left me-2"></i> Back
+</a>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    function goBack() {
+        if (document.referrer && document.referrer.includes(window.location.hostname)) {
+            window.history.back();
+        } else {
+            window.location.href = 'dashboard.html';
+        }
+    }
+
     // Category filtering functionality
     document.addEventListener('DOMContentLoaded', function() {
         const categoryTabs = document.querySelectorAll('.category-tab');
-        const questionCards = document.querySelectorAll('.question-card');
+        const questionCards = document.querySelectorAll('[data-category]');
 
         categoryTabs.forEach(tab => {
             tab.addEventListener('click', function() {
