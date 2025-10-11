@@ -472,20 +472,50 @@
         errorAlert.style.display = 'none';
     }
 
+    // Extract field names from error messages for better user display
+    function formatFieldName(fieldName) {
+        const fieldMap = {
+            'userId': 'User ID',
+            'message': 'Message'
+        };
+
+        return fieldMap[fieldName] || fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+    }
+
     // Handle different error responses
     function handleErrorResponse(response, errorData) {
         console.log('Error response:', response.status, errorData);
 
         // Handle Validation Errors (400 - MethodArgumentNotValidException)
         if (response.status === 400) {
-            if (errorData.message) {
-                // ErrorResponse format
-                showError(errorData.message || 'Validation failed. Please check your input.');
-            } else {
-                // MethodArgumentNotValidException format - field errors
-                const fieldErrors = Object.values(errorData).join(', ');
+            // Check if it's a MethodArgumentNotValidException format (field errors object)
+            if (typeof errorData === 'object' && !errorData.errorCode && !errorData.errorMessage) {
+                // This is likely a MethodArgumentNotValidException with field errors
+                const fieldErrors = Object.entries(errorData).map(([field, message]) => {
+                    return `${formatFieldName(field)}: ${message}`;
+                }).join(', ');
+
                 showError(fieldErrors || 'Please fill in all required fields correctly.');
             }
+            // Handle ErrorResponse format
+            else if (errorData.errorMessage) {
+                showError(errorData.errorMessage || 'Validation failed. Please check your input.');
+            }
+            // Handle other 400 errors
+            else {
+                showError('Please check your input and try again.');
+            }
+        }
+        // Handle User Not Found (404)
+        else if (response.status === 404) {
+            if (errorData.errorMessage) {
+                showError(errorData.errorMessage || 'User not found. Please login again.');
+            } else {
+                showError('User not found. Please login again.');
+            }
+            setTimeout(() => {
+                window.location.href = 'signin.html';
+            }, 2000);
         }
         // Handle Unauthorized (401)
         else if (response.status === 401) {
@@ -532,6 +562,8 @@
                 message: messageInput.value.trim()
             };
 
+            console.log('Sending contact request:', requestData);
+
             // Send contact request
             const response = await fetch(`${apiUrl}/contact`, {
                 method: 'POST',
@@ -542,6 +574,8 @@
                 credentials: 'include'
             });
 
+            console.log('Response status:', response.status);
+
             if (response.ok) {
                 const result = await response.json();
                 showSuccess('Your message has been sent successfully! We\'ll get back to you soon.');
@@ -550,8 +584,10 @@
                 // Try to parse error response
                 try {
                     const errorData = await response.json();
+                    console.log('Error data received:', errorData);
                     handleErrorResponse(response, errorData);
                 } catch (parseError) {
+                    console.error('Error parsing error response:', parseError);
                     // If response is not JSON, use status text
                     showError(response.statusText || 'Failed to send your message.');
                 }
