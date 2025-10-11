@@ -1,18 +1,67 @@
-
+version: '3.8'
 services:
   # ----------------------------
-  # Config Server
+  # MySQL (start first)
+  # ----------------------------
+  mysqldb:
+    image: mysql:8
+    container_name: mysqldb_container
+    environment:
+      - MYSQL_ROOT_PASSWORD=san123@M
+      - MYSQL_DATABASE=chattingappproject
+    ports:
+      - "3307:3306"
+    command:
+      - --performance_schema=OFF
+      - --innodb_buffer_pool_size=64M
+      - --innodb_log_file_size=32M
+      - --key_buffer_size=8M
+      - --tmp_table_size=8M
+      - --max_connections=100
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      retries: 10
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+        reservations:
+          memory: 150M
+    networks:
+      - BlinkRandom_Network
+
+  # ----------------------------
+  # Config Server (start second)
   # ----------------------------
   configserver:
     image: sandesh921/configserver:v1.0
     container_name: configserver_container
     ports:
       - "8888:8888"
+    environment:
+      - JAVA_OPTS=-Xms64m -Xmx96m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -Dspring.main.lazy-initialization=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/application/default"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 230M
+        reservations:
+          memory: 80M
+    depends_on:
+      mysqldb:
+        condition: service_healthy
     networks:
       - BlinkRandom_Network
 
   # ----------------------------
-  # Eureka Server
+  # Eureka Server (start third)
   # ----------------------------
   eurekaserver:
     image: sandesh921/eurekaserver:v1.0
@@ -22,18 +71,31 @@ services:
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
       - SPRING_CLOUD_CONFIG_FAIL_FAST=true
-      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=3000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=15000
       - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=25
+      - JAVA_OPTS=-Xms96m -Xmx128m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -Dspring.main.lazy-initialization=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
+    deploy:
+      resources:
+        limits:
+          memory: 260M
+        reservations:
+          memory: 120M
     depends_on:
       configserver:
-        condition: service_started
+        condition: service_healthy
     networks:
       - BlinkRandom_Network
 
   # ----------------------------
-  # Gateway Server
+  # Gateway Server (start fourth)
   # ----------------------------
   gatewayserver:
     image: sandesh921/gatewayserver:v1.0
@@ -43,21 +105,34 @@ services:
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
       - SPRING_CLOUD_CONFIG_FAIL_FAST=true
-      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=3000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=15000
       - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=25
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
+      - JAVA_OPTS=-Xms256m -Xmx384m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=80.0 -Dspring.main.lazy-initialization=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1111/actuator/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 8
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 450M
+        reservations:
+          memory: 300M
     depends_on:
       configserver:
-        condition: service_started
+        condition: service_healthy
       eurekaserver:
-        condition: service_started
+        condition: service_healthy
     networks:
       - BlinkRandom_Network
 
   # ----------------------------
-  # User Service
+  # User Service (start fifth)
   # ----------------------------
   userservice:
     image: sandesh921/userservice:v1.0
@@ -67,24 +142,41 @@ services:
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
       - SPRING_CLOUD_CONFIG_FAIL_FAST=true
-      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=3000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=15000
       - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=25
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/chattingappproject
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=san123@M
+      - JAVA_OPTS=-Xms192m -Xmx256m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -Dspring.main.lazy-initialization=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 8
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 320M
+        reservations:
+          memory: 200M
     depends_on:
-      - configserver
-      - eurekaserver
-      - gatewayserver
-      - mysqldb
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+      gatewayserver:
+        condition: service_healthy
+      mysqldb:
+        condition: service_healthy
     networks:
       - BlinkRandom_Network
 
   # ----------------------------
-  # Chat Service
+  # Chat Service (start sixth)
   # ----------------------------
   chatservice:
     image: sandesh921/chatservice:v1.0
@@ -94,24 +186,41 @@ services:
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
       - SPRING_CLOUD_CONFIG_FAIL_FAST=true
-      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=3000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=15000
       - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=25
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/chattingappproject
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=san123@M
+      - JAVA_OPTS=-Xms256m -Xmx384m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=80.0 -Dspring.main.lazy-initialization=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 8
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 450M
+        reservations:
+          memory: 300M
     depends_on:
-      - configserver
-      - eurekaserver
-      - gatewayserver
-      - mysqldb
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+      gatewayserver:
+        condition: service_healthy
+      mysqldb:
+        condition: service_healthy
     networks:
       - BlinkRandom_Network
 
   # ----------------------------
-  # Random Pair Service
+  # Random Pair Service (start seventh)
   # ----------------------------
   randompairservice:
     image: sandesh921/randompairservice:v1.0
@@ -121,34 +230,31 @@ services:
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
       - SPRING_CLOUD_CONFIG_FAIL_FAST=true
-      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=3000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=15000
       - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=25
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
-    depends_on:
-      - configserver
-      - eurekaserver
-    networks:
-      - BlinkRandom_Network
-
-  # ----------------------------
-  # MySQL Database
-  # ----------------------------
-  mysqldb:
-    image: mysql:8
-    container_name: mysqldb_container
-    environment:
-      - MYSQL_ROOT_PASSWORD=san123@M
-      - MYSQL_DATABASE=chattingappproject
-    ports:
-      - "3307:3307"
-    networks:
-      - BlinkRandom_Network
+      - JAVA_OPTS=-Xms96m -Xmx128m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -Dspring.main.lazy-initialization=true
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      retries: 5
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 8
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 240M
+        reservations:
+          memory: 120M
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    networks:
+      - BlinkRandom_Network
 
 # ----------------------------
 # Networks
