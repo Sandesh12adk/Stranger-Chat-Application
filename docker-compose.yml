@@ -1,3 +1,4 @@
+
 services:
   # ----------------------------
   # Config Server
@@ -20,9 +21,11 @@ services:
       - "8761:8761"
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
-      - SPRING_CLOUD_CONFIG_FAIL_FAST=false
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=10
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
     depends_on:
       configserver:
         condition: service_started
@@ -39,6 +42,11 @@ services:
       - "1111:1111"
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
     depends_on:
       configserver:
@@ -58,19 +66,20 @@ services:
       - "8080:8080"
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/chattingappproject
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=san123@M
     depends_on:
-      configserver:
-        condition: service_started
-      eurekaserver:
-        condition: service_started
-      gatewayserver:
-        condition: service_started
-      mysqldb:
-        condition: service_started
+      - configserver
+      - eurekaserver
+      - gatewayserver
+      - mysqldb
     networks:
       - BlinkRandom_Network
 
@@ -84,19 +93,20 @@ services:
       - "8081:8081"
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/chattingappproject
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=san123@M
     depends_on:
-      configserver:
-        condition: service_started
-      eurekaserver:
-        condition: service_started
-      gatewayserver:
-        condition: service_started
-      mysqldb:
-        condition: service_started
+      - configserver
+      - eurekaserver
+      - gatewayserver
+      - mysqldb
     networks:
       - BlinkRandom_Network
 
@@ -110,12 +120,15 @@ services:
       - "8082:8082"
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://configserver:8888
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka
     depends_on:
-      configserver:
-        condition: service_started
-      eurekaserver:
-        condition: service_started
+      - configserver
+      - eurekaserver
     networks:
       - BlinkRandom_Network
 
