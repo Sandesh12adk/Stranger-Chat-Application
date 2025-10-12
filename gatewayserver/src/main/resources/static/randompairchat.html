@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlinkRandom | Random Pair Chat</title>
+    <title>Strangerblink | Random Pair Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Add WebSocket libraries -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
@@ -562,7 +562,7 @@
     <div class="sidebar">
         <div class="logo">
             <i class="fas fa-comment-dots"></i>
-            <h1>BlinkRandom</h1>
+            <h1>Strangerblink</h1>
         </div>
 
         <div class="user-info">
@@ -625,7 +625,7 @@
 
         <div class="messages-container" id="messagesContainer">
             <div class="message received">
-                <p>Welcome to BlinkRandom!</p>
+                <p>Welcome to Strangerblink!</p>
                 <div class="message-time" id="welcomeTime"></div>
             </div>
         </div>
@@ -641,7 +641,7 @@
 
 <div class="connection-status" id="connectionStatus">
     <div class="connection-dot"></div>
-    <span>Connecting to BlinkRandom...</span>
+    <span>Connecting to Strangerblink...</span>
 </div>
 <script>
     // Global variables
@@ -764,7 +764,7 @@
                         isWebSocketConnected = true;
                         connectionRetryCount = 0;
 
-                        updateConnectionStatus('connected', 'Connected to BlinkRandom');
+                        updateConnectionStatus('connected', 'Connected to Strangerblink');
                         statusText.textContent = 'Online';
 
                         // Subscribe to private messages for this user
@@ -1226,7 +1226,7 @@
 
     // Initialize app
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Initializing BlinkRandom Pair Chat...');
+        console.log('🚀 Initializing Strangerblink Pair Chat...');
 
         // Initialize UI to show disconnected state
         partnerName.textContent = 'Not Connected';
@@ -1244,14 +1244,14 @@
 
                 // Show connected status but user is not paired with anyone initially
                 displaySystemMessage({
-                    msg: 'Connected to BlinkRandom! Click "Next" to find your first random partner.',
+                    msg: 'Connected to Strangerblink! Click "Next" to find your first random partner.',
                     type: 'system'
                 });
 
                 // Don't automatically find first partner - let user click Next
             })
             .catch(error => {
-                console.error('❌ Failed to initialize BlinkRandom Pair Chat:', error);
+                console.error('❌ Failed to initialize Strangerblink Pair Chat:', error);
                 displaySystemMessage({
                     msg: 'Failed to connect to chat service. Please check your connection and refresh the page.',
                     type: 'system'
@@ -1267,7 +1267,7 @@
                 .then(() => {
                     console.log('✅ WebSocket reconnected via monitor');
                     displaySystemMessage({
-                        msg: 'Reconnected to BlinkRandom!',
+                        msg: 'Reconnected to Strangerblink!',
                         type: 'system'
                     });
                 })
