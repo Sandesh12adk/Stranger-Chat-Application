@@ -72,7 +72,7 @@ public class ChatController {
             if(messageRequest.getReceiverId() != 0 && senderId != null) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("msg", messageRequest.getMsg()
-                        .equalsIgnoreCase("@Creater")?"Instagram  :sandesh.adhikari.3323":messageRequest.getMsg());
+                        .equalsIgnoreCase("@creator")?"Instagram  :sandesh.adhikari.3323":messageRequest.getMsg());
                 response.put("senderId", senderId);
                 response.put("receiverId", messageRequest.getReceiverId());
                 response.put("timestamp", LocalDateTime.now());

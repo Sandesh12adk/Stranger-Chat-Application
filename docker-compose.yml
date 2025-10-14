@@ -1,4 +1,4 @@
-version: '3.8'
+
 services:
   # ----------------------------
   # MySQL (start first)
@@ -51,7 +51,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 230M
+          memory: 280M
         reservations:
           memory: 80M
     depends_on:
@@ -85,7 +85,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 260M
+          memory: 270M
         reservations:
           memory: 120M
     depends_on:
@@ -204,7 +204,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 450M
+          memory: 420M
         reservations:
           memory: 300M
     depends_on:

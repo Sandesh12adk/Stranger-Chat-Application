@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strangerblink | Join the Conversation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -30,11 +33,25 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
             color: var(--dark);
             line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* Loading Screen */
@@ -83,105 +100,177 @@
         #mainContent {
             display: none;
             min-height: 100vh;
-            padding: 20px;
-            justify-content: center;
-            align-items: center;
         }
 
         #mainContent.visible {
-            display: flex;
+            display: block;
         }
 
-        .container {
+        .hero-section {
+            min-height: 100vh;
             display: flex;
-            width: 100%;
-            max-width: 900px;
-            height: auto;
-            min-height: 550px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .illustration {
-            flex: 1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 40px;
+            justify-content: center;
+            padding: 20px;
             color: white;
             position: relative;
             overflow: hidden;
         }
 
-        .illustration::before {
+        .hero-section::before {
             content: '';
             position: absolute;
-            width: 200%;
-            height: 200%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
-            background-size: cover;
-            transform: rotate(-10deg);
-            top: -50%;
-            left: -50%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
         }
 
-        .illustration-content {
+        .hero-content {
             position: relative;
             z-index: 2;
             text-align: center;
-            width: 100%;
+            max-width: 800px;
         }
 
-        .illustration h2 {
-            font-size: clamp(1.5rem, 4vw, 1.8rem);
-            margin-bottom: 15px;
+        .hero-content h1 {
+            font-size: 3.5rem;
             font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
         }
 
-        .illustration p {
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
             opacity: 0.9;
-            margin-bottom: 30px;
         }
 
-        .chat-icon {
-            font-size: clamp(3rem, 10vw, 5rem);
-            margin-bottom: 30px;
-            color: rgba(255, 255, 255, 0.9);
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+            z-index: 2;
         }
 
-        .features {
-            text-align: left;
-            margin-top: 30px;
-            display: none; /* Hidden on mobile by default */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
         }
 
-        .feature {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        /* Content Sections */
+        .content-section {
+            padding: 80px 0;
+            background: white;
         }
 
-        .feature i {
-            margin-right: 10px;
-            font-size: 1.1rem;
-            min-width: 20px;
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
         }
 
-        .login-form {
-            flex: 1;
-            padding: clamp(30px, 5vw, 50px) clamp(20px, 4vw, 40px);
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            height: 100%;
+            transition: var(--transition);
+            border-top: 4px solid var(--primary);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .stats-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Login Section */
+        .login-section {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .login-intro {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            background: white;
-            min-height: 550px;
+        }
+
+        .login-intro h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            padding: 40px;
         }
 
         .logo {
@@ -190,18 +279,23 @@
             gap: 10px;
             margin-bottom: 30px;
             font-weight: 700;
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-size: 1.8rem;
             color: var(--primary);
         }
 
         .logo i {
-            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            font-size: 2rem;
         }
 
-        .login-form h2 {
-            font-size: clamp(1.5rem, 4vw, 1.8rem);
+        .login-form h3 {
+            font-size: 1.8rem;
             margin-bottom: 5px;
             color: var(--dark);
+        }
+
+        .login-form p {
+            color: var(--gray);
+            margin-bottom: 25px;
         }
 
         .form-group {
@@ -213,7 +307,6 @@
             margin-bottom: 8px;
             font-weight: 600;
             color: var(--dark);
-            font-size: clamp(0.8rem, 3vw, 0.9rem);
         }
 
         .input-with-icon {
@@ -268,7 +361,6 @@
             transition: var(--transition);
             font-weight: 600;
             background: white;
-            font-size: clamp(0.8rem, 3vw, 1rem);
         }
 
         .gender-option:hover {
@@ -290,7 +382,7 @@
             background: linear-gradient(135deg, #f72585 0%, #c2185b 100%);
         }
 
-        button {
+        .btn-primary-custom {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -308,7 +400,7 @@
             margin-top: 10px;
         }
 
-        button:hover {
+        .btn-primary-custom:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
         }
@@ -317,7 +409,7 @@
             display: none;
         }
 
-        button:disabled {
+        .btn-primary-custom:disabled {
             opacity: 0.7;
             cursor: not-allowed;
             transform: none;
@@ -327,7 +419,7 @@
         .footer {
             margin-top: 25px;
             text-align: center;
-            font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+            font-size: 0.85rem;
             color: var(--gray);
         }
 
@@ -356,7 +448,7 @@
         .legal-link {
             color: var(--gray);
             text-decoration: none;
-            font-size: clamp(0.7rem, 2vw, 0.75rem);
+            font-size: 0.75rem;
             transition: var(--transition);
             cursor: pointer;
             display: flex;
@@ -452,7 +544,6 @@
         .modal-header h2 {
             margin: 0;
             color: var(--dark);
-            font-size: clamp(1.3rem, 4vw, 1.5rem);
         }
 
         .close-modal {
@@ -478,13 +569,11 @@
         .modal-body h3 {
             margin: 20px 0 10px;
             color: var(--dark);
-            font-size: clamp(1rem, 3vw, 1.1rem);
         }
 
         .modal-body p {
             margin-bottom: 15px;
             color: var(--gray);
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
 
         .modal-body ul {
@@ -495,28 +584,34 @@
         .modal-body li {
             margin-bottom: 8px;
             color: var(--gray);
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
+        @media (max-width: 992px) {
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+
+            .login-container {
                 flex-direction: column;
-                height: auto;
             }
 
-            .illustration {
-                padding: 30px 20px;
-                min-height: 300px;
+            .login-intro {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.2rem;
             }
 
-            .login-form {
-                padding: 40px 30px;
-                min-height: auto;
+            .hero-content p {
+                font-size: 1.1rem;
             }
 
-            .features {
-                display: block; /* Show features on tablet and mobile */
+            .section-title {
+                font-size: 2rem;
             }
 
             .gender-options {
@@ -526,173 +621,24 @@
             .legal-links {
                 gap: 10px;
             }
-
-            .legal-link {
-                font-size: 0.7rem;
-            }
         }
 
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
+        @media (max-width: 576px) {
+            .hero-content h1 {
+                font-size: 1.8rem;
             }
 
-            #mainContent {
-                padding: 10px;
+            .content-section, .login-section {
+                padding: 60px 0;
             }
 
-            .container {
-                width: 100%;
-                border-radius: 15px;
+            .login-form, .login-intro {
+                padding: 25px;
             }
 
-            .illustration {
-                padding: 25px 15px;
-                min-height: 250px;
+            .stat-number {
+                font-size: 2.5rem;
             }
-
-            .login-form {
-                padding: 30px 20px;
-            }
-
-            .illustration h2 {
-                font-size: 1.4rem;
-            }
-
-            .chat-icon {
-                font-size: 3.5rem;
-                margin-bottom: 20px;
-            }
-
-            .login-form h2 {
-                font-size: 1.4rem;
-            }
-
-            .feature {
-                margin-bottom: 12px;
-            }
-
-            .notification {
-                right: 10px;
-                left: 10px;
-                max-width: none;
-            }
-
-            .modal-content {
-                padding: 20px;
-            }
-
-            .legal-links {
-                flex-direction: column;
-                gap: 8px;
-                align-items: center;
-            }
-
-            .legal-link {
-                font-size: 0.75rem;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .illustration {
-                padding: 20px 15px;
-            }
-
-            .login-form {
-                padding: 25px 15px;
-            }
-
-            input, select {
-                padding: 10px 12px 10px 40px;
-            }
-
-            .gender-option {
-                padding: 10px;
-            }
-
-            button {
-                padding: 12px;
-            }
-
-            .legal-links {
-                gap: 6px;
-            }
-
-            .legal-link {
-                font-size: 0.7rem;
-            }
-        }
-
-        /* Extra small devices */
-        @media (max-width: 320px) {
-            .logo {
-                flex-direction: column;
-                gap: 5px;
-                text-align: center;
-            }
-
-            .feature {
-                flex-direction: column;
-                text-align: center;
-                gap: 5px;
-            }
-
-            .feature i {
-                margin-right: 0;
-            }
-
-            .legal-links {
-                gap: 4px;
-            }
-
-            .legal-link {
-                font-size: 0.65rem;
-            }
-        }
-
-        /* Large screens */
-        @media (min-width: 1200px) {
-            .container {
-                max-width: 1000px;
-            }
-        }
-
-        /* Animation for form elements */
-        .form-group {
-            animation: fadeInUp 0.5s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .form-group:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .form-group:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .form-group:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        button {
-            animation: fadeInUp 0.5s ease 0.4s forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Prevent horizontal scroll on mobile */
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden;
         }
     </style>
 </head>
@@ -700,108 +646,277 @@
 <!-- Loading Screen -->
 <div id="loadingScreen">
     <div class="loading-spinner"></div>
-    <div class="loading-text">Checking your session...</div>
+    <div class="loading-text">.......</div>
 </div>
 
 <!-- Main Content -->
 <div id="mainContent">
-    <div class="container">
-        <div class="illustration">
-            <div class="illustration-content">
-                <i class="fas fa-comments chat-icon"></i>
-                <h2>Welcome to Strangerblink</h2>
-                <p>Join conversations with people around the world</p>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Connect with People Worldwide</h1>
+            <p>Join Strangerblink - the platform for safe, anonymous conversations with people from all over the globe</p>
+            <p>No Registration Needed, Start Chatting Instantly</p>
+            <a href="#login" class="btn btn-light btn-lg mt-3">Get Started</a>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
 
-                <div class="features">
-                    <div class="feature">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>Safe and secure environment</span>
+    <!-- Features Section -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">Why Choose Strangerblink?</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Safe & Secure</h3>
+                        <p>Our platform prioritizes your safety with robust moderation systems and privacy protections.</p>
                     </div>
-                    <div class="feature">
-                        <i class="fas fa-bolt"></i>
-                        <span>Instant connection with others</span>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
+                        <h3>Global Connections</h3>
+                        <p>Break geographical barriers and connect with people from different countries, cultures, and backgrounds.</p>
                     </div>
-                    <div class="feature">
-                        <i class="fas fa-users"></i>
-                        <span>Meet interesting people</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-smile"></i>
-                        <span>Friendly community guidelines</span>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Real Conversations</h3>
+                        <p>We foster an environment for genuine dialogue and authentic interactions between users.</p>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="login-form">
-            <div class="logo">
-                <i class="fas fa-comments"></i>
-                <span>Strangerblink</span>
-            </div>
-
-            <h2>Enter the Chat</h2>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="age">Your Age</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-user"></i>
-                        <input type="number" id="age" name="age" required min="1" max="120" placeholder="Enter your age to continue">
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">1M+</div>
+                        <div class="stat-label">Conversations</div>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="gender">Your Gender</label>
-                    <div class="gender-options">
-                        <div class="gender-option male" data-value="male">
-                            <i class="fas fa-mars"></i> Male
-                        </div>
-                        <div class="gender-option female" data-value="female">
-                            <i class="fas fa-venus"></i> Female
-                        </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">100+</div>
+                        <div class="stat-label">Countries</div>
                     </div>
-                    <input type="hidden" id="gender" name="gender" required>
                 </div>
-
-                <button type="submit" id="submitBtn">
-                    <span class="button-text">Join Conversation</span>
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin"></i>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Active</div>
                     </div>
-                </button>
-            </form>
-
-            <div class="footer">
-                <p>By entering the chat, you agree to our <a href="terms_and_conditions.html" id="termsLink">Terms and Conditions</a></p>
-
-
-                <!-- Legal Links Section -->
-                <div class="legal-links">
-                    <a href="privacy_policy.html" class="legal-link">
-                        <i class="fas fa-shield-alt"></i> Privacy Policy
-                    </a>
-                    <a href="terms_and_conditions.html" class="legal-link">
-                        <i class="fas fa-file-contract"></i> Terms & Conditions
-                    </a>
-                    <a href="about_us.html" class="legal-link">
-                        <i class="fas fa-info-circle"></i> About Us
-                    </a>
-                    <a href="disclaimer.html" class="legal-link">
-                        <i class="fas fa-exclamation-triangle"></i> Disclaimer
-                    </a>
-                    <a href="frequently_asked_questions.html" class="legal-link">
-                        <i class="fas fa-question-circle"></i> FAQ
-                    </a>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">99%</div>
+                        <div class="stat-label">Satisfaction</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- More Features Section -->
+    <section class="content-section bg-light">
+        <div class="container">
+            <h2 class="section-title">Our Community Values</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                        <div>
+                            <h4>Inclusion</h4>
+                            <p>We celebrate diversity and welcome people from all backgrounds and perspectives.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-heart fa-2x"></i>
+                        </div>
+                        <div>
+                            <h4>Respect</h4>
+                            <p>We promote respectful communication and positive interactions among our community.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-rocket fa-2x"></i>
+                        </div>
+                        <div>
+                            <h4>Innovation</h4>
+                            <p>We continuously improve our platform to enhance user experience and introduce new features.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-handshake fa-2x"></i>
+                        </div>
+                        <div>
+                            <h4>Trust</h4>
+                            <p>We prioritize user safety and work tirelessly to maintain a trustworthy platform.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Section -->
+    <section class="login-section" id="login">
+        <div class="container">
+            <div class="login-container row g-0">
+                <div class="col-lg-5">
+                    <div class="login-intro">
+                        <h2>Ready to Connect?</h2>
+                        <p>Join millions of users worldwide in meaningful conversations. Enter your details to get started.</p>
+                        <div class="mt-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <span>Safe and anonymous</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <span>No registration required</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <span>Start chatting instantly</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="login-form">
+                        <div class="logo">
+                            <i class="fas fa-comments"></i>
+                            <span>Strangerblink</span>
+                        </div>
+
+                        <h3>Join the Conversation</h3>
+                        <p>Enter your details to start connecting with people worldwide</p>
+
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="age">Your Age</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-user"></i>
+                                    <input type="number" id="age" name="age" required min="1" max="120" placeholder="Enter your age to continue">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gender">Your Gender</label>
+                                <div class="gender-options">
+                                    <div class="gender-option male" data-value="male">
+                                        <i class="fas fa-mars"></i> Male
+                                    </div>
+                                    <div class="gender-option female" data-value="female">
+                                        <i class="fas fa-venus"></i> Female
+                                    </div>
+                                </div>
+                                <input type="hidden" id="gender" name="gender" required>
+                            </div>
+
+                            <button type="submit" class="btn-primary-custom" id="submitBtn">
+                                <span class="button-text">Start Chatting</span>
+                                <div class="loading">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+                            </button>
+                        </form>
+
+                        <div class="footer">
+                            <p>By entering the chat, you agree to our <a href="terms_and_conditions.html" id="termsLink">Terms and Conditions</a></p>
+
+                            <!-- Legal Links Section -->
+                            <div class="legal-links">
+                                <a href="privacy_policy.html" class="legal-link">
+                                    <i class="fas fa-shield-alt"></i> Privacy Policy
+                                </a>
+                                <a href="terms_and_conditions.html" class="legal-link">
+                                    <i class="fas fa-file-contract"></i> Terms & Conditions
+                                </a>
+                                <a href="about_us.html" class="legal-link">
+                                    <i class="fas fa-info-circle"></i> About Us
+                                </a>
+                                <a href="disclaimer.html" class="legal-link">
+                                    <i class="fas fa-exclamation-triangle"></i> Disclaimer
+                                </a>
+                                <a href="frequently_asked_questions.html" class="legal-link">
+                                    <i class="fas fa-question-circle"></i> FAQ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
 <div class="notification" id="notification">
     <i class="fas fa-exclamation-circle"></i>
     <span id="notificationText">This is a notification</span>
 </div>
 
+<!-- Terms and Conditions Modal -->
+<div class="modal" id="termsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Terms and Conditions</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <h3>1. Acceptance of Terms</h3>
+            <p>By accessing and using Strangerblink, you accept and agree to be bound by the terms and provision of this agreement.</p>
+
+            <h3>2. User Conduct</h3>
+            <p>You agree to use Strangerblink in a respectful manner and not to:</p>
+            <ul>
+                <li>Harass, threaten, or intimidate other users</li>
+                <li>Share inappropriate, offensive, or explicit content</li>
+                <li>Impersonate others or provide false information</li>
+                <li>Engage in any illegal activities</li>
+            </ul>
+
+            <h3>3. Privacy</h3>
+            <p>Your privacy is important to us. Please review our Privacy Policy to understand how we collect and use your information.</p>
+
+            <h3>4. Account Termination</h3>
+            <p>We reserve the right to terminate or suspend your account for violations of these terms.</p>
+
+            <h3>5. Changes to Terms</h3>
+            <p>We may modify these terms at any time. Continued use of the service constitutes acceptance of the modified terms.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const apiUrl = "http://localhost:1111/user/api/user"; //UserBase URL
 
@@ -953,14 +1068,15 @@
         }
     });
 
-    // Handle mobile viewport height issues
-    function setViewportHeight() {
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-
-    setViewportHeight();
-    window.addEventListener('resize', setViewportHeight);
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
 </script>
 </body>
 </html>
