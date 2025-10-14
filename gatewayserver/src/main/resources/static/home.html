@@ -142,11 +142,32 @@
             transform: translateY(-2px);
         }
 
+        /* Mobile Header Controls */
+        .mobile-header-controls {
+            display: none;
+            gap: 10px;
+        }
+
+        .mobile-menu-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
         /* Main Content */
         .chat-container {
             display: flex;
             flex: 1;
             overflow: hidden;
+            position: relative;
         }
 
         /* Sidebar Styles */
@@ -157,6 +178,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: transform 0.3s ease;
         }
 
         .sidebar-header {
@@ -759,25 +781,170 @@
             }
         }
 
-        /* Responsive Design */
+        /* System Notification Styles */
+        .system-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            max-width: 350px;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid #ff4757;
+        }
+
+        .system-notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .notification-content i {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        /* Alternative styling for different message types */
+        .system-notification.info {
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            border-left-color: #2f4fdd;
+        }
+
+        .system-notification.warning {
+            background: linear-gradient(135deg, #f8961e 0%, #e67e22 100%);
+            border-left-color: #d35400;
+        }
+
+        .system-notification.success {
+            background: linear-gradient(135deg, #4cc9f0 0%, #3498db 100%);
+            border-left-color: #2980b9;
+        }
+
+        /* Blocked user message styling */
+        .blocked-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-style: italic;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+        }
+
+        /* Mobile Responsive Styles */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
+            /* Header adjustments for mobile */
+            header {
+                padding: 10px 15px;
             }
 
-            .sidebar .user-details,
-            .sidebar-section h3,
-            .search-container,
-            .sidebar-tabs span {
+            .logo span {
+                font-size: 1.1rem;
+            }
+
+            .profile {
+                gap: 8px;
+            }
+
+            .user-info span {
                 display: none;
             }
 
-            .user-item {
-                justify-content: center;
+            .user-info {
+                padding: 6px;
             }
 
-            .message {
-                max-width: 85%;
+            #dashboardBtn, #logoutBtn {
+                display: none;
+            }
+
+            .mobile-header-controls {
+                display: flex;
+            }
+
+            /* Chat container adjustments */
+            .chat-container {
+                flex-direction: column;
+            }
+
+            /* Sidebar for mobile */
+            .sidebar {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 20;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-header {
+                padding: 12px 15px;
+            }
+
+            .sidebar-tabs {
+                flex-direction: row;
+            }
+
+            .sidebar-tab {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+
+            .search-container {
+                padding: 10px 12px;
+            }
+
+            .filter-options {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .sidebar-content {
+                padding: 10px;
+            }
+
+            /* Chat area for mobile */
+            .chat-area {
+                width: 100%;
+            }
+
+            .chat-header {
+                padding: 10px 15px;
+            }
+
+            .current-chat-user {
+                gap: 8px;
+            }
+
+            .current-chat-user .user-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 0.75rem;
+            }
+
+            .chat-info h3 {
+                font-size: 0.85rem;
+            }
+
+            .chat-info p {
+                font-size: 0.7rem;
             }
 
             .user-details-extended {
@@ -785,11 +952,66 @@
                 gap: 2px;
             }
 
+            .user-detail {
+                font-size: 0.65rem;
+            }
+
+            .chat-actions {
+                gap: 6px;
+            }
+
+            .block-btn {
+                padding: 5px 8px;
+                font-size: 0.7rem;
+            }
+
+            .messages {
+                padding: 12px 15px;
+            }
+
+            .message {
+                max-width: 85%;
+                margin-bottom: 12px;
+            }
+
+            .message-bubble {
+                padding: 7px 12px;
+                font-size: 0.8rem;
+            }
+
+            .message-time {
+                font-size: 0.6rem;
+            }
+
+            .input-area {
+                padding: 12px 15px;
+            }
+
+            .input-actions {
+                margin-bottom: 10px;
+            }
+
+            .input-actions button {
+                font-size: 0.85rem;
+            }
+
+            #messageInput {
+                padding: 10px 14px;
+                font-size: 0.8rem;
+            }
+
+            .send-button {
+                width: 36px;
+                height: 36px;
+                font-size: 0.75rem;
+            }
+
+            /* Message indicators for mobile */
             .message-indicator {
-                top: -2px;
-                right: -2px;
                 width: 16px;
                 height: 16px;
+                top: -2px;
+                right: -2px;
             }
 
             .message-indicator.with-count {
@@ -806,15 +1028,116 @@
                 font-size: 0.85rem;
             }
 
-            .chat-actions {
-                flex-direction: column;
-                gap: 4px;
+            .new-message-label {
+                font-size: 0.65rem;
+                padding: 3px 6px;
             }
 
-            .block-btn {
-                padding: 4px 8px;
+            /* System notifications for mobile */
+            .system-notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                transform: translateY(-100px);
+            }
+
+            .system-notification.show {
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Extra small devices */
+            header {
+                padding: 8px 12px;
+            }
+
+            .logo span {
+                font-size: 1rem;
+            }
+
+            .logo i {
+                font-size: 1.2rem;
+            }
+
+            .avatar {
+                width: 24px;
+                height: 24px;
                 font-size: 0.7rem;
             }
+
+            .mobile-menu-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+
+            .chat-header {
+                padding: 8px 12px;
+            }
+
+            .current-chat-user .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 0.7rem;
+            }
+
+            .chat-info h3 {
+                font-size: 0.8rem;
+            }
+
+            .chat-info p {
+                font-size: 0.65rem;
+            }
+
+            .user-detail {
+                font-size: 0.6rem;
+            }
+
+            .messages {
+                padding: 10px 12px;
+            }
+
+            .message {
+                max-width: 90%;
+                margin-bottom: 10px;
+            }
+
+            .message-bubble {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+
+            .input-area {
+                padding: 10px 12px;
+            }
+
+            #messageInput {
+                padding: 8px 12px;
+                font-size: 0.75rem;
+            }
+
+            .send-button {
+                width: 32px;
+                height: 32px;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 15;
+            display: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
         }
 
         /* Scrollbar Styling */
@@ -854,67 +1177,6 @@
         .empty-state p {
             font-size: 0.85rem;
         }
-        /* System Notification Styles */
-.system-notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    z-index: 10000;
-    max-width: 350px;
-    transform: translateX(400px);
-    opacity: 0;
-    transition: all 0.3s ease;
-    border-left: 4px solid #ff4757;
-}
-
-.system-notification.show {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.notification-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
-}
-
-.notification-content i {
-    font-size: 1.1rem;
-    flex-shrink: 0;
-}
-
-/* Alternative styling for different message types */
-.system-notification.info {
-    background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
-    border-left-color: #2f4fdd;
-}
-
-.system-notification.warning {
-    background: linear-gradient(135deg, #f8961e 0%, #e67e22 100%);
-    border-left-color: #d35400;
-}
-
-.system-notification.success {
-    background: linear-gradient(135deg, #4cc9f0 0%, #3498db 100%);
-    border-left-color: #2980b9;
-}
-
-/* Blocked user message styling */
-.blocked-message {
-    text-align: center;
-    padding: 20px;
-    color: var(--gray);
-    font-style: italic;
-    background: var(--light-gray);
-    border-radius: var(--border-radius);
-    margin: 10px 0;
-}
     </style>
 </head>
 <body>
@@ -937,11 +1199,17 @@
                 <i class="fas fa-sign-out-alt"></i>
                 Logout
             </button>
+            <div class="mobile-header-controls">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </div>
     </header>
 
     <div class="chat-container">
-        <div class="sidebar">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3>Connect with People</h3>
             </div>
@@ -1146,6 +1414,33 @@
 
      // Close emoji picker
      document.getElementById('emojiPicker').classList.remove('active');
+ }
+
+ // Mobile sidebar controls
+ function setupMobileControls() {
+     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+     const sidebar = document.getElementById('sidebar');
+     const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+     if (mobileMenuBtn && sidebar && sidebarOverlay) {
+         mobileMenuBtn.addEventListener('click', function() {
+             sidebar.classList.toggle('active');
+             sidebarOverlay.classList.toggle('active');
+         });
+
+         sidebarOverlay.addEventListener('click', function() {
+             sidebar.classList.remove('active');
+             sidebarOverlay.classList.remove('active');
+         });
+
+         // Close sidebar when selecting a user on mobile
+         document.addEventListener('click', function(e) {
+             if (window.innerWidth <= 768 && e.target.closest('.user-item')) {
+                 sidebar.classList.remove('active');
+                 sidebarOverlay.classList.remove('active');
+             }
+         });
+     }
  }
 
  // Check session and get user data
@@ -2167,6 +2462,7 @@
      console.log('🚀 Initializing Strangerblink...');
 
      initializeEmojiPicker();
+     setupMobileControls();
 
      checkUserSession()
          .then((userData) => {
