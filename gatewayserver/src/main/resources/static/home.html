@@ -1137,41 +1137,73 @@
             }
         }
     }
+// Enhanced keyboard persistence function
+function setupKeyboardPersistence() {
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
 
-    // Prevent keyboard from closing on send
-    function setupKeyboardPersistence() {
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
+    // Use click event with proper focus handling
+    sendButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        if (message) {
+            // Store current selection and focus state
+            const hadFocus = document.activeElement === messageInput;
+            const selectionStart = messageInput.selectionStart;
+            const selectionEnd = messageInput.selectionEnd;
 
-        // Prevent blur on send button click
-        sendButton.addEventListener('touchstart', function(e) {
-            e.preventDefault();
             sendMessage();
-            // Keep focus on input to maintain keyboard
+
+            // Restore focus and selection immediately
+            setTimeout(() => {
+                messageInput.focus();
+                if (hadFocus) {
+                    messageInput.setSelectionRange(selectionStart, selectionEnd);
+                }
+            }, 0);
+        }
+    });
+
+    // Enhanced Enter key handling
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const message = this.value.trim();
+            if (message) {
+                // Store current state
+                const selectionStart = this.selectionStart;
+                const selectionEnd = this.selectionEnd;
+
+                sendMessage();
+
+                // Restore focus and selection
+                setTimeout(() => {
+                    this.focus();
+                    this.setSelectionRange(selectionStart, selectionEnd);
+                }, 0);
+            }
+        }
+    });
+
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    // Prevent any other elements from stealing focus
+    document.addEventListener('click', function(e) {
+        // If user clicks on send button or emoji button, maintain focus
+        if (e.target.closest('#sendButton') || e.target.closest('#emojiButton')) {
+            e.preventDefault();
             setTimeout(() => {
                 messageInput.focus();
             }, 10);
-        });
+        }
+    });
 
-        // Handle Enter key while keeping keyboard open
-        messageInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-                // Keep focus to maintain keyboard
-                setTimeout(() => {
-                    messageInput.focus();
-                }, 10);
-            }
-        });
-
-        // Auto-resize textarea
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-        });
-    }
-
+    console.log('✅ Keyboard persistence initialized');
+}
   // Mobile sidebar controls
     function setupMobileControls() {
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -1873,42 +1905,69 @@
  }
 
  // Send message function - REMOVED BLOCK CHECK
- function sendMessage() {
-     const msgBox = document.getElementById("messageInput");
-     const msg = msgBox.value.trim();
-     const receiverId = currentlySelectedUserId;
+ // Send message function - Enhanced for keyboard persistence
+function sendMessage() {
+    const msgBox = document.getElementById("messageInput");
+    const msg = msgBox.value.trim();
+    const receiverId = currentlySelectedUserId;
 
-     const messageRequest = {
-         msg: msg,
-         receiverId: parseInt(receiverId),
-         senderId: userId
-     };
+    if (!msg || !receiverId) {
+        console.log('❌ Cannot send: no message or receiver');
+        return;
+    }
 
-     console.log("📤 Sending message to:", receiverId);
+    const messageRequest = {
+        msg: msg,
+        receiverId: parseInt(receiverId),
+        senderId: userId
+    };
 
-     if (stompClient && isWebSocketConnected) {
-         try {
-             stompClient.send("/app/chat.send", {}, JSON.stringify(messageRequest));
-             console.log("✅ Message sent");
+    console.log("📤 Sending message to:", receiverId);
 
-             // Add to inbox (for sent messages - but no red dot)
-             addToInbox(parseInt(receiverId), messageRequest, false);
+    if (stompClient && isWebSocketConnected) {
+        try {
+            stompClient.send("/app/chat.send", {}, JSON.stringify(messageRequest));
+            console.log("✅ Message sent");
 
-             // Move the receiver to top of the list
-             moveUserToTop(parseInt(receiverId));
+            // Add to inbox (for sent messages - but no red dot)
+            addToInbox(parseInt(receiverId), messageRequest, false);
 
-             msgBox.value = "";
-             msgBox.style.height = 'auto';
+            // Move the receiver to top of the list
+            moveUserToTop(parseInt(receiverId));
 
-         } catch (error) {
-             console.error("❌ Error sending message:", error);
-         }
-     } else {
-         console.error("❌ WebSocket not connected");
-         connectWebSocket();
-     }
- }
+            // Clear input but maintain focus
+            msgBox.value = "";
+            msgBox.style.height = 'auto';
 
+            // Force focus to remain - more aggressive approach
+            setTimeout(() => {
+                console.log('⌨️ Forcing focus after message send');
+                msgBox.focus();
+                // Try multiple times to ensure focus
+                setTimeout(() => {
+                    if (document.activeElement !== msgBox) {
+                        console.log('⌨️ Retrying focus...');
+                        msgBox.focus();
+                    }
+                }, 100);
+            }, 10);
+
+        } catch (error) {
+            console.error("❌ Error sending message:", error);
+            // Even on error, maintain focus
+            setTimeout(() => {
+                msgBox.focus();
+            }, 10);
+        }
+    } else {
+        console.error("❌ WebSocket not connected");
+        connectWebSocket();
+        // Maintain focus even if WebSocket is disconnected
+        setTimeout(() => {
+            msgBox.focus();
+        }, 10);
+    }
+}
  // Display message in chat
  function displayMessage(messageData) {
      if (messageData.type === 'system') {
@@ -2260,31 +2319,123 @@
  }
 
  // Event listeners
- function setupEventListeners() {
- // Add this line in setupEventListeners() function
-document.getElementById("sendButton").addEventListener("click", sendMessage);
-     document.getElementById("messageInput").addEventListener("keydown", function(e) {
-         if (e.key === "Enter" && !e.shiftKey) {
-             e.preventDefault();
-             sendMessage();
-         }
-     });
+// Event listeners - includes keyboard persistence
+function setupEventListeners() {
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const emojiButton = document.getElementById('emojiButton');
 
-     document.getElementById("logoutBtn").addEventListener("click", function() {
-         if (stompClient) stompClient.disconnect();
-         fetch(`${userApiUrl}/logout`, { method: "GET", credentials: "include" })
-         .then(() => {
-             window.location.href = "signin.html";
-         });
-     });
+    console.log('🎯 Setting up event listeners with keyboard persistence...');
 
-     document.getElementById("dashboardBtn").addEventListener("click", function() {
-         window.location.href = "dashboard.html";
-     });
+    // Enhanced send button click handler
+    sendButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('📤 Send button clicked');
 
-     // Keep block button event listener
-     document.getElementById("blockUserBtn").addEventListener("click", toggleBlockUser);
- }
+        const message = messageInput.value.trim();
+        if (message) {
+            // Store current state
+            const hadFocus = document.activeElement === messageInput;
+            const selectionStart = messageInput.selectionStart;
+            const selectionEnd = messageInput.selectionEnd;
+
+            sendMessage();
+
+            // Force focus restoration
+            if (hadFocus) {
+                setTimeout(() => {
+                    console.log('⌨️ Restoring focus after send');
+                    messageInput.focus();
+                    messageInput.setSelectionRange(selectionStart, selectionEnd);
+                }, 50);
+            }
+        }
+    });
+
+    // Enhanced Enter key handling
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('⏎ Enter key pressed');
+
+            const message = this.value.trim();
+            if (message) {
+                // Store current state
+                const selectionStart = this.selectionStart;
+                const selectionEnd = this.selectionEnd;
+
+                sendMessage();
+
+                // Force focus restoration
+                setTimeout(() => {
+                    console.log('⌨️ Restoring focus after Enter');
+                    this.focus();
+                    this.setSelectionRange(selectionStart, selectionEnd);
+                }, 50);
+            }
+        }
+    });
+
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    // Prevent focus loss when clicking other buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('#sendButton') ||
+            e.target.closest('#emojiButton') ||
+            e.target.closest('.input-actions button')) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Maintain focus on input
+            setTimeout(() => {
+                if (!messageInput.matches(':focus')) {
+                    console.log('⌨️ Maintaining focus after button click');
+                    messageInput.focus();
+                }
+            }, 100);
+        }
+    });
+
+    // Handle emoji button specifically
+    emojiButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Toggle emoji picker but maintain focus
+        const emojiPicker = document.getElementById('emojiPicker');
+        emojiPicker.classList.toggle('active');
+
+        // Ensure input stays focused
+        setTimeout(() => {
+            messageInput.focus();
+        }, 10);
+    });
+
+    // Other event listeners
+    document.getElementById("logoutBtn").addEventListener("click", function() {
+        if (stompClient) stompClient.disconnect();
+        fetch(`${userApiUrl}/logout`, { method: "GET", credentials: "include" })
+        .then(() => {
+            window.location.href = "signin.html";
+        });
+    });
+
+    document.getElementById("dashboardBtn").addEventListener("click", function() {
+        window.location.href = "dashboard.html";
+    });
+
+    // Keep block button event listener
+    document.getElementById("blockUserBtn").addEventListener("click", toggleBlockUser);
+
+    console.log('✅ All event listeners initialized including keyboard persistence');
+}
 // Initialize app
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Initializing Strangerblink...');
@@ -2292,7 +2443,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeEmojiPicker();
     setupMobileControls();
     setupBackButtonHandler();
-    // REMOVE setupEventListeners() from here - moved to inside checkUserSession()
+    // REMOVE setupKeyboardPersistence() from here - it's causing conflicts
 
     checkUserSession()
         .then((userData) => {
@@ -2301,7 +2452,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             setupTabSwitching();
             setupSearchAndFilter();
-            setupEventListeners();  // ← KEEP ONLY THIS ONE
+            setupEventListeners();  // This includes keyboard persistence
 
             return connectWebSocket();
         })
