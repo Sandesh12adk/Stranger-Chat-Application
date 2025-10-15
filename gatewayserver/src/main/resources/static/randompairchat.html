@@ -705,6 +705,43 @@
             background: rgba(0, 0, 0, 0.2);
             border-radius: 10px;
         }
+        /* Improve mobile touch targets */
+.send-button {
+    width: 44px; /* Slightly larger for better touch */
+    height: 44px;
+    border-radius: 50%;
+    background: var(--light-gray);
+    color: var(--gray);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1rem;
+    flex-shrink: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.send-button:not(:disabled) {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+}
+
+.send-button:active:not(:disabled) {
+    transform: scale(0.92);
+}
+
+/* Ensure proper cursor on desktop */
+@media (hover: hover) {
+    .send-button:hover:not(:disabled) {
+        background: var(--primary-dark);
+        transform: scale(1.05);
+    }
+}
     </style>
 </head>
 <body>
@@ -1273,61 +1310,65 @@
         messagesContainer.appendChild(messageElement);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+function sendMessage() {
+    const msgBox = document.getElementById("messageInput");
+    const msg = msgBox.value.trim();
 
-    // Send message function
-    function sendMessage() {
-        const message = messageInput.value.trim();
-        if (message === '' || !currentPairUserId) {
-            if (!currentPairUserId) {
-                displaySystemMessage({
-                    msg: 'You are not connected to anyone yet. Please use "Next" to find a partner.',
-                    type: 'system'
-                });
-            }
-            return;
-        }
+    // Add extra validation to prevent empty messages
+    if (!msg) {
+        console.log("⏩ Skipping empty message");
+        return;
+    }
 
-        const messageRequest = {
-            msg: message,
-            receiverId: parseInt(currentPairUserId),
-            senderId: userId
-        };
+    if (!currentPairUserId) {
+        console.log("⏩ No partner connected");
+        displaySystemMessage({
+            msg: 'You need to be connected to a partner to send messages.',
+            type: 'system'
+        });
+        return;
+    }
 
-        console.log("📤 Sending message to pair:", currentPairUserId);
+    const messageRequest = {
+        msg: msg,
+        receiverId: parseInt(currentPairUserId),
+        senderId: userId
+    };
 
-        if (stompClient && isWebSocketConnected) {
-            try {
-                stompClient.send("/application/chat.send", {}, JSON.stringify(messageRequest));
-                console.log("✅ Message sent to pair");
+    console.log("📤 Sending message to:", currentPairUserId);
 
-                displayMessage(messageRequest, true);
+    // Display the message immediately for better UX
+    displayMessage(messageRequest, true);
 
-                // Clear input and reset height WITHOUT removing focus
-                messageInput.value = '';
-                messageInput.style.height = 'auto';
+    if (stompClient && isWebSocketConnected) {
+        try {
+            stompClient.send("/app/chat.send", {}, JSON.stringify(messageRequest));
+            console.log("✅ Message sent via WebSocket");
 
-                // Immediately return focus to prevent keyboard from closing
-                // No setTimeout needed - instant focus maintains keyboard
-                messageInput.focus();
+            msgBox.value = "";
+            msgBox.style.height = 'auto';
 
-            } catch (error) {
-                console.error("❌ Error sending message:", error);
-                displaySystemMessage({
-                    msg: 'Failed to send message. Please try again.',
-                    type: 'system'
-                });
-            }
-        } else {
-            console.error("❌ WebSocket not connected");
+            // Keep focus on input for mobile keyboard
+            setTimeout(() => {
+                msgBox.focus();
+            }, 50);
+
+        } catch (error) {
+            console.error("❌ Error sending message:", error);
             displaySystemMessage({
-                msg: 'Connection lost. Reconnecting...',
+                msg: 'Failed to send message. Please try again.',
                 type: 'system'
             });
-            connectWebSocket().catch(error => {
-                console.error('Failed to reconnect:', error);
-            });
         }
+    } else {
+        console.error("❌ WebSocket not connected");
+        displaySystemMessage({
+            msg: 'Connection lost. Reconnecting...',
+            type: 'system'
+        });
+        connectWebSocket();
     }
+}
 
     // Get current time in HH:MM AM/PM format
     function getCurrentTime() {
@@ -1385,66 +1426,113 @@
         });
     }
 
-    // Auto-resize textarea
-    messageInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
-    });
 
-    // Event listeners
-    sendButton.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent any default behavior
+  // Improved event listeners setup
+function setupEventListeners() {
+    const sendButton = document.getElementById("sendButton");
+    const messageInput = document.getElementById("messageInput");
+
+    // Remove any existing event listeners first
+    const newSendButton = sendButton.cloneNode(true);
+    const newMessageInput = messageInput.cloneNode(true);
+
+    sendButton.parentNode.replaceChild(newSendButton, sendButton);
+    messageInput.parentNode.replaceChild(newMessageInput, messageInput);
+
+    // Get fresh references
+    const freshSendButton = document.getElementById("sendButton");
+    const freshMessageInput = document.getElementById("messageInput");
+
+    // Click handler
+    freshSendButton.addEventListener("click", function(e) {
+        console.log('🖱️ Send button clicked');
+        e.preventDefault();
         sendMessage();
     });
 
-    // Also handle touch events for mobile to prevent focus loss
-    sendButton.addEventListener('touchend', function(e) {
-        e.preventDefault(); // Prevent default touch behavior
+    // Touch handler for mobile
+    freshSendButton.addEventListener("touchend", function(e) {
+        console.log('📱 Send button touched');
+        e.preventDefault();
         sendMessage();
     });
 
-    messageInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
+    // Enter key handler
+    freshMessageInput.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            console.log('⌨️ Enter key pressed');
             e.preventDefault();
             sendMessage();
         }
     });
 
+    // Auto-resize textarea
+    freshMessageInput.addEventListener("input", function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+
+        // Update send button state
+        updateSendButtonState();
+    });
+}
     dashboardBtn.addEventListener('click', navigateToDashboard);
     logoutBtn.addEventListener('click', performLogout);
     nextBtn.addEventListener('click', findNextPartner);
 
-    // Initialize app
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Initializing Strangerblink Pair Chat...');
+// Update send button state based on connection and input
+function updateSendButtonState() {
+    const sendButton = document.getElementById("sendButton");
+    const messageInput = document.getElementById("messageInput");
 
-        partnerName.textContent = 'Not Connected';
-        partnerStatusText.textContent = 'Tap Next to find a partner';
-        messageInput.disabled = true;
-        sendButton.disabled = true;
+    const hasText = messageInput.value.trim().length > 0;
+    const isConnected = currentPairUserId !== null;
 
-        checkUserSession()
-            .then((userData) => {
-                console.log('🎯 User session validated:', userData);
-                return connectWebSocket();
-            })
-            .then(() => {
-                console.log('✅ Pair Chat WebSocket connected and subscriptions active');
+    sendButton.disabled = !hasText || !isConnected;
 
-                displaySystemMessage({
-                    msg: 'Connected to Strangerblink! Tap "Next" to find your first random partner.',
-                    type: 'system'
-                });
-            })
-            .catch(error => {
-                console.error('❌ Failed to initialize Strangerblink Pair Chat:', error);
-                displaySystemMessage({
-                    msg: 'Failed to connect to chat service. Please check your connection and refresh the page.',
-                    type: 'system'
-                });
+    if (hasText && isConnected) {
+        sendButton.style.background = "var(--primary)";
+        sendButton.style.color = "white";
+        sendButton.style.boxShadow = "0 2px 8px rgba(67, 97, 238, 0.3)";
+    } else {
+        sendButton.style.background = "var(--light-gray)";
+        sendButton.style.color = "var(--gray)";
+        sendButton.style.boxShadow = "none";
+    }
+}
+
+  // Initialize app
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Initializing Strangerblink Pair Chat...');
+
+    partnerName.textContent = 'Not Connected';
+    partnerStatusText.textContent = 'Tap Next to find a partner';
+    messageInput.disabled = true;
+    sendButton.disabled = true;
+
+    // ADD THIS LINE - Setup event listeners FIRST
+    setupEventListeners();
+
+    checkUserSession()
+        .then((userData) => {
+            console.log('🎯 User session validated:', userData);
+            return connectWebSocket();
+        })
+        .then(() => {
+            console.log('✅ Pair Chat WebSocket connected and subscriptions active');
+
+            displaySystemMessage({
+                msg: 'Connected to Strangerblink! Tap "Next" to find your first random partner.',
+                type: 'system'
             });
-    });
-
+        })
+        .catch(error => {
+            console.error('❌ Failed to initialize Strangerblink Pair Chat:', error);
+            displaySystemMessage({
+                msg: 'Failed to connect to chat service. Please check your connection and refresh the page.',
+                type: 'system'
+            });
+        });
+});
     // Handle browser back button and page unload/reload
     window.addEventListener('beforeunload', function(e) {
         // Skip current partner when leaving the page

@@ -124,12 +124,15 @@
       margin: 0 auto 20px;
       border: 5px solid var(--light);
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      position: relative;
     }
 
     .profile-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center center;
+      display: block;
     }
 
     .social-links a {
@@ -178,6 +181,7 @@
       margin-top: 60px;
     }
 
+    /* Mobile-specific fixes */
     @media (max-width: 768px) {
       .hero-section {
         padding: 60px 0;
@@ -188,9 +192,25 @@
         height: 150px;
       }
 
+      .profile-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+      }
+
       .floating-btn {
         bottom: 20px;
         right: 20px;
+      }
+    }
+
+    /* For very small screens */
+    @media (max-width: 576px) {
+      .profile-img-container {
+        width: 130px;
+        height: 130px;
+        border-width: 4px;
       }
     }
   </style>
@@ -223,6 +243,7 @@
     </div>
   </div>
 </nav>
+
 <!-- Hero Section -->
 <section class="hero-section d-flex align-items-center justify-content-center text-center py-5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border-radius: 0 0 20px 20px;">
   <div class="container">
@@ -233,7 +254,6 @@
   </div>
 </section>
 
-
 <!-- Main Content -->
 <div class="container">
   <!-- Developer Section -->
@@ -243,10 +263,9 @@
       <div class="col-lg-8">
         <div class="developer-card p-4">
           <div class="text-center mb-4">
-            <!-- Replace with your actual image path -->
+            <!-- Fixed Image Container -->
             <div class="profile-img-container">
-              <img src="https://www.strangerblink.fun/images/sandesh.png" alt="Sandesh Adhikari">
-
+              <img src="https://www.strangerblink.fun/images/sandesh.png" alt="Sandesh Adhikari" class="profile-img">
             </div>
             <h3 class="mb-1">Sandesh Adhikari</h3>
             <p class="text-muted">Electronics and Communication Engineering Student</p>
