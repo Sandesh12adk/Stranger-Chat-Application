@@ -14,7 +14,11 @@ public class myCorsWebFilter {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://156.67.31.159:1111"));
+        config.setAllowedOrigins(Arrays.asList(
+                "https://www.strangerblink.fun",
+                "https://www.www.strangerblink.fun",
+                "https://www.strangerblink.fun"
+        ));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowCredentials(true);
         config.addAllowedHeader("*"); // allow all headers
@@ -25,5 +29,3 @@ public class myCorsWebFilter {
         return new CorsWebFilter(source);
     }
 }
-
-

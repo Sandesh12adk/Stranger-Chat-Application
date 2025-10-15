@@ -1343,8 +1343,8 @@
 </div>
 <script>
     // Separate URLs for different microservices
- const userApiUrl = "http://156.67.31.159:1111/user/api/user"; //UserBase URL
- const chatApiUrl = "http://156.67.31.159:1111/chat"; // Chat Service base URL
+ const userApiUrl = "https://www.strangerblink.fun/user/api/user"; //UserBase URL
+ const chatApiUrl = "https://www.strangerblink.fun/chat"; // Chat Service base URL
 
  // Global variables
  let stompClient = null;
@@ -1520,7 +1520,7 @@
          try {
              console.log('🔌 Connecting WebSocket for userId:', userId);
 
-             const socket = new SockJS('http://156.67.31.159:1111/chat/ws-chat');
+             const socket = new SockJS('https://www.strangerblink.fun/chat/ws-chat');
              stompClient = Stomp.over(socket);
 
              // Set a connection timeout
@@ -2296,7 +2296,7 @@
 
  // Check if current chat user is blocked
  function checkBlockStatus(targetUserId) {
-     const url = `http://156.67.31.159:1111/user/api/user/isblocked/${userId}/${targetUserId}`;
+     const url = `https://www.strangerblink.fun/user/api/user/isblocked/${userId}/${targetUserId}`;
      console.log('🔍 Checking block status with URL:', url);
 
      fetch(url, {
@@ -2343,7 +2343,7 @@
 
      if (isBlockedStatus) {
          // Unblock user
-         const url = `http://156.67.31.159:1111/user/api/user/unblock/${userId}/${targetUserId}`;
+         const url = `https://www.strangerblink.fun/user/api/user/unblock/${userId}/${targetUserId}`;
          console.log('🔓 Unblocking user with URL:', url);
 
          fetch(url, {
@@ -2378,7 +2378,7 @@
              blockedBy: userId
          };
 
-         const url = `http://156.67.31.159:1111/user/api/user/block`;
+         const url = `https://www.strangerblink.fun/user/api/user/block`;
          console.log('🚫 Blocking user with URL:', url, 'Request:', blockRequest);
 
          fetch(url, {
