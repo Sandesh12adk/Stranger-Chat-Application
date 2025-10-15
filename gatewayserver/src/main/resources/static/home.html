@@ -1873,42 +1873,48 @@
  }
 
  // Send message function - REMOVED BLOCK CHECK
- function sendMessage() {
-     const msgBox = document.getElementById("messageInput");
-     const msg = msgBox.value.trim();
-     const receiverId = currentlySelectedUserId;
+function sendMessage() {
+    const msgBox = document.getElementById("messageInput");
+    const msg = msgBox.value.trim();
+    const receiverId = currentlySelectedUserId;
 
-     const messageRequest = {
-         msg: msg,
-         receiverId: parseInt(receiverId),
-         senderId: userId
-     };
+    if (!msg || !receiverId) return;
 
-     console.log("📤 Sending message to:", receiverId);
+    const messageRequest = {
+        msg: msg,
+        receiverId: parseInt(receiverId),
+        senderId: userId
+    };
 
-     if (stompClient && isWebSocketConnected) {
-         try {
-             stompClient.send("/app/chat.send", {}, JSON.stringify(messageRequest));
-             console.log("✅ Message sent");
+    console.log("📤 Sending message to:", receiverId);
 
-             // Add to inbox (for sent messages - but no red dot)
-             addToInbox(parseInt(receiverId), messageRequest, false);
+    if (stompClient && isWebSocketConnected) {
+        try {
+            stompClient.send("/app/chat.send", {}, JSON.stringify(messageRequest));
+            console.log("✅ Message sent");
 
-             // Move the receiver to top of the list
-             moveUserToTop(parseInt(receiverId));
+            // Add to inbox (for sent messages - but no red dot)
+            addToInbox(parseInt(receiverId), messageRequest, false);
 
-             msgBox.value = "";
-             msgBox.style.height = 'auto';
+            // Move the receiver to top of the list
+            moveUserToTop(parseInt(receiverId));
 
-         } catch (error) {
-             console.error("❌ Error sending message:", error);
-         }
-     } else {
-         console.error("❌ WebSocket not connected");
-         connectWebSocket();
-     }
- }
+            // Clear input and reset height WITHOUT removing focus
+            msgBox.value = "";
+            msgBox.style.height = 'auto';
 
+            // Immediately return focus to prevent keyboard from closing
+            // No setTimeout needed - instant focus maintains keyboard
+            msgBox.focus();
+
+        } catch (error) {
+            console.error("❌ Error sending message:", error);
+        }
+    } else {
+        console.error("❌ WebSocket not connected");
+        connectWebSocket();
+    }
+}
  // Display message in chat
  function displayMessage(messageData) {
      if (messageData.type === 'system') {
@@ -2260,31 +2266,80 @@
  }
 
  // Event listeners
- function setupEventListeners() {
- // Add this line in setupEventListeners() function
-document.getElementById("sendButton").addEventListener("click", sendMessage);
-     document.getElementById("messageInput").addEventListener("keydown", function(e) {
-         if (e.key === "Enter" && !e.shiftKey) {
-             e.preventDefault();
-             sendMessage();
-         }
-     });
+ // Event listeners
+function setupEventListeners() {
+    const sendButton = document.getElementById("sendButton");
+    const messageInput = document.getElementById("messageInput");
 
-     document.getElementById("logoutBtn").addEventListener("click", function() {
-         if (stompClient) stompClient.disconnect();
-         fetch(`${userApiUrl}/logout`, { method: "GET", credentials: "include" })
-         .then(() => {
-             window.location.href = "signin.html";
-         });
-     });
+    // Send button click with keyboard stability
+    sendButton.addEventListener("click", function(e) {
+        e.preventDefault(); // Prevent any default behavior
+        sendMessage();
+    });
 
-     document.getElementById("dashboardBtn").addEventListener("click", function() {
-         window.location.href = "dashboard.html";
-     });
+    // Also handle touch events for mobile to prevent focus loss
+    sendButton.addEventListener("touchend", function(e) {
+        e.preventDefault(); // Prevent default touch behavior
+        sendMessage();
+    });
 
-     // Keep block button event listener
-     document.getElementById("blockUserBtn").addEventListener("click", toggleBlockUser);
- }
+    // Enter key handling while keeping keyboard open
+    messageInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", function() {
+        if (stompClient) stompClient.disconnect();
+        fetch(`${userApiUrl}/logout`, { method: "GET", credentials: "include" })
+        .then(() => {
+            window.location.href = "signin.html";
+        });
+    });
+
+    document.getElementById("dashboardBtn").addEventListener("click", function() {
+        window.location.href = "dashboard.html";
+    });
+
+    // Keep block button event listener
+    document.getElementById("blockUserBtn").addEventListener("click", toggleBlockUser);
+}
+// Prevent keyboard from closing on send
+function setupKeyboardPersistence() {
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+
+    // Prevent blur on send button click
+    sendButton.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        sendMessage();
+        // Keep focus on input to maintain keyboard
+        setTimeout(() => {
+            messageInput.focus();
+        }, 10);
+    });
+
+    // Handle Enter key while keeping keyboard open
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+            // Keep focus to maintain keyboard
+            setTimeout(() => {
+                messageInput.focus();
+            }, 10);
+        }
+    });
+
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+}
+// Initialize app
 // Initialize app
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Initializing Strangerblink...');
@@ -2292,7 +2347,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeEmojiPicker();
     setupMobileControls();
     setupBackButtonHandler();
-    // REMOVE setupEventListeners() from here - moved to inside checkUserSession()
+    setupKeyboardPersistence(); // ← ADD THIS LINE
 
     checkUserSession()
         .then((userData) => {
@@ -2301,7 +2356,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             setupTabSwitching();
             setupSearchAndFilter();
-            setupEventListeners();  // ← KEEP ONLY THIS ONE
+            setupEventListeners();
 
             return connectWebSocket();
         })
