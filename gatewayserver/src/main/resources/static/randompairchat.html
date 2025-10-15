@@ -2,41 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ✅ Title & Description -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>StrangerBlink Dashboard | Chat Instantly</title>
     <meta name="description" content="Connect instantly with random strangers worldwide. Start chatting safely and anonymously!">
-    <!-- ✅ Keywords -->
     <meta name="keywords" content="StrangerBlink, dashboard, anonymous chat, random chat, online chat, instant messaging, connect with strangers">
-
-    <!-- ✅ Author -->
     <meta name="author" content="Sandesh Adhikari">
-
-    <!-- ✅ Theme color for mobile browsers -->
     <meta name="theme-color" content="#4361ee">
-
-    <!-- ✅ Open Graph / Facebook sharing -->
     <meta property="og:title" content="StrangerBlink Dashboard | Chat Instantly">
     <meta property="og:description" content="Access your StrangerBlink Dashboard and start chatting safely with people worldwide. Anonymous and instant conversations!">
     <meta property="og:image" content="/images/applogo.png">
     <meta property="og:url" content="https://strangerblink.fun/dashboard.html">
     <meta property="og:type" content="website">
-
-    <!-- ✅ Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="StrangerBlink Dashboard | Chat Instantly">
     <meta name="twitter:description" content="Access your StrangerBlink Dashboard and start chatting safely with people worldwide. Anonymous and instant conversations!">
     <meta name="twitter:image" content="/images/applogo.png">
-
-    <!-- ✅ Favicon -->
     <link rel="icon" type="image/png" href="/images/applogo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- ✅ Canonical URL -->
     <link rel="canonical" href="https://strangerblink.fun/dashboard.html">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Add WebSocket libraries -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Add WebSocket libraries -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
@@ -51,10 +35,11 @@
             --success: #4cc9f0;
             --danger: #f72585;
             --warning: #f8961e;
-            --border-radius: 12px;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 16px;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
-            --chat-bg: #f0f2f5;
+            --chat-bg: #e8eaf6;
             --sent-msg: #4361ee;
             --received-msg: #ffffff;
         }
@@ -63,81 +48,199 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: var(--dark);
             line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            height: 100vh;
             overflow: hidden;
+            position: fixed;
+            width: 100%;
+            padding: 12px;
         }
 
         .app-container {
             display: flex;
-            height: 100vh;
-            max-width: 1400px;
-            margin: 0 auto;
+            flex-direction: column;
+            height: calc(100vh - 24px);
+            height: calc(var(--vh, 1vh) * 100 - 24px);
             background: white;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            max-width: 480px;
+            margin: 0 auto;
         }
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 300px;
+        /* Card-style Header */
+        .mobile-header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-            overflow-y: auto;
-        }
-
-        .logo {
+            padding: 16px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            justify-content: space-between;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            flex-shrink: 0;
         }
 
-        .logo i {
-            font-size: 1.8rem;
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .logo h1 {
-            font-size: 1.5rem;
+        .menu-toggle {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-logo i {
+            font-size: 1.4rem;
+        }
+
+        .app-logo h1 {
+            font-size: 1.15rem;
             font-weight: 700;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .header-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Sliding Sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 12px;
+            left: -300px;
+            width: 280px;
+            height: calc(100vh - 24px);
+            background: white;
+            padding: 20px;
+            z-index: 1001;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar.active {
+            left: 12px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-close {
+            width: 32px;
+            height: 32px;
+            background: var(--light-gray);
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--dark);
+            font-size: 1.1rem;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--border-radius);
+            gap: 12px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 12px;
+            color: white;
         }
 
         .user-avatar {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
             font-size: 1.2rem;
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
         .user-details {
@@ -146,15 +249,16 @@
 
         .user-name {
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            font-size: 1rem;
         }
 
         .user-status {
             font-size: 0.85rem;
-            opacity: 0.8;
+            opacity: 0.95;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
 
         .status-indicator {
@@ -162,106 +266,76 @@
             height: 8px;
             border-radius: 50%;
             background: var(--success);
+            box-shadow: 0 0 8px var(--success);
         }
 
-        .sidebar-menu {
+        .sidebar-actions {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 12px 15px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .menu-item.active {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .menu-item i {
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-top: auto;
+            padding-top: 20px;
         }
 
-        .action-btn {
+        .sidebar-btn {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            border-radius: var(--border-radius);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: var(--light-gray);
+            color: var(--dark);
             border: none;
             cursor: pointer;
-            transition: var(--transition);
             font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
         }
 
-        .action-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+        .sidebar-btn:active {
+            transform: scale(0.98);
         }
 
-        .action-btn.next {
-            background: var(--success);
+        .sidebar-btn i {
+            font-size: 1.1rem;
+            width: 24px;
         }
 
-        .action-btn.skip {
-            background: var(--warning);
+        .sidebar-btn.dashboard {
+            background: var(--primary);
+            color: white;
         }
 
-        .action-btn.logout {
+        .sidebar-btn.logout {
             background: var(--danger);
+            color: white;
         }
 
-        /* Chat Area Styles */
+        /* Chat Card Area */
         .chat-area {
             flex: 1;
             display: flex;
             flex-direction: column;
             background: var(--chat-bg);
             overflow: hidden;
+            min-height: 0;
         }
 
         .chat-header {
             background: white;
-            padding: 15px 25px;
+            padding: 14px 16px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            z-index: 5;
+            gap: 12px;
+            box-shadow: var(--shadow-sm);
             flex-shrink: 0;
-        }
-
-        .chat-partner {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            margin: 12px 12px 0 12px;
+            border-radius: 12px;
         }
 
         .partner-avatar {
-            width: 45px;
-            height: 45px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             display: flex;
@@ -269,68 +343,67 @@
             justify-content: center;
             color: white;
             font-weight: bold;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            border: 3px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .partner-info {
+            flex: 1;
+            min-width: 0;
         }
 
         .partner-info h3 {
             font-weight: 600;
             margin-bottom: 3px;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .partner-info p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--gray);
             display: flex;
             align-items: center;
             gap: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .partner-status {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: var(--success);
+            flex-shrink: 0;
+            box-shadow: 0 0 6px var(--success);
         }
 
-        .chat-actions {
-            display: flex;
-            gap: 10px;
-            position: relative;
-        }
-
-        .chat-action-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--light-gray);
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .chat-action-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
+        /* Messages Container with Card Style */
         .messages-container {
             flex: 1;
-            padding: 20px;
+            padding: 16px;
             overflow-y: auto;
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            min-height: 0; /* Important for flex child scrolling */
+            gap: 12px;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         .message {
-            max-width: 70%;
-            padding: 12px 18px;
+            max-width: 75%;
+            padding: 12px 16px;
             border-radius: 18px;
             position: relative;
             animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            box-shadow: var(--shadow-sm);
         }
 
         @keyframes fadeIn {
@@ -339,23 +412,28 @@
         }
 
         .message.received {
-            background: var(--received-msg);
+            background: white;
             align-self: flex-start;
-            border-bottom-left-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-bottom-left-radius: 6px;
         }
 
         .message.sent {
             background: var(--sent-msg);
             color: white;
             align-self: flex-end;
-            border-bottom-right-radius: 5px;
+            border-bottom-right-radius: 6px;
+        }
+
+        .message p {
+            margin: 0;
+            font-size: 1.05rem;
+            line-height: 1.5;
         }
 
         .message-time {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             opacity: 0.7;
-            margin-top: 5px;
+            margin-top: 4px;
             text-align: right;
         }
 
@@ -367,19 +445,18 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            padding: 12px 18px;
+            padding: 12px 16px;
             background: white;
             border-radius: 18px;
             align-self: flex-start;
-            border-bottom-left-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-bottom-left-radius: 6px;
+            box-shadow: var(--shadow-sm);
             width: fit-content;
-            margin-bottom: 10px;
         }
 
         .typing-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: var(--gray);
             animation: typingAnimation 1.4s infinite ease-in-out;
@@ -393,36 +470,42 @@
             40% { transform: scale(1); opacity: 1; }
         }
 
+        /* Input Card */
         .chat-input-container {
-            padding: 20px;
-            background: white;
+            padding: 12px;
+            background: transparent;
             display: flex;
             gap: 10px;
             align-items: flex-end;
             flex-shrink: 0;
         }
 
-        .message-input {
+        .input-card {
             flex: 1;
-            padding: 12px 18px;
-            border: 1px solid var(--light-gray);
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            background: white;
             border-radius: 24px;
-            font-size: 1rem;
-            resize: none;
-            max-height: 120px;
-            font-family: inherit;
-            outline: none;
-            transition: var(--transition);
+            padding: 6px 8px 6px 16px;
+            box-shadow: var(--shadow-sm);
         }
 
-        .message-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        .message-input {
+            flex: 1;
+            padding: 8px 0;
+            border: none;
+            font-size: 0.95rem;
+            resize: none;
+            max-height: 100px;
+            font-family: inherit;
+            outline: none;
+            background: transparent;
         }
 
         .send-button {
-            width: 50px;
-            height: 50px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             background: var(--primary);
             color: white;
@@ -432,270 +515,231 @@
             justify-content: center;
             cursor: pointer;
             transition: var(--transition);
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .send-button:hover {
-            background: var(--primary-dark);
-            transform: scale(1.05);
+        .send-button:active {
+            transform: scale(0.95);
         }
 
-        /* Connection Status */
+        .send-button:disabled {
+            background: var(--light-gray);
+            color: var(--gray);
+            box-shadow: none;
+        }
+
+        /* Bottom Action Card */
+        .bottom-action-bar {
+            background: transparent;
+            padding: 0 12px 12px 12px;
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px;
+            border-radius: 14px;
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Connection Status Card */
         .connection-status {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 15px;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 18px;
             background: white;
-            border-radius: var(--border-radius);
+            border-radius: 20px;
             box-shadow: var(--shadow);
             display: flex;
             align-items: center;
             gap: 8px;
-            z-index: 100;
-            animation: slideIn 0.5s ease;
+            z-index: 999;
+            font-size: 0.85rem;
+            animation: slideDown 0.3s ease;
+            font-weight: 600;
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
         }
 
         .connection-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--success);
+            box-shadow: 0 0 8px var(--success);
         }
 
         .connection-status.disconnected {
-            background: #ffebee;
-            color: var(--danger);
+            background: var(--danger);
+            color: white;
         }
 
         .connection-status.disconnected .connection-dot {
-            background: var(--danger);
-        }
-
-        /* System Notification Styles */
-        .system-notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            z-index: 10000;
-            max-width: 350px;
-            opacity: 0;
-            transition: all 0.3s ease;
-            border-left: 4px solid #ff4757;
-        }
-
-        .system-notification.show {
-            opacity: 1;
-        }
-
-        .notification-content {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-        }
-
-        .notification-content i {
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-
-        /* Mobile Menu Styles */
-        .mobile-menu {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 0;
             background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            z-index: 20;
-            min-width: 150px;
-            overflow: hidden;
+            box-shadow: 0 0 8px white;
         }
 
-        .mobile-menu.show {
-            display: block;
-        }
+        /* Landscape Mode Optimization */
+        @media (orientation: landscape) and (max-height: 500px) {
+            body {
+                padding: 8px;
+            }
 
-        .mobile-menu-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            cursor: pointer;
-            transition: var(--transition);
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .mobile-menu-item:last-child {
-            border-bottom: none;
-        }
-
-        .mobile-menu-item:hover {
-            background: var(--light-gray);
-        }
-
-        .mobile-menu-item i {
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
             .app-container {
-                flex-direction: column;
-                height: 100vh;
-                overflow: hidden;
+                height: calc(100vh - 16px);
+                border-radius: 12px;
             }
 
-            .sidebar {
-                width: 100%;
-                height: auto;
-                padding: 15px;
-                max-height: 40vh;
-                overflow-y: auto;
-            }
-
-            .logo h1 {
-                font-size: 1.3rem;
-            }
-
-            .user-info {
-                margin-bottom: 20px;
-            }
-
-            .sidebar-menu {
-                flex-direction: row;
-                overflow-x: auto;
-                margin-bottom: 20px;
-                padding-bottom: 10px;
-            }
-
-            .menu-item {
-                flex-direction: column;
-                text-align: center;
-                min-width: 80px;
-                padding: 10px;
-            }
-
-            .menu-item span {
-                font-size: 0.8rem;
-            }
-
-            .action-buttons {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-
-            .action-btn {
-                flex: 1;
-                justify-content: center;
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-
-            /* Hide dashboard and logout buttons on mobile in sidebar */
-            .action-btn.dashboard, .action-btn.logout {
-                display: none;
-            }
-
-            .chat-area {
-                flex: 1;
-                min-height: 60vh;
+            .mobile-header {
+                padding: 10px 14px;
+                border-radius: 12px 12px 0 0;
             }
 
             .chat-header {
-                padding: 12px 15px;
+                padding: 10px 14px;
+                margin: 8px 8px 0 8px;
             }
 
             .messages-container {
-                padding: 15px;
-                flex: 1;
-                overflow-y: auto;
-            }
-
-            .message {
-                max-width: 85%;
-            }
-
-            .connection-status {
-                top: 10px;
-                right: 10px;
-                font-size: 0.9rem;
-            }
-
-            /* Show mobile menu button */
-            .mobile-menu-btn {
-                display: block;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .messages-container {
-                padding: 15px;
+                padding: 12px;
+                gap: 8px;
             }
 
             .chat-input-container {
-                padding: 15px;
+                padding: 8px;
             }
 
-            .message {
-                max-width: 90%;
-                padding: 10px 15px;
+            .bottom-action-bar {
+                padding: 0 8px 8px 8px;
             }
 
-            .chat-header {
-                padding: 10px;
+            .action-btn {
+                padding: 12px;
+                font-size: 0.95rem;
             }
+        }
 
-            .chat-partner {
-                gap: 10px;
-            }
-
-            .partner-avatar {
-                width: 35px;
-                height: 35px;
-                font-size: 0.9rem;
-            }
-
-            .partner-info h3 {
+        /* Small Screens */
+        @media (max-width: 360px) {
+            .app-logo h1 {
                 font-size: 1rem;
             }
 
-            .partner-info p {
-                font-size: 0.8rem;
+            .message {
+                max-width: 80%;
+                font-size: 0.9rem;
             }
 
-            .chat-actions {
-                gap: 5px;
-            }
-
-            .chat-action-btn {
-                width: 35px;
-                height: 35px;
+            .action-btn {
+                font-size: 0.9rem;
+                padding: 12px;
             }
         }
-        /* Remove skip button specific styles if any */
+
+        /* Large screens - center the card */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .app-container {
+                max-width: 420px;
+                height: calc(100vh - 40px);
+            }
+
+            .sidebar.active {
+                left: calc(50% - 240px - 150px);
+            }
+        }
+
+        /* Prevent zoom on input focus (iOS) */
+        @media screen and (max-width: 767px) {
+            input, textarea, select {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Smooth scrollbar */
+        .messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo">
-            <i class="fas fa-comment-dots"></i>
-            <h1>Strangerblink</h1>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="header-left">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="app-logo">
+                <i class="fas fa-comment-dots"></i>
+                <h1>Strangerblink</h1>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn" id="refreshBtn" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sliding Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">
+                <i class="fas fa-user-circle"></i>
+                Profile
+            </div>
+            <button class="sidebar-close" id="sidebarClose">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
 
         <div class="user-info">
@@ -709,17 +753,12 @@
             </div>
         </div>
 
-        <div class="action-buttons">
-            <!-- Removed Skip button -->
-            <button class="action-btn next" id="nextBtn">
-                <i class="fas fa-forward"></i>
-                <span>Next</span>
-            </button>
-            <button class="action-btn dashboard" id="dashboardBtnSidebar">
+        <div class="sidebar-actions">
+            <button class="sidebar-btn dashboard" id="dashboardBtn">
                 <i class="fas fa-home"></i>
                 <span>Dashboard</span>
             </button>
-            <button class="action-btn logout" id="logoutBtnSidebar">
+            <button class="sidebar-btn logout" id="logoutBtn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </button>
@@ -729,52 +768,36 @@
     <!-- Chat Area -->
     <div class="chat-area">
         <div class="chat-header">
-            <div class="chat-partner">
-                <div class="partner-avatar" id="partnerAvatar">A</div>
-                <div class="partner-info">
-                    <h3 id="partnerName">Not Connected</h3>
-                    <p>
-                        <span class="partner-status" id="partnerStatusIndicator"></span>
-                        <span id="partnerStatusText">Click Next to find a partner</span>
-                    </p>
-                </div>
-            </div>
-
-            <div class="chat-actions">
-                <button class="chat-action-btn">
-                    <i class="fas fa-phone-alt"></i>
-                </button>
-                <button class="chat-action-btn">
-                    <i class="fas fa-video"></i>
-                </button>
-                <button class="chat-action-btn" id="mobileMenuBtn">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <!-- Mobile Menu Dropdown -->
-                <div class="mobile-menu" id="mobileMenu">
-                    <div class="mobile-menu-item" id="mobileDashboardBtn">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </div>
-                    <div class="mobile-menu-item" id="mobileLogoutBtn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </div>
-                </div>
+            <div class="partner-avatar" id="partnerAvatar">A</div>
+            <div class="partner-info">
+                <h3 id="partnerName">Not Connected</h3>
+                <p>
+                    <span class="partner-status" id="partnerStatusIndicator"></span>
+                    <span id="partnerStatusText">Tap Next to find a partner</span>
+                </p>
             </div>
         </div>
 
         <div class="messages-container" id="messagesContainer">
             <div class="message received">
-                <p>Welcome to Strangerblink!</p>
+                <p>Welcome to Strangerblink! 👋</p>
                 <div class="message-time" id="welcomeTime"></div>
             </div>
         </div>
 
         <div class="chat-input-container">
-            <textarea class="message-input" placeholder="Type your message..." rows="1" id="messageInput" disabled></textarea>
-            <button class="send-button" id="sendButton" disabled>
-                <i class="fas fa-paper-plane"></i>
+            <div class="input-card">
+                <textarea class="message-input" placeholder="Type a message..." rows="1" id="messageInput" disabled></textarea>
+                <button class="send-button" id="sendButton" disabled>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="bottom-action-bar">
+            <button class="action-btn" id="nextBtn">
+                <i class="fas fa-forward"></i>
+                <span>Next</span>
             </button>
         </div>
     </div>
@@ -782,13 +805,23 @@
 
 <div class="connection-status" id="connectionStatus">
     <div class="connection-dot"></div>
-    <span>Connecting to Strangerblink...</span>
+    <span>Connecting...</span>
 </div>
+
 <script>
+    // Set viewport height for mobile browsers
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+    window.addEventListener('resize', () => {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    });
+
     // Global variables
-    const userApiUrl = "https://www.strangerblink.fun/user/api/user"; // UserBase URL
-    const pairChatWebSocketUrl = "https://www.strangerblink.fun/randompairchat/pair-chat"; // Pair Chat WebSocket URL
-    const pairChatApiUrl = "https://www.strangerblink.fun/randompairchat"; // Pair Chat API base URL
+    const userApiUrl = "https://www.strangerblink.fun/user/api/user";
+    const pairChatWebSocketUrl = "https://www.strangerblink.fun/randompairchat/pair-chat";
+    const pairChatApiUrl = "https://www.strangerblink.fun/randompairchat";
 
     let stompClient = null;
     let isWebSocketConnected = false;
@@ -796,7 +829,7 @@
     let userId = null;
     let gender = null;
     let country = null;
-    let currentPairUserId = null; // Track current paired user
+    let currentPairUserId = null;
     let connectionRetryCount = 0;
     const MAX_RETRIES = 5;
 
@@ -805,8 +838,8 @@
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     const nextBtn = document.getElementById('nextBtn');
-    const logoutBtn = document.getElementById('logoutBtnSidebar');
-    const dashboardBtn = document.getElementById('dashboardBtnSidebar');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const dashboardBtn = document.getElementById('dashboardBtn');
     const userAvatar = document.getElementById('userAvatar');
     const userNameElement = document.getElementById('userName');
     const statusIndicator = document.getElementById('statusIndicator');
@@ -818,35 +851,33 @@
     const partnerStatusText = document.getElementById('partnerStatusText');
     const welcomeTime = document.getElementById('welcomeTime');
 
-    // Mobile menu elements
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const mobileDashboardBtn = document.getElementById('mobileDashboardBtn');
-    const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+    // Sidebar elements
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarClose = document.getElementById('sidebarClose');
+    const refreshBtn = document.getElementById('refreshBtn');
 
     // Set welcome message time
     welcomeTime.textContent = getCurrentTime();
 
-    // Mobile menu toggle
-    mobileMenuBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        mobileMenu.classList.toggle('show');
+    // Sidebar toggle
+    menuToggle.addEventListener('click', function() {
+        sidebar.classList.add('active');
+        sidebarOverlay.classList.add('active');
     });
 
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function() {
-        mobileMenu.classList.remove('show');
-    });
+    sidebarClose.addEventListener('click', closeSidebar);
+    sidebarOverlay.addEventListener('click', closeSidebar);
 
-    // Mobile menu item click handlers
-    mobileDashboardBtn.addEventListener('click', function() {
-        mobileMenu.classList.remove('show');
-        navigateToDashboard();
-    });
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        sidebarOverlay.classList.remove('active');
+    }
 
-    mobileLogoutBtn.addEventListener('click', function() {
-        mobileMenu.classList.remove('show');
-        performLogout();
+    // Refresh button
+    refreshBtn.addEventListener('click', function() {
+        location.reload();
     });
 
     // Check session and get user data
@@ -898,7 +929,6 @@
                 return;
             }
 
-            // Clear any existing connection
             if (stompClient && isWebSocketConnected) {
                 console.log('🔄 Disconnecting existing WebSocket...');
                 stompClient.disconnect();
@@ -910,8 +940,6 @@
 
                 const socket = new SockJS(pairChatWebSocketUrl);
                 stompClient = Stomp.over(socket);
-
-                // Disable STOMP debugging (too verbose)
                 stompClient.debug = null;
 
                 const connectionTimeout = setTimeout(() => {
@@ -933,10 +961,9 @@
                         isWebSocketConnected = true;
                         connectionRetryCount = 0;
 
-                        updateConnectionStatus('connected', 'Connected to Strangerblink');
+                        updateConnectionStatus('connected', 'Connected');
                         statusText.textContent = 'Online';
 
-                        // Subscribe to private messages for this user
                         const privateTopic = "/content/user/" + userId;
                         console.log('📡 Subscribing to private messages:', privateTopic);
 
@@ -963,13 +990,13 @@
                             const delay = connectionRetryCount * 2000;
                             console.log(`🔄 Retrying connection in ${delay}ms (${connectionRetryCount}/${MAX_RETRIES})...`);
 
-                            updateConnectionStatus('retrying', `Retrying connection... (${connectionRetryCount}/${MAX_RETRIES})`);
+                            updateConnectionStatus('retrying', `Retrying... (${connectionRetryCount}/${MAX_RETRIES})`);
 
                             setTimeout(() => {
                                 connectWebSocket().then(resolve).catch(reject);
                             }, delay);
                         } else {
-                            updateConnectionStatus('disconnected', 'Failed to connect. Please refresh the page.');
+                            updateConnectionStatus('disconnected', 'Failed to connect');
                             reject(error);
                         }
                     }
@@ -977,7 +1004,7 @@
 
             } catch (error) {
                 console.error('❌ Error in WebSocket setup:', error);
-                updateConnectionStatus('error', 'Connection error: ' + error.message);
+                updateConnectionStatus('error', 'Connection error');
                 reject(error);
             }
         });
@@ -995,15 +1022,20 @@
                     <div class="connection-dot"></div>
                     <span>${message}</span>
                 `;
+                setTimeout(() => {
+                    connectionStatus.style.display = 'none';
+                }, 3000);
                 break;
             case 'retrying':
+                connectionStatus.style.display = 'flex';
                 connectionStatus.innerHTML = `
-                    <div class="connection-dot" style="background: var(--warning);"></div>
+                    <div class="connection-dot" style="background: var(--warning); box-shadow: 0 0 8px var(--warning);"></div>
                     <span>${message}</span>
                 `;
                 break;
             case 'disconnected':
             case 'error':
+                connectionStatus.style.display = 'flex';
                 connectionStatus.classList.add('disconnected');
                 connectionStatus.innerHTML = `
                     <div class="connection-dot"></div>
@@ -1011,8 +1043,9 @@
                 `;
                 break;
             default:
+                connectionStatus.style.display = 'flex';
                 connectionStatus.innerHTML = `
-                    <div class="connection-dot" style="background: var(--gray);"></div>
+                    <div class="connection-dot" style="background: var(--gray); box-shadow: 0 0 8px var(--gray);"></div>
                     <span>${message}</span>
                 `;
         }
@@ -1022,13 +1055,11 @@
     function handleIncomingMessage(messageData) {
         console.log('📨 Processing incoming message:', messageData);
 
-        // Handle system messages (pairing notifications)
         if (messageData.type === 'PAIR_CONNECTED') {
             handlePairConnected(messageData);
         } else if (messageData.type === 'PAIR_DISCONNECTED') {
             handlePairDisconnected(messageData);
         } else {
-            // Handle regular chat messages
             handleChatMessage(messageData);
         }
     }
@@ -1039,19 +1070,15 @@
 
         currentPairUserId = pairData.pairedUserId;
 
-        // Clear previous messages for fresh chat experience
         clearChatMessages();
 
-        // Update partner info
         partnerName.textContent = pairData.pairedUserName || `User ${pairData.pairedUserId}`;
         partnerAvatar.textContent = (pairData.pairedUserName || pairData.pairedUserId.toString()).charAt(0).toUpperCase();
         partnerStatusText.textContent = 'Online - Connected';
 
-        // Enable message input and send button
         messageInput.disabled = false;
         sendButton.disabled = false;
 
-        // Display connection message
         displaySystemMessage({
             msg: `You've been connected with ${pairData.pairedUserName || 'Anonymous User'}! Say hello! 👋`,
             type: 'system'
@@ -1072,9 +1099,8 @@
         currentPairUserId = null;
         partnerName.textContent = 'Not Connected';
         partnerAvatar.textContent = 'A';
-        partnerStatusText.textContent = 'Click Next to find a partner';
+        partnerStatusText.textContent = 'Tap Next to find a partner';
 
-        // Disable message input and send button
         messageInput.disabled = true;
         sendButton.disabled = true;
     }
@@ -1083,16 +1109,13 @@
     function handleChatMessage(messageData) {
         const senderId = parseInt(messageData.senderId);
 
-        // Only display messages that are NOT from ourselves
         if (senderId !== userId) {
-            // If we don't have a current pair, set it to the message sender
             if (!currentPairUserId && senderId) {
                 currentPairUserId = senderId;
                 partnerName.textContent = `User ${senderId}`;
                 partnerAvatar.textContent = senderId.toString().charAt(0);
                 partnerStatusText.textContent = 'Online - Connected';
 
-                // Enable message input and send button
                 messageInput.disabled = false;
                 sendButton.disabled = false;
 
@@ -1102,7 +1125,6 @@
                 });
             }
 
-            // Display message from current pair
             displayMessage(messageData, false);
         } else {
             console.log('⏩ Ignoring echo message from self');
@@ -1111,7 +1133,6 @@
 
     // Clear all chat messages for fresh start
     function clearChatMessages() {
-        // Keep only the welcome message
         const welcomeMessage = messagesContainer.querySelector('.message.received:first-child');
         messagesContainer.innerHTML = '';
         if (welcomeMessage) {
@@ -1143,14 +1164,12 @@
 
             console.log('✅ Skip successful');
 
-            // Clear current partner immediately
             const skippedPartner = currentPairUserId;
             currentPairUserId = null;
             partnerName.textContent = 'Not Connected';
             partnerAvatar.textContent = 'A';
-            partnerStatusText.textContent = 'Click Next to find a partner';
+            partnerStatusText.textContent = 'Tap Next to find a partner';
 
-            // Disable message input and send button
             messageInput.disabled = true;
             sendButton.disabled = true;
 
@@ -1170,21 +1189,18 @@
         }
     }
 
-    // NEXT button functionality - now combines next and skip
+    // NEXT button functionality
     async function findNextPartner() {
         console.log('🔍 Finding next partner for user:', userId);
 
         try {
-            // Disable button during request
             nextBtn.disabled = true;
             nextBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Finding...</span>';
 
-            // If currently connected to someone, skip them first
             if (currentPairUserId) {
                 await skipCurrentPartner();
             }
 
-            // Now find next partner
             const response = await fetch(`${pairChatApiUrl}/next/${userId}`, {
                 method: 'POST',
                 headers: {
@@ -1203,13 +1219,11 @@
             const partnerId = result.partnerId;
 
             if (partnerId) {
-                // Partner found - we'll get notified via WebSocket
                 displaySystemMessage({
                     msg: 'Connected',
                     type: 'system'
                 });
             } else {
-                // No partner available, added to waiting queue
                 displaySystemMessage({
                     msg: 'Looking for a partner...',
                     type: 'system'
@@ -1226,7 +1240,6 @@
                 type: 'system'
             });
         } finally {
-            // Re-enable button
             nextBtn.disabled = false;
             nextBtn.innerHTML = '<i class="fas fa-forward"></i><span>Next</span>';
         }
@@ -1236,7 +1249,7 @@
     function displaySystemMessage(messageData) {
         const messageElement = document.createElement('div');
         messageElement.className = 'message received';
-        messageElement.style.backgroundColor = '#e3f2fd';
+        messageElement.style.background = 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)';
         messageElement.style.color = '#1565c0';
         messageElement.style.fontStyle = 'italic';
         messageElement.innerHTML = `
@@ -1284,16 +1297,18 @@
 
         if (stompClient && isWebSocketConnected) {
             try {
-                // Send via WebSocket
                 stompClient.send("/application/chat.send", {}, JSON.stringify(messageRequest));
                 console.log("✅ Message sent to pair");
 
-                // Display message immediately on sender's side
                 displayMessage(messageRequest, true);
 
-                // Clear input and reset height
+                // Clear input and reset height WITHOUT removing focus
                 messageInput.value = '';
                 messageInput.style.height = 'auto';
+
+                // Immediately return focus to prevent keyboard from closing
+                // No setTimeout needed - instant focus maintains keyboard
+                messageInput.focus();
 
             } catch (error) {
                 console.error("❌ Error sending message:", error);
@@ -1330,7 +1345,6 @@
 
     // Navigation functions
     async function navigateToDashboard() {
-        // Skip current partner before navigating
         if (currentPairUserId) {
             console.log('🚫 Skipping partner before dashboard navigation');
             await skipCurrentPartner();
@@ -1343,7 +1357,6 @@
     }
 
     async function performLogout() {
-        // Skip current partner before logging out
         if (currentPairUserId) {
             console.log('🚫 Skipping partner before logout');
             await skipCurrentPartner();
@@ -1352,7 +1365,6 @@
         if (stompClient) {
             stompClient.disconnect();
         }
-        // Also call skip to remove from pairing service
         if (userId) {
             fetch(`${pairChatApiUrl}/skip/${userId}`, {
                 method: 'POST',
@@ -1380,7 +1392,16 @@
     });
 
     // Event listeners
-    sendButton.addEventListener('click', sendMessage);
+    sendButton.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent any default behavior
+        sendMessage();
+    });
+
+    // Also handle touch events for mobile to prevent focus loss
+    sendButton.addEventListener('touchend', function(e) {
+        e.preventDefault(); // Prevent default touch behavior
+        sendMessage();
+    });
 
     messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -1389,22 +1410,16 @@
         }
     });
 
-    // Dashboard navigation with skip functionality
     dashboardBtn.addEventListener('click', navigateToDashboard);
-
-    // Logout function with skip functionality
     logoutBtn.addEventListener('click', performLogout);
-
-    // Next button - now handles both skip and next functionality
     nextBtn.addEventListener('click', findNextPartner);
 
     // Initialize app
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 Initializing Strangerblink Pair Chat...');
 
-        // Initialize UI to show disconnected state
         partnerName.textContent = 'Not Connected';
-        partnerStatusText.textContent = 'Click Next to find a partner';
+        partnerStatusText.textContent = 'Tap Next to find a partner';
         messageInput.disabled = true;
         sendButton.disabled = true;
 
@@ -1416,13 +1431,10 @@
             .then(() => {
                 console.log('✅ Pair Chat WebSocket connected and subscriptions active');
 
-                // Show connected status but user is not paired with anyone initially
                 displaySystemMessage({
-                    msg: 'Connected to Strangerblink! Click "Next" to find your first random partner.',
+                    msg: 'Connected to Strangerblink! Tap "Next" to find your first random partner.',
                     type: 'system'
                 });
-
-                // Don't automatically find first partner - let user click Next
             })
             .catch(error => {
                 console.error('❌ Failed to initialize Strangerblink Pair Chat:', error);
@@ -1431,6 +1443,53 @@
                     type: 'system'
                 });
             });
+    });
+
+    // Handle browser back button and page unload/reload
+    window.addEventListener('beforeunload', function(e) {
+        // Skip current partner when leaving the page
+        if (currentPairUserId) {
+            console.log('🚫 User leaving page - skipping partner');
+            // Use sendBeacon for reliable disconnect on page leave
+            const skipUrl = `${pairChatApiUrl}/skip/${userId}`;
+            navigator.sendBeacon(skipUrl);
+        }
+
+        // Disconnect WebSocket
+        if (stompClient && isWebSocketConnected) {
+            stompClient.disconnect();
+        }
+    });
+
+    // Handle browser back button specifically
+    window.addEventListener('popstate', function(e) {
+        if (currentPairUserId) {
+            console.log('🚫 Browser back button - skipping partner');
+            skipCurrentPartner().then(() => {
+                if (stompClient && isWebSocketConnected) {
+                    stompClient.disconnect();
+                }
+            });
+        } else if (stompClient && isWebSocketConnected) {
+            stompClient.disconnect();
+        }
+    });
+
+    // Handle page visibility change (tab switch, minimize, etc.)
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            console.log('📱 Page hidden - user might be leaving');
+            // Don't disconnect immediately, but prepare for it
+        } else {
+            console.log('📱 Page visible again');
+            // Check connection status
+            if (!isWebSocketConnected) {
+                console.log('🔄 Reconnecting WebSocket after page became visible');
+                connectWebSocket().catch(error => {
+                    console.error('Failed to reconnect:', error);
+                });
+            }
+        }
     });
 
     // Connection monitoring
