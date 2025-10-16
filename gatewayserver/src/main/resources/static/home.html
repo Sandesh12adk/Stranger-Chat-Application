@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4826674306686209"
+            crossorigin="anonymous"></script>
 
     <style>
         :root {
@@ -925,6 +927,29 @@
     font-weight: bold;
     display: none;
 }
+        /* Simple loading state */
+.loading-state {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--gray);
+}
+
+.loading-state i {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    opacity: 0.7;
+}
+
+.loading-state p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.loading-state .loading-subtext {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    opacity: 0.8;
+}
     </style>
 </head>
 <body>
@@ -1011,7 +1036,7 @@
                 <div class="current-chat-user">
                     <div class="user-avatar" id="currentChatAvatar">JD</div>
                     <div class="chat-info">
-                        <h3 id="currentChatName">John Doe</h3>
+                        <h3 id="currentChatName"></h3>
                         <p id="currentChatStatus">Online - Last seen just now</p>
                         <div class="user-details-extended">
                             <div class="user-detail">
@@ -1949,27 +1974,72 @@ function sendMessage() {
  }
 
  // Fetch active users from server
- function fetchActiveUsers() {
-     fetch(`${userApiUrl}/find-by-status/online`, {
-         method: "GET",
-         credentials: "include"
-     })
-     .then(response => response.json())
-     .then(users => {
-         console.log('👥 Active users:', users);
+ // Enhanced fetch active users with loading state
+function fetchActiveUsers() {
+    // Show loading message immediately
+    showLoadingUsers();
 
-         const usersWithStatus = users.map(user => ({
-             ...user,
-             status: 'online'
-         }));
+    fetch(`${userApiUrl}/find-by-status/online`, {
+        method: "GET",
+        credentials: "include"
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+    })
+    .then(users => {
+        console.log('👥 Active users:', users);
 
-         populateUserList(usersWithStatus);
-     })
-     .catch(error => {
-         console.error('Error fetching users:', error);
-         populateUserListWithMockData();
-     });
- }
+        const usersWithStatus = users.map(user => ({
+            ...user,
+            status: 'online'
+        }));
+
+        populateUserList(usersWithStatus);
+
+        // Show encouraging message if no users
+        if (usersWithStatus.length === 0) {
+            setTimeout(() => {
+                displaySystemMessage({
+                    msg: "Don't worry! More users usually join throughout the day. You'll be notified when someone comes online!",
+                    type: 'system'
+                });
+            }, 500);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching users:', error);
+
+        // Show error state with retry option
+        const userList = document.getElementById("userList");
+        userList.innerHTML = `
+            <div class="loading-state">
+                <i class="fas fa-wifi"></i>
+                <p>Connection Issue</p>
+                <p class="loading-subtext">Having trouble loading users</p>
+                <button id="retryLoadUsers" style="
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    margin-top: 10px;
+                ">Try Again</button>
+            </div>
+        `;
+
+        document.getElementById('retryLoadUsers').addEventListener('click', fetchActiveUsers);
+
+        // Fallback after 3 seconds
+        setTimeout(() => {
+            if (userList.querySelector('.loading-state')) {
+                populateUserListWithMockData();
+            }
+        }, 3000);
+    });
+}
 
  // Display system message as temporary alert
  function displaySystemMessage(messageData) {
@@ -2001,33 +2071,38 @@ function sendMessage() {
  }
 
  // Populate user list initially
- function populateUserList(users) {
-     const userList = document.getElementById("userList");
-     userList.innerHTML = '';
+// Enhanced populate user list
+function populateUserList(users) {
+    const userList = document.getElementById("userList");
 
-     if (users.length === 0) {
-         userList.innerHTML = `
-             <div class="empty-state">
-                 <i class="fas fa-users"></i>
-                 <p>No active users found</p>
-             </div>
-         `;
-         return;
-     }
+    if (users.length === 0) {
+        userList.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <p>No one online right now</p>
+                <p style="font-size: 0.8rem; margin-top: 8px;">
+                    Be the first to start chatting!<br>
+                    Users will appear here as they come online.
+                </p>
+            </div>
+        `;
+        return;
+    }
 
-     users.forEach(user => {
-         if (user.userId == userId) return;
+    userList.innerHTML = '';
 
-         const userItem = createUserListItem(user);
+    users.forEach(user => {
+        if (user.userId == userId) return;
 
-         if (users.indexOf(user) === 0 && !currentlySelectedUserId) {
-             selectUser(user);
-         }
+        const userItem = createUserListItem(user);
 
-         userList.appendChild(userItem);
-     });
- }
+        if (users.indexOf(user) === 0 && !currentlySelectedUserId) {
+            selectUser(user);
+        }
 
+        userList.appendChild(userItem);
+    });
+}
  // Set current chat user
  function setCurrentChatUser(user) {
      currentChatUser = user;
@@ -2347,7 +2422,10 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeEmojiPicker();
     setupMobileControls();
     setupBackButtonHandler();
-    setupKeyboardPersistence(); // ← ADD THIS LINE
+    setupKeyboardPersistence();
+
+    // Show loading state immediately
+    showLoadingUsers();
 
     checkUserSession()
         .then((userData) => {
@@ -2368,9 +2446,31 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('❌ Failed to initialize Strangerblink:', error);
-            alert('Failed to connect to chat service. Please refresh the page.');
+
+            // Show error but keep trying to load users
+            const userList = document.getElementById("userList");
+            userList.innerHTML = `
+                <div class="loading-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Connection Issues</p>
+                    <p class="loading-subtext">Still trying to load users...</p>
+                </div>
+            `;
+
+            fetchActiveUsers();
         });
 });
+    // Show loading message
+function showLoadingUsers() {
+    const userList = document.getElementById("userList");
+    userList.innerHTML = `
+        <div class="loading-state">
+            <i class="fas fa-users"></i>
+            <p>Loading users...</p>
+            <p class="loading-subtext">Just a sec</p>
+        </div>
+    `;
+}
 </script>
 </body>
 </html>
