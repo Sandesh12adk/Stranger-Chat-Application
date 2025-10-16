@@ -1056,8 +1056,8 @@
 
 <script>
     // Separate URLs for different microservices
- const userApiUrl = "https://www.strangerblink.fun/user/api/user"; //UserBase URL
- const chatApiUrl = "https://www.strangerblink.fun/chat"; // Chat Service base URL
+ const userApiUrl = "/user/api/user"; //UserBase URL
+ const chatApiUrl = "/chat"; // Chat Service base URL
 
  // Global variables
  let stompClient = null;
@@ -2099,7 +2099,7 @@ function sendMessage() {
 
  // Check if current chat user is blocked
  function checkBlockStatus(targetUserId) {
-     const url = `https://www.strangerblink.fun/user/api/user/isblocked/${userId}/${targetUserId}`;
+     const url = `/user/api/user/isblocked/${userId}/${targetUserId}`;
      console.log('🔍 Checking block status with URL:', url);
 
      fetch(url, {
@@ -2146,7 +2146,7 @@ function sendMessage() {
 
      if (isBlockedStatus) {
          // Unblock user
-         const url = `https://www.strangerblink.fun/user/api/user/unblock/${userId}/${targetUserId}`;
+         const url = `/user/api/user/unblock/${userId}/${targetUserId}`;
          console.log('🔓 Unblocking user with URL:', url);
 
          fetch(url, {
@@ -2181,7 +2181,7 @@ function sendMessage() {
              blockedBy: userId
          };
 
-         const url = `https://www.strangerblink.fun/user/api/user/block`;
+         const url = `/user/api/user/block`;
          console.log('🚫 Blocking user with URL:', url, 'Request:', blockRequest);
 
          fetch(url, {
