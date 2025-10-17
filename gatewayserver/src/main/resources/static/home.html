@@ -346,21 +346,6 @@
             gap: 8px;
         }
 
-        .filter-select {
-            flex: 1;
-            padding: 8px 10px;
-            border: 1px solid var(--light-gray);
-            border-radius: 6px;
-            font-size: 0.85rem;
-            background: white;
-            cursor: pointer;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
         .filter-input {
             flex: 1;
             padding: 8px 10px;
@@ -470,10 +455,6 @@
 
         .status-indicator.offline {
             background: var(--gray);
-        }
-
-        .gender-icon {
-            font-size: 0.75rem;
         }
 
         .country-flag {
@@ -884,7 +865,6 @@
                 display: none;
             }
 
-            #dashboardBtn,
             #logoutBtn {
                 display: none;
             }
@@ -974,7 +954,7 @@
             </button>
             <div class="mobile-header-controls">
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-users"></i>
                 </button>
             </div>
         </div>
@@ -1007,11 +987,6 @@
                     <input type="text" id="userSearch" class="search-input" placeholder="Search users...">
                 </div>
                 <div class="filter-options">
-                    <select id="genderFilter" class="filter-select">
-                        <option value="">All Genders</option>
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
-                    </select>
                     <input type="text" id="countryFilter" class="filter-input" placeholder="Country...">
                 </div>
             </div>
@@ -1039,10 +1014,6 @@
                         <h3 id="currentChatName"></h3>
                         <p id="currentChatStatus">Online - Last seen just now</p>
                         <div class="user-details-extended">
-                            <div class="user-detail">
-                                <i class="fas fa-venus-mars gender-icon"></i>
-                                <span id="currentChatGender">Male</span>
-                            </div>
                             <div class="user-detail">
                                 <i class="fas fa-globe country-flag"></i>
                                 <span id="currentChatCountry">USA</span>
@@ -1476,13 +1447,11 @@
 
      if (userItem) {
          const userName = userItem.querySelector('.user-name').textContent;
-         const genderIcon = userItem.querySelector('.gender-icon');
          const country = userItem.querySelector('.user-info-small span:last-child').textContent;
 
          userData = {
              userId: userId,
              userName: userName,
-             gender: genderIcon.classList.contains('fa-venus') ? 'FEMALE' : 'MALE',
              country: country,
              status: 'online'
          };
@@ -1491,7 +1460,6 @@
          userData = {
              userId: userId,
              userName: `User ${userId}`,
-             gender: 'MALE',
              country: 'Unknown',
              status: 'online'
          };
@@ -1543,9 +1511,6 @@
      userItem.className = "user-item";
      userItem.dataset.userId = user.userId;
 
-     const genderIcon = user.gender === 'FEMALE' ? 'fas fa-venus' : 'fas fa-mars';
-     const genderText = user.gender === 'FEMALE' ? 'Female' : 'Male';
-
      const statusClass = user.status === 'online' ? '' : 'offline';
      const statusText = user.status === 'online' ? 'Online' : 'Offline';
 
@@ -1554,9 +1519,6 @@
          <div class="user-details">
              <div class="user-name">${user.userName}</div>
              <div class="user-info-small">
-                 <i class="${genderIcon} gender-icon"></i>
-                 <span>${genderText}</span>
-                 <span>•</span>
                  <i class="fas fa-globe country-flag"></i>
                  <span>${user.country || 'Unknown'}</span>
              </div>
@@ -1687,12 +1649,10 @@
  // Setup search and filter functionality
  function setupSearchAndFilter() {
      const searchInput = document.getElementById('userSearch');
-     const genderFilter = document.getElementById('genderFilter');
      const countryFilter = document.getElementById('countryFilter');
 
      function filterUsers() {
          const searchTerm = searchInput.value.toLowerCase();
-         const genderValue = genderFilter.value;
          const countryValue = countryFilter.value.toLowerCase();
 
          const currentListId = activeTab === 'active' ? 'userList' : 'inboxList';
@@ -1700,14 +1660,12 @@
 
          userItems.forEach(item => {
              const userName = item.querySelector('.user-name').textContent.toLowerCase();
-             const userGender = item.querySelector('.gender-icon').className.includes('fa-venus') ? 'FEMALE' : 'MALE';
              const userCountry = item.querySelector('.user-info-small span:last-child').textContent.toLowerCase();
 
              const matchesSearch = userName.includes(searchTerm);
-             const matchesGender = !genderValue || userGender === genderValue;
              const matchesCountry = !countryValue || userCountry.includes(countryValue);
 
-             if (matchesSearch && matchesGender && matchesCountry) {
+             if (matchesSearch && matchesCountry) {
                  item.style.display = 'flex';
              } else {
                  item.style.display = 'none';
@@ -1716,7 +1674,6 @@
      }
 
      searchInput.addEventListener('input', filterUsers);
-     genderFilter.addEventListener('change', filterUsers);
      countryFilter.addEventListener('input', filterUsers);
  }
 
@@ -1821,7 +1778,6 @@
                      userId: statusUpdate.userId,
                      userName: statusUpdate.userName,
                      status: "online",
-                     gender: statusUpdate.gender || "MALE",
                      country: statusUpdate.country || 'Unknown'
                  });
                  console.log("✅ Added new user from status update:", statusUpdate.userName);
@@ -2109,7 +2065,6 @@ function populateUserList(users) {
      document.getElementById("currentChatName").textContent = user.userName;
      document.getElementById("currentChatAvatar").textContent = user.userName.charAt(0).toUpperCase();
      document.getElementById("currentChatStatus").textContent = user.status === 'online' ? 'Online' : 'Offline';
-     document.getElementById("currentChatGender").textContent = user.gender === 'FEMALE' ? 'Female' : 'Male';
      document.getElementById("currentChatCountry").textContent = user.country || 'Unknown';
 
      // Show chat actions and check block status
@@ -2334,8 +2289,8 @@ function populateUserList(users) {
  // Mock data fallback
  function populateUserListWithMockData() {
      const mockUsers = [
-         { userId: 1, userName: "John Doe", gender: "MALE", country: "USA", status: "online" },
-         { userId: 2, userName: "Jane Smith", gender: "FEMALE", country: "Canada", status: "online" }
+         { userId: 1, userName: "John Doe", country: "USA", status: "online" },
+         { userId: 2, userName: "Jane Smith", country: "Canada", status: "online" }
      ];
      populateUserList(mockUsers);
  }
