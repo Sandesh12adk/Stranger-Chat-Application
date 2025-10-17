@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://www.strangerblink.fun/sitemap.xml
