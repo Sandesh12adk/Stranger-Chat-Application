@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode and Accessibility Features - StrangerChat Blog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Ads Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4826674306686209"
+            crossorigin="anonymous"></script>
+
+    <style>
+        .blog-header {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .blog-content img {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        .author-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .category-badge {
+            background: #00b894;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+        .feature-card {
+            background: white;
+            border-left: 4px solid #00b894;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .quote-box {
+            background: #f8f9fa;
+            border-left: 4px solid #00b894;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+        }
+        .back-to-blog {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .back-to-blog:hover {
+            color: #764ba2;
+        }
+        footer {
+            background: #343a40;
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+        footer a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: white;
+        }
+        .feature-box {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        .feature-icon {
+            background: #00b894;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        .benefit-metric {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 1rem;
+        }
+        .metric-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00b894;
+            margin-bottom: 0.5rem;
+        }
+        .accessibility-tip {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .comparison-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #00b894;
+        }
+        .step-guide {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .user-benefit {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .benefit-icon {
+            color: #00b894;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        .dark-mode-demo {
+            background: #2d3436;
+            color: #dfe6e9;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid #00b894;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="../dashboard.html">
+            <i class="fas fa-comments me-2"></i>strangerblink
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../dashboard.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../about_us.html">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../frequently_asked_questions.html">FAQ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="../contact.html">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Blog Header -->
+<header class="blog-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="category-badge mb-3">Features</span>
+                <h1 class="display-4 fw-bold mb-3">Dark Mode and Accessibility Features</h1>
+                <p class="lead mb-4">Making StrangerChat comfortable and accessible for everyone, regardless of visual preferences or abilities.</p>
+                <div class="d-flex align-items-center">
+                    <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                         alt="Accessibility Team" class="rounded-circle me-3" width="60" height="60">
+                    <div>
+                        <strong>Accessibility Team</strong>
+                        <div class="text-white-50">February 15, 2024</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Blog Content -->
+<main class="container">
+    <div class="row">
+        <article class="col-lg-8 blog-content">
+            <img src="https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                 alt="Dark mode and accessibility features" class="img-fluid w-100">
+
+            <p class="lead">At StrangerChat, we believe that great conversation should be accessible to everyone. Our comprehensive suite of accessibility features and dark mode options ensures that every user can chat comfortably, regardless of their visual preferences, abilities, or environmental conditions.</p>
+
+            <h2>Why Accessibility Matters</h2>
+            <p>Accessibility isn't just about compliance - it's about inclusion. By designing for diverse needs, we create a better experience for all users while ensuring nobody is left out of meaningful conversations.</p>
+
+            <div class="row text-center my-4">
+                <div class="col-md-3">
+                    <div class="benefit-metric">
+                        <div class="metric-number">1B+</div>
+                        <div>People with Disabilities</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="benefit-metric">
+                        <div class="metric-number">74%</div>
+                        <div>Prefer Dark Mode</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="benefit-metric">
+                        <div class="metric-number">89%</div>
+                        <div>Accessibility Satisfaction</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="benefit-metric">
+                        <div class="metric-number">24</div>
+                        <div>Accessibility Features</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h3>Dark Mode: More Than Just Aesthetic</h3>
+                <p>Our dark mode isn't just a color inversion - it's a carefully designed experience with multiple benefits:</p>
+
+                <div class="user-benefit">
+                    <span class="benefit-icon"><i class="fas fa-eye"></i></span>
+                    <span><strong>Reduced Eye Strain</strong> - Especially in low-light conditions</span>
+                </div>
+                <div class="user-benefit">
+                    <span class="benefit-icon"><i class="fas fa-battery-three-quarters"></i></span>
+                    <span><strong>Battery Savings</strong> - Up to 30% on OLED screens</span>
+                </div>
+                <div class="user-benefit">
+                    <span class="benefit-icon"><i class="fas fa-moon"></i></span>
+                    <span><strong>Better Sleep</strong> - Reduced blue light exposure in evenings</span>
+                </div>
+                <div class="user-benefit">
+                    <span class="benefit-icon"><i class="fas fa-sun"></i></span>
+                    <span><strong>Reduced Glare</strong> - Improved readability in bright environments</span>
+                </div>
+            </div>
+
+            <h2>Dark Mode Features</h2>
+
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div>
+                    <h4>1. Multiple Dark Themes</h4>
+                    <p>Choose from several carefully calibrated dark themes:</p>
+
+                    <div class="comparison-box">
+                        <strong>True Dark:</strong> Pure black background for maximum battery savings on OLED displays
+                    </div>
+
+                    <div class="comparison-box">
+                        <strong>Dark Gray:</strong> Softer dark gray for reduced eye strain while maintaining depth
+                    </div>
+
+                    <div class="comparison-box">
+                        <strong>Blue Light Filter:</strong> Warmer dark theme with reduced blue light emission
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <h4>2. Smart Auto-Switching</h4>
+                    <p>Dark mode can automatically activate based on:</p>
+
+                    <div class="step-guide">
+                        <strong>Sunset/Sunrise:</strong> Follows your local daylight hours
+                    </div>
+
+                    <div class="step-guide">
+                        <strong>System Settings:</strong> Syncs with your device's dark mode preference
+                    </div>
+
+                    <div class="step-guide">
+                        <strong>Custom Schedule:</strong> Set your own preferred hours for dark/light mode
+                    </div>
+                </div>
+            </div>
+
+            <div class="dark-mode-demo">
+                <h4 class="text-success"><i class="fas fa-comment me-2"></i>Dark Mode Preview</h4>
+                <div class="mb-3">
+                    <strong>You:</strong> I really love how easy it is to read in dark mode!
+                </div>
+                <div>
+                    <strong>Chat Partner:</strong> Same! It's so much easier on my eyes, especially at night. The colors are perfectly balanced too.
+                </div>
+                <div class="mt-3 text-muted small">
+                    <i class="fas fa-info-circle me-1"></i> This is how your conversations appear in our carefully designed dark theme
+                </div>
+            </div>
+
+            <h2>Accessibility Features Overview</h2>
+
+            <div class="feature-card">
+                <h4>Visual Accessibility</h4>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-text-height"></i>
+                    </div>
+                    <div>
+                        <h5>Font Size & Scaling</h5>
+                        <p>Adjust text size from 12px to 24px with smooth scaling that maintains interface integrity.</p>
+                    </div>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-bold"></i>
+                    </div>
+                    <div>
+                        <h5>High Contrast Mode</h5>
+                        <p>Enhanced color contrast ratios for users with low vision or color blindness.</p>
+                    </div>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div>
+                        <h5>Reduced Motion</h5>
+                        <p>Minimize or eliminate animations for users with vestibular disorders or motion sensitivity.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Motor & Navigation Accessibility</h4>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-keyboard"></i>
+                    </div>
+                    <div>
+                        <h5>Keyboard Navigation</h5>
+                        <p>Full keyboard accessibility with logical tab order and keyboard shortcuts.</p>
+                    </div>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-mouse-pointer"></i>
+                    </div>
+                    <div>
+                        <h5>Large Click Targets</h5>
+                        <p>All interactive elements have minimum 44px touch targets for easier selection.</p>
+                    </div>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-voice"></i>
+                    </div>
+                    <div>
+                        <h5>Voice Control Support</h5>
+                        <p>Compatible with popular voice control systems for hands-free operation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h4>Hearing & Audio Accessibility</h4>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-closed-captioning"></i>
+                    </div>
+                    <div>
+                        <h5>Voice Message Transcription</h5>
+                        <p>Automatic transcription of voice messages for deaf and hard-of-hearing users.</p>
+                    </div>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <div>
+                        <h5>Visual Sound Indicators</h5>
+                        <p>Visual cues for incoming voice messages and call notifications.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quote-box">
+                <p>"As someone with low vision, StrangerChat's accessibility features have been life-changing. The high contrast mode and font scaling let me participate in conversations without straining my eyes. It's the first chat platform that truly feels designed with people like me in mind."</p>
+                <footer class="blockquote-footer mt-2">Maria, Regular User</footer>
+            </div>
+
+            <h2>How to Enable Accessibility Features</h2>
+
+            <div class="step-guide">
+                <h5><i class="fas fa-cog me-2"></i>Step 1: Access Settings</h5>
+                <p class="mb-0">Tap your profile picture → Settings → Accessibility</p>
+            </div>
+
+            <div class="step-guide">
+                <h5><i class="fas fa-sliders-h me-2"></i>Step 2: Customize Features</h5>
+                <p class="mb-0">Toggle individual features on/off and adjust settings to your preference</p>
+            </div>
+
+            <div class="step-guide">
+                <h5><i class="fas fa-save me-2"></i>Step 3: Save Preferences</h5>
+                <p class="mb-0">Your settings sync across all devices automatically</p>
+            </div>
+
+            <div class="step-guide">
+                <h5><i class="fas fa-sync-alt me-2"></i>Step 4: Test & Refine</h5>
+                <p class="mb-0">Try different combinations and adjust as needed for optimal comfort</p>
+            </div>
+
+            <h2>Accessibility Tips for Better Chatting</h2>
+
+            <div class="accessibility-tip">
+                <h5><i class="fas fa-font me-2"></i>For Better Readability</h5>
+                <p class="mb-0">Use the "Dyslexia-Friendly" font option if you find certain fonts easier to read. Combine with increased line spacing for even better readability.</p>
+            </div>
+
+            <div class="accessibility-tip">
+                <h5><i class="fas fa-palette me-2"></i>Color Blindness Support</h5>
+                <p class="mb-0">Enable color blindness filters that adjust our interface colors to be distinguishable for users with various types of color vision deficiency.</p>
+            </div>
+
+            <div class="accessibility-tip">
+                <h5><i class="fas fa-hand-paper me-2"></i>Motor Impairment Assistance</h5>
+                <p class="mb-0">Use voice commands for common actions or enable "Sticky Keys" for easier keyboard navigation if you have difficulty with simultaneous key presses.</p>
+            </div>
+
+            <h2>Advanced Features</h2>
+
+            <div class="feature-card">
+                <h4>Screen Reader Optimization</h4>
+                <p>Our platform is fully compatible with popular screen readers including:</p>
+                <ul>
+                    <li><strong>JAWS</strong> (Windows)</li>
+                    <li><strong>NVDA</strong> (Windows)</li>
+                    <li><strong>VoiceOver</strong> (macOS/iOS)</li>
+                    <li><strong>TalkBack</strong> (Android)</li>
+                </ul>
+                <p>All interface elements include proper ARIA labels and semantic HTML for accurate screen reader interpretation.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Customizable Notification Systems</h4>
+                <p>Tailor notifications to your specific needs:</p>
+
+                <div class="comparison-box">
+                    <strong>Visual Alerts:</strong> Customize flash patterns, colors, and durations
+                </div>
+
+                <div class="comparison-box">
+                    <strong>Haptic Feedback:</strong> Adjust vibration patterns for different notification types
+                </div>
+
+                <div class="comparison-box">
+                    <strong>Audio Cues:</strong> Choose from various sound profiles or upload custom sounds
+                </div>
+            </div>
+
+            <h2>Continuous Improvement</h2>
+            <p>Our accessibility features are constantly evolving based on:</p>
+
+            <div class="feature-card">
+                <ul>
+                    <li><strong>User feedback</strong> from our accessibility testing community</li>
+                    <li><strong>WCAG 2.1 AA compliance</strong> standards and beyond</li>
+                    <li><strong>Emerging technologies</strong> in assistive tech</li>
+                    <li><strong>Partnerships</strong> with disability advocacy organizations</li>
+                    <li><strong>Regular audits</strong> by third-party accessibility experts</li>
+                </ul>
+            </div>
+
+            <div class="accessibility-tip">
+                <h5><i class="fas fa-bullhorn me-2"></i>We Want Your Feedback</h5>
+                <p class="mb-0">Help us improve! If you encounter any accessibility barriers or have suggestions for new features, please contact our accessibility team at accessibility@strangerchat.com. Your input directly shapes our development roadmap.</p>
+            </div>
+
+            <h2>Get Started Today</h2>
+            <p>Whether you're looking to reduce eye strain with dark mode, need larger text for better readability, or require specific accessibility features, StrangerChat is designed to adapt to your needs.</p>
+
+            <p>Take a few minutes to explore our accessibility settings - you might discover features that make your chatting experience more comfortable and enjoyable. Because everyone deserves to connect without barriers.</p>
+
+            <!-- Author Card -->
+            <div class="author-card">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
+                             alt="Accessibility Team" class="rounded-circle" width="100" height="100">
+                    </div>
+                    <div class="col">
+                        <h4>Accessibility Team</h4>
+                        <p class="text-muted mb-2">Inclusive Design Experts & User Experience Specialists</p>
+                        <p class="mb-0">Our Accessibility Team includes experts in inclusive design, assistive technology, and user experience research. We work closely with disability communities to ensure StrangerChat is usable and enjoyable for people of all abilities. Our mission is to break down barriers to connection through thoughtful, accessible design.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation between posts -->
+            <div class="d-flex justify-content-between mt-5 pt-4 border-top">
+                <a href="page28.html" class="back-to-blog">
+                    <i class="fas fa-arrow-left me-2"></i>Previous Post
+                </a>
+                <a href="page30.html" class="back-to-blog">
+                    Next Post<i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </article> <!-- Closing article tag -->
+
+        <!-- Sidebar -->
+        <aside class="col-lg-4">
+            <div class="sticky-top" style="top: 2rem;">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Posts</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="page89.html" class="list-group-item list-group-item-action">
+                                <small class="text-success">FEATURES</small>
+                                <div class="fw-semibold">Accessibility Features for Users with Disabilities</div>
+                                <small class="text-muted">How we're making StrangerChat accessible to everyone.</small>
+                            </a>
+                            <a href="page29.html" class="list-group-item list-group-item-action">
+                                <small class="text-success">FEATURES</small>
+                                <div class="fw-semibold">Dark Mode and Accessibility Features</div>
+                                <small class="text-muted">Making StrangerChat comfortable for everyone.</small>
+                            </a>
+                            <a href="page74.html" class="list-group-item list-group-item-action">
+                                <small class="text-success">FEATURES</small>
+                                <div class="fw-semibold">Offline Mode: Preparing for Conversations Without Internet</div>
+                                <small class="text-muted">How to use StrangerChat with limited connection.</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Quick Accessibility Setup</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-moon text-success me-2"></i>Enable dark mode in settings</li>
+                            <li class="mb-2"><i class="fas fa-text-height text-success me-2"></i>Adjust font size to preference</li>
+                            <li class="mb-2"><i class="fas fa-palette text-success me-2"></i>Try high contrast mode</li>
+                            <li class="mb-2"><i class="fas fa-keyboard text-success me-2"></i>Test keyboard navigation</li>
+                            <li class="mb-2"><i class="fas fa-cog text-success me-2"></i>Customize notification preferences</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Accessibility Resources</h5>
+                        <ul class="list-unstyled small">
+                            <li class="mb-2"><i class="fas fa-external-link-alt me-2"></i><a href="#" class="text-decoration-none">Web Accessibility Initiative (WAI)</a></li>
+                            <li class="mb-2"><i class="fas fa-external-link-alt me-2"></i><a href="#" class="text-decoration-none">WCAG 2.1 Guidelines</a></li>
+                            <li class="mb-2"><i class="fas fa-external-link-alt me-2"></i><a href="#" class="text-decoration-none">Screen Reader Compatibility</a></li>
+                            <li class="mb-2"><i class="fas fa-external-link-alt me-2"></i><a href="#" class="text-decoration-none">Color Contrast Checker</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div> <!-- Closing row div -->
+</main>
+
+<!-- Footer links -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="../dashboard.html" class="text-light">Home</a></li>
+                    <li><a href="../about_us.html" class="text-light">About</a></li>
+                    <li><a href="../frequently_asked_questions.html" class="text-light">FAQ</a></li>
+                    <li><a href="../contact.html" class="text-light">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Legal</h5>
+                <div class="legal-links">
+                    <a href="../privacy_policy.html" class="d-block mb-2">
+                        <i class="fas fa-shield-alt me-1"></i> Privacy Policy
+                    </a>
+                    <a href="../terms_and_conditions.html" class="d-block mb-2">
+                        <i class="fas fa-file-contract me-1"></i> Terms & Conditions
+                    </a>
+                    <a href="../frequently_asked_questions.html" class="d-block">
+                        <i class="fas fa-question-circle me-1"></i> Help Center
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

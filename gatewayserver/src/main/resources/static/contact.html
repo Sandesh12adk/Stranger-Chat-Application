@@ -5,38 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us | strangerblink</title>
     <meta name="description" content="Connect instantly with random strangers worldwide. Start chatting safely and anonymously!">
-    <!-- ✅ Keywords -->
     <meta name="keywords" content="StrangerBlink, dashboard, anonymous chat, random chat, online chat, instant messaging, connect with strangers">
-
-    <!-- ✅ Author -->
     <meta name="author" content="Sandesh Adhikari">
-
-    <!-- ✅ Theme color for mobile browsers -->
     <meta name="theme-color" content="#4361ee">
-
-    <!-- ✅ Open Graph / Facebook sharing -->
     <meta property="og:title" content="StrangerBlink Dashboard | Chat Instantly">
     <meta property="og:description" content="Access your StrangerBlink Dashboard and start chatting safely with people worldwide. Anonymous and instant conversations!">
     <meta property="og:image" content="/images/applogo.png">
     <meta property="og:url" content="https://strangerblink.fun/dashboard.html">
     <meta property="og:type" content="website">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4826674306686209"
-            crossorigin="anonymous"></script>
-    <!-- ✅ Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="StrangerBlink Dashboard | Chat Instantly">
     <meta name="twitter:description" content="Access your StrangerBlink Dashboard and start chatting safely with people worldwide. Anonymous and instant conversations!">
     <meta name="twitter:image" content="/images/applogo.png">
-
-    <!-- ✅ Favicon -->
     <link rel="icon" type="image/png" href="/images/applogo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- ✅ Canonical URL -->
     <link rel="canonical" href="https://strangerblink.fun/dashboard.html">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -47,9 +30,6 @@
             --dark: #212529;
             --gray: #6c757d;
             --light-gray: #e9ecef;
-            --success: #4cc9f0;
-            --danger: #f72585;
-            --warning: #f8961e;
             --border-radius: 12px;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
@@ -154,6 +134,25 @@
             color: white;
         }
 
+        .social-connect a {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-connect a i {
+            margin-right: 8px;
+        }
+
+        .social-connect a:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
         @media (max-width: 768px) {
             .hero-section {
                 padding: 60px 0;
@@ -200,9 +199,7 @@
 </nav>
 
 <!-- Hero Section -->
-<section class="hero-section d-flex align-items-center justify-content-center text-center py-5"
-         style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-          border-radius: 0 0 20px 20px;">
+<section class="hero-section d-flex align-items-center justify-content-center text-center py-5">
     <div class="container">
         <h1 class="fw-semibold mb-3" style="font-size: 2.5rem; color: white;">Contact Us</h1>
         <p class="text-light mb-0" style="max-width: 600px; margin: 0 auto; font-size: 1.1rem;">
@@ -210,7 +207,6 @@
         </p>
     </div>
 </section>
-
 
 <div class="container">
     <!-- Contact Form Section -->
@@ -244,6 +240,17 @@
                 </button>
             </div>
         </form>
+
+        <!-- Social Connect Section -->
+        <div class="social-connect mt-5 text-center">
+            <h5 class="mb-3">Connect with Me</h5>
+            <a href="https://www.facebook.com/sandesh.adhikari.3323" target="_blank" class="text-primary">
+                <i class="fab fa-facebook"></i> Facebook
+            </a>
+            <a href="https://www.instagram.com/sandesh.adhikari.3323" target="_blank" class="text-danger">
+                <i class="fab fa-instagram"></i> Instagram
+            </a>
+        </div>
     </section>
 </div>
 
@@ -294,10 +301,7 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // API Configuration
     const apiUrl = "/user/api/user";
-
-    // DOM Elements
     const contactForm = document.getElementById('contactForm');
     const messageInput = document.getElementById('message');
     const submitBtn = document.getElementById('submitBtn');
@@ -305,10 +309,8 @@
     const errorAlert = document.getElementById('errorAlert');
     const successMessage = document.getElementById('successMessage');
     const errorMessage = document.getElementById('errorMessage');
-
     let currentUserId = null;
 
-    // Go back to previous page
     function goBack() {
         if (document.referrer && document.referrer.includes(window.location.hostname)) {
             window.history.back();
@@ -317,14 +319,9 @@
         }
     }
 
-    // Check user session and get userId
     async function checkSession() {
         try {
-            const response = await fetch(`${apiUrl}/session-check`, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
+            const response = await fetch(`${apiUrl}/session-check`, { method: 'GET', credentials: 'include' });
             if (response.ok) {
                 const userData = await response.json();
                 currentUserId = userData.userId;
@@ -340,169 +337,83 @@
         }
     }
 
-    // Show success message
     function showSuccess(message) {
-        if (message) {
-            successMessage.textContent = message;
-        }
+        if (message) successMessage.textContent = message;
         successAlert.classList.remove('d-none');
         errorAlert.classList.add('d-none');
     }
 
-    // Show error message
     function showError(message) {
-        if (message) {
-            errorMessage.textContent = message;
-        }
+        if (message) errorMessage.textContent = message;
         errorAlert.classList.remove('d-none');
         successAlert.classList.add('d-none');
     }
 
-    // Hide all alerts
     function hideAlerts() {
         successAlert.classList.add('d-none');
         errorAlert.classList.add('d-none');
     }
 
-    // Extract field names from error messages for better user display
     function formatFieldName(fieldName) {
-        const fieldMap = {
-            'userId': 'User ID',
-            'message': 'Message'
-        };
-
+        const fieldMap = { 'userId': 'User ID', 'message': 'Message' };
         return fieldMap[fieldName] || fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
     }
 
-    // Handle different error responses
     function handleErrorResponse(response, errorData) {
-        console.log('Error response:', response.status, errorData);
-
-        // Handle Validation Errors (400 - MethodArgumentNotValidException)
         if (response.status === 400) {
-            // Check if it's a MethodArgumentNotValidException format (field errors object)
             if (typeof errorData === 'object' && !errorData.errorCode && !errorData.errorMessage) {
-                // This is likely a MethodArgumentNotValidException with field errors
                 const fieldErrors = Object.entries(errorData).map(([field, message]) => {
                     return `${formatFieldName(field)}: ${message}`;
                 }).join(', ');
-
                 showError(fieldErrors || 'Please fill in all required fields correctly.');
-            }
-            // Handle ErrorResponse format
-            else if (errorData.errorMessage) {
+            } else if (errorData.errorMessage) {
                 showError(errorData.errorMessage || 'Validation failed. Please check your input.');
-            }
-            // Handle other 400 errors
-            else {
-                showError('Please check your input and try again.');
-            }
-        }
-        // Handle User Not Found (404)
-        else if (response.status === 404) {
-            if (errorData.errorMessage) {
-                showError(errorData.errorMessage || 'User not found. Please login again.');
-            } else {
-                showError('User not found. Please login again.');
-            }
-            setTimeout(() => {
-                window.location.href = 'signin.html';
-            }, 2000);
-        }
-        // Handle Unauthorized (401)
-        else if (response.status === 401) {
+            } else showError('Please check your input and try again.');
+        } else if (response.status === 404) {
+            showError(errorData.errorMessage || 'User not found. Please login again.');
+            setTimeout(() => { window.location.href = 'signin.html'; }, 2000);
+        } else if (response.status === 401) {
             showError('Your session has expired. Please login again.');
-            setTimeout(() => {
-                window.location.href = 'signin.html';
-            }, 2000);
-        }
-        // Handle Server Errors (500)
-        else if (response.status === 500) {
-            if (errorData.errorMessage) {
-                showError(errorData.errorMessage || 'Server error. Please try again later.');
-            } else {
-                showError('Server error. Please try again later.');
-            }
-        }
-        // Handle other errors
-        else {
-            showError('Something went wrong. Please try again.');
-        }
+            setTimeout(() => { window.location.href = 'signin.html'; }, 2000);
+        } else if (response.status === 500) {
+            showError(errorData.errorMessage || 'Server error. Please try again later.');
+        } else showError('Something went wrong. Please try again.');
     }
 
-    // Handle form submission
     async function handleSubmit(e) {
         e.preventDefault();
-
-        // Hide previous alerts
         hideAlerts();
-
-        // Validate form
-        if (!messageInput.value.trim()) {
-            showError('Please enter a message.');
-            return;
-        }
-
-        // Disable submit button
+        if (!messageInput.value.trim()) { showError('Please enter a message.'); return; }
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Sending...';
-
         try {
-            // Prepare request data
-            const requestData = {
-                userId: currentUserId,
-                message: messageInput.value.trim()
-            };
-
-            console.log('Sending contact request:', requestData);
-
-            // Send contact request
+            const requestData = { userId: currentUserId, message: messageInput.value.trim() };
             const response = await fetch(`${apiUrl}/contact`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestData),
                 credentials: 'include'
             });
-
-            console.log('Response status:', response.status);
-
             if (response.ok) {
-                const result = await response.json();
+                await response.json();
                 showSuccess('Your message has been sent successfully! We\'ll get back to you soon.');
                 contactForm.reset();
             } else {
-                // Try to parse error response
-                try {
-                    const errorData = await response.json();
-                    console.log('Error data received:', errorData);
-                    handleErrorResponse(response, errorData);
-                } catch (parseError) {
-                    console.error('Error parsing error response:', parseError);
-                    // If response is not JSON, use status text
-                    showError(response.statusText || 'Failed to send your message.');
-                }
+                try { const errorData = await response.json(); handleErrorResponse(response, errorData); }
+                catch { showError(response.statusText || 'Failed to send your message.'); }
             }
         } catch (error) {
             console.error('Error sending message:', error);
             showError('Network error. Please check your connection and try again.');
         } finally {
-            // Re-enable submit button
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Send Message';
         }
     }
 
-    // Initialize page
     document.addEventListener('DOMContentLoaded', async function() {
-        // Check user session
         const sessionValid = await checkSession();
-
-        if (sessionValid) {
-            // Add form submit event listener
-            contactForm.addEventListener('submit', handleSubmit);
-        }
+        if (sessionValid) contactForm.addEventListener('submit', handleSubmit);
     });
 </script>
 </body>

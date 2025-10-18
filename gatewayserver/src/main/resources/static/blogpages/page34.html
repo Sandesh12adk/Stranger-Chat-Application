@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Stickers: Make Your Chats More Fun - StrangerChat Blog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Ads Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4826674306686209"
+            crossorigin="anonymous"></script>
+
+    <style>
+        .blog-header {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .blog-content img {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        .author-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .category-badge {
+            background: #00b894;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+        .feature-card {
+            background: white;
+            border-left: 4px solid #00b894;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .quote-box {
+            background: #f8f9fa;
+            border-left: 4px solid #00b894;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+        }
+        .back-to-blog {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .back-to-blog:hover {
+            color: #764ba2;
+        }
+        footer {
+            background: #343a40;
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+        footer a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: white;
+        }
+        .feature-box {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        .feature-icon {
+            background: #00b894;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        .sticker-demo {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #00b894;
+            text-align: center;
+        }
+        .sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .sticker-item {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .sticker-emoji {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .benefit-metric {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 1rem;
+        }
+        .metric-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00b894;
+            margin-bottom: 0.5rem;
+        }
+        .creation-tip {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .step-guide {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .use-case-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #00b894;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        .checklist-icon {
+            color: #00b894;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+        .sticker-category {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="../dashboard.html">
+            <i class="fas fa-comments me-2"></i>strangerblink
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../dashboard.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../about_us.html">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../frequently_asked_questions.html">FAQ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="../contact.html">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Blog Header -->
+<header class="blog-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="category-badge mb-3">Features</span>
+                <h1 class="display-4 fw-bold mb-3">Custom Stickers: Make Your Chats More Fun</h1>
+                <p class="lead mb-4">Create and share personalized stickers with your chat partners to express yourself in unique and creative ways.</p>
+                <div class="d-flex align-items-center">
+                    <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                         alt="Design Team" class="rounded-circle me-3" width="60" height="60">
+                    <div>
+                        <strong>Design Team</strong>
+                        <div class="text-white-50">February 10, 2024</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Blog Content -->
+<main class="container">
+    <div class="row">
+        <article class="col-lg-8 blog-content">
+            <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                 alt="Custom stickers and chat expressions" class="img-fluid w-100">
+
+            <p class="lead">Take your conversations to the next level with custom stickers! Our new sticker creation feature lets you design personalized expressions that capture your unique personality and make your chats more engaging and memorable.</p>
+
+            <h2>Why Custom Stickers Matter</h2>
+            <p>Stickers have become the modern equivalent of expressive gestures in digital conversations. They add personality, emotion, and visual interest that text alone can't convey.</p>
+
+            <div class="row text-center my-4">
+                <div class="col-md-4">
+                    <div class="benefit-metric">
+                        <div class="metric-number">3.5x</div>
+                        <div>More Engagement</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="benefit-metric">
+                        <div class="metric-number">78%</div>
+                        <div>Better Mood Expression</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="benefit-metric">
+                        <div class="metric-number">92%</div>
+                        <div>More Memorable Chats</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h3>The Psychology Behind Stickers</h3>
+                <p>Research shows that visual elements in communication:</p>
+
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-brain"></i></span>
+                    <span><strong>Enhance emotional connection</strong> by conveying tone and feeling more effectively than text</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-smile"></i></span>
+                    <span><strong>Increase engagement</strong> by making conversations more interactive and fun</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-memory"></i></span>
+                    <span><strong>Improve memory retention</strong> of conversations through visual association</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-globe"></i></span>
+                    <span><strong>Bridge language barriers</strong> with universal visual expressions</span>
+                </div>
+            </div>
+
+            <h2>Getting Started with Custom Stickers</h2>
+
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div>
+                    <h4>1. Access the Sticker Creator</h4>
+                    <p>Find the sticker creation tool in your chat interface. Click the sticker icon, then select "Create New Sticker" to begin.</p>
+                    <div class="step-guide">
+                        <strong>Location:</strong> Chat window → Sticker button (smiley face) → Create New Sticker
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <div>
+                    <h4>2. Choose Your Creation Method</h4>
+                    <p>We offer multiple ways to create stickers:</p>
+
+                    <div class="sticker-demo">
+                        <strong>Upload Images:</strong> Turn your photos or drawings into stickers
+                    </div>
+
+                    <div class="sticker-demo">
+                        <strong>Use Templates:</strong> Start with our pre-designed templates and customize them
+                    </div>
+
+                    <div class="sticker-demo">
+                        <strong>Draw from Scratch:</strong> Use our drawing tools to create original artwork
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <div>
+                    <h4>3. Customize and Enhance</h4>
+                    <p>Add text, effects, and animations to make your stickers unique:</p>
+
+                    <div class="step-guide">
+                        <strong>Text Options:</strong> Choose from various fonts, colors, and sizes
+                    </div>
+
+                    <div class="step-guide">
+                        <strong>Effects Library:</strong> Add shadows, glows, or special filters
+                    </div>
+
+                    <div class="step-guide">
+                        <strong>Animation Tools:</strong> Create simple animations with our easy-to-use timeline
+                    </div>
+                </div>
+            </div>
+
+            <div class="sticker-demo">
+                <h4>🎨 Sticker Creation Preview</h4>
+                <div class="sticker-grid">
+                    <div class="sticker-item">
+                        <div class="sticker-emoji">😊</div>
+                        <div>Happy Greeting</div>
+                    </div>
+                    <div class="sticker-item">
+                        <div class="sticker-emoji">🎉</div>
+                        <div>Celebration</div>
+                    </div>
+                    <div class="sticker-item">
+                        <div class="sticker-emoji">🤔</div>
+                        <div>Thinking</div>
+                    </div>
+                    <div class="sticker-item">
+                        <div class="sticker-emoji">❤️</div>
+                        <div>Appreciation</div>
+                    </div>
+                    <div class="sticker-item">
+                        <div class="sticker-emoji">😂</div>
+                        <div>Laughter</div>
+                    </div>
+                    <div class="sticker-item">
+                        <div class="sticker-emoji">👍</div>
+                        <div>Agreement</div>
+                    </div>
+                </div>
+                <p class="text-muted mt-2">These are just a few examples of the stickers you can create!</p>
+            </div>
+
+            <h2>Popular Sticker Categories</h2>
+
+            <div class="sticker-category">
+                <h5><i class="fas fa-laugh-beam me-2"></i>Reactions & Emotions</h5>
+                <p class="mb-0">Create stickers that express exactly how you're feeling in the moment</p>
+            </div>
+
+            <div class="sticker-category">
+                <h5><i class="fas fa-hands me-2"></i>Greetings & Goodbyes</h5>
+                <p class="mb-0">Personalized hello and goodbye stickers for starting and ending conversations</p>
+            </div>
+
+            <div class="sticker-category">
+                <h5><i class="fas fa-running me-2"></i>Inside Jokes</h5>
+                <p class="mb-0">Stickers that reference shared experiences or funny moments</p>
+            </div>
+
+            <div class="sticker-category">
+                <h5><i class="fas fa-birthday-cake me-2"></i>Celebrations</h5>
+                <p class="mb-0">Birthday, achievement, and milestone celebration stickers</p>
+            </div>
+
+            <div class="sticker-category">
+                <h5><i class="fas fa-paw me-2"></i>Personal Mascots</h5>
+                <p class="mb-0">Create a character or mascot that represents your personality</p>
+            </div>
+
+            <div class="quote-box">
+                <p>"Creating custom stickers with my chat partners has become our favorite inside joke. We have stickers for everything now - from our morning coffee greetings to our 'I need to sleep' goodnights. It feels like we've created our own visual language."</p>
+                <footer class="blockquote-footer mt-2">Regular User</footer>
+            </div>
+
+            <h2>Advanced Sticker Creation Tips</h2>
+
+            <div class="creation-tip">
+                <h5><i class="fas fa-palette me-2"></i>Color Psychology</h5>
+                <p class="mb-0">Use colors strategically - warm colors for excitement and energy, cool colors for calm and thoughtful expressions.</p>
+            </div>
+
+            <div class="creation-tip">
+                <h5><i class="fas fa-text-height me-2"></i>Readability Matters</h5>
+                <p class="mb-0">Keep text minimal and ensure it's readable even at small sizes. Simple, bold fonts work best.</p>
+            </div>
+
+            <div class="creation-tip">
+                <h5><i class="fas fa-expand me-2"></i>Optimal Sizing</h5>
+                <p class="mb-0">Create stickers that look good at both small preview sizes and when expanded in chat.</p>
+            </div>
+
+            <div class="creation-tip">
+                <h5><i class="fas fa-sync me-2"></i>Animation Best Practices</h5>
+                <p class="mb-0">Keep animations short (2-3 seconds) and loop smoothly. Avoid overly complex movements.</p>
+            </div>
+
+            <h2>Creative Use Cases</h2>
+
+            <div class="use-case-box">
+                <h5><i class="fas fa-language me-2"></i>Language Learning Partners</h5>
+                <p>Create stickers with vocabulary words, common phrases, or cultural references to make language practice more engaging and memorable.</p>
+            </div>
+
+            <div class="use-case-box">
+                <h5><i class="fas fa-users me-2"></i>Group Chat Themes</h5>
+                <p>Develop sticker sets for specific group chats - study groups, project teams, or friend circles with shared interests.</p>
+            </div>
+
+            <div class="use-case-box">
+                <h5><i class="fas fa-calendar me-2"></i>Seasonal & Holiday Stickers</h5>
+                <p>Create stickers for holidays, seasons, or special occasions to keep your conversations timely and festive.</p>
+            </div>
+
+            <div class="use-case-box">
+                <h5><i class="fas fa-gamepad me-2"></i>Gaming & Hobby Groups</h5>
+                <p>Design stickers related to specific games, sports, or hobbies you share with your chat partners.</p>
+            </div>
+
+            <h2>Sharing and Collaboration Features</h2>
+
+            <div class="feature-card">
+                <h4>Sticker Sharing Options</h4>
+
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-share-alt"></i></span>
+                    <span><strong>Direct Send:</strong> Send stickers directly to specific chat partners</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-layer-group"></i></span>
+                    <span><strong>Sticker Packs:</strong> Create and share collections of related stickers</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-users"></i></span>
+                    <span><strong>Collaborative Creation:</strong> Work together with chat partners on sticker designs</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-download"></i></span>
+                    <span><strong>Export Options:</strong> Download your stickers for use in other platforms</span>
+                </div>
+            </div>
+
+            <h2>Sticker Etiquette and Best Practices</h2>
+
+            <div class="feature-card">
+                <h4>Using Stickers Thoughtfully</h4>
+
+                <div class="step-guide">
+                    <strong>Match the conversation tone:</strong> Use appropriate stickers for the mood and context
+                </div>
+
+                <div class="step-guide">
+                    <strong>Don't overuse:</strong> Stickers should enhance conversation, not replace meaningful communication
+                </div>
+
+                <div class="step-guide">
+                    <strong>Respect boundaries:</strong> Be mindful if someone prefers text-only communication
+                </div>
+
+                <div class="step-guide">
+                    <strong>Keep it appropriate:</strong> Ensure stickers are suitable for all audiences in public chats
+                </div>
+            </div>
+
+            <h2>Technical Specifications</h2>
+
+            <div class="feature-card">
+                <h4>Supported Formats and Limits</h4>
+                <ul>
+                    <li><strong>Image Formats:</strong> PNG, JPG, GIF (transparent backgrounds supported)</li>
+                    <li><strong>Maximum File Size:</strong> 5MB per sticker</li>
+                    <li><strong>Dimensions:</strong> Recommended 512x512 pixels (scales automatically)</li>
+                    <li><strong>Animation Length:</strong> Up to 5 seconds for animated stickers</li>
+                    <li><strong>Storage Limit:</strong> 100 custom stickers per user</li>
+                    <li><strong>Sharing Limits:</strong> Up to 50 stickers can be shared in one pack</li>
+                </ul>
+            </div>
+
+            <h2>Community Sticker Sharing</h2>
+            <p>Discover amazing stickers created by other StrangerChat users:</p>
+
+            <div class="feature-card">
+                <h4>Community Features</h4>
+
+                <div class="use-case-box">
+                    <strong>Featured Sticker Packs:</strong> Browse popular sticker collections created by our community
+                </div>
+
+                <div class="use-case-box">
+                    <strong>Sticker Challenges:</strong> Participate in weekly creative challenges with themed sticker contests
+                </div>
+
+                <div class="use-case-box">
+                    <strong>Creator Spotlight:</strong> Discover talented sticker artists in our community
+                </div>
+
+                <div class="use-case-box">
+                    <strong>Rating System:</strong> Rate and review sticker packs to help others find great content
+                </div>
+            </div>
+
+            <h2>Accessibility Considerations</h2>
+
+            <div class="feature-card">
+                <h4>Inclusive Sticker Design</h4>
+                <p>We're committed to making stickers accessible to everyone:</p>
+
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-eye"></i></span>
+                    <span><strong>Alt Text Support:</strong> Add descriptions for screen readers</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-palette"></i></span>
+                    <span><strong>Color Contrast:</strong> Tools to ensure good visibility for color-blind users</span>
+                </div>
+                <div class="checklist-item">
+                    <span class="checklist-icon"><i class="fas fa-ban"></i></span>
+                    <span><strong>Reduced Motion:</strong> Option to display static versions of animated stickers</span>
+                </div>
+            </div>
+
+            <h2>Start Creating Today!</h2>
+            <p>Whether you're an experienced digital artist or just getting started with creative expression, our sticker creation tools are designed to be intuitive and fun for everyone.</p>
+
+            <p>Your custom stickers can transform ordinary conversations into memorable, expressive exchanges that truly capture your personality. Start small with simple reaction stickers, or go all out with animated character packs - the possibilities are endless!</p>
+
+            <p>Remember: The best stickers often come from inside jokes, shared experiences, or simply capturing a feeling that words can't quite express. Have fun exploring this creative new way to connect!</p>
+
+            <!-- Author Card -->
+            <div class="author-card">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
+                             alt="Design Team" class="rounded-circle" width="100" height="100">
+                    </div>
+                    <div class="col">
+                        <h4>Design Team</h4>
+                        <p class="text-muted mb-2">Creative Directors & UX/UI Specialists</p>
+                        <p class="mb-0">Our Design Team brings together artists, animators, and user experience experts dedicated to creating features that enhance self-expression and connection. We believe that visual communication is a powerful tool for building relationships, and we're constantly exploring new ways to help users express their unique personalities through creative features like custom stickers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation between posts -->
+            <div class="d-flex justify-content-between mt-5 pt-4 border-top">
+                <a href="page33.html" class="back-to-blog">
+                    <i class="fas fa-arrow-left me-2"></i>Previous Post
+                </a>
+                <a href="page35.html" class="back-to-blog">
+                    Next Post<i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </article> <!-- Closing article tag -->
+
+        <!-- Sidebar -->
+        <aside class="col-lg-4">
+            <div class="sticky-top" style="top: 2rem;">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Posts</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="page19.html" class="list-group-item list-group-item-action">
+                                <small class="text-success">FEATURES</small>
+                                <div class="fw-semibold">Emoji Reactions: Express Yourself Better</div>
+                                <small class="text-muted">Learn about our new emoji reaction system and how it enhances conversations.</small>
+                            </a>
+                            <a href="page49.html" class="list-group-item list-group-item-action">
+                                <small class="text-success">FEATURES</small>
+                                <div class="fw-semibold">Gamification Features: Earn Badges and Achievements</div>
+                                <small class="text-muted">Make chatting more fun with our new achievement system.</small>
+                            </a>
+                            <a href="page24.html" class="list-group-item list-group-item-action">
+                                <small class="text-success">FEATURES</small>
+                                <div class="fw-semibold">Voice Messages: Adding Personality to Your Chats</div>
+                                <small class="text-muted">Explore our voice messaging feature and tips for using it effectively.</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Quick Sticker Tips</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-paint-brush text-success me-2"></i>Start with simple designs</li>
+                            <li class="mb-2"><i class="fas fa-text-height text-success me-2"></i>Keep text minimal and readable</li>
+                            <li class="mb-2"><i class="fas fa-palette text-success me-2"></i>Use bold, contrasting colors</li>
+                            <li class="mb-2"><i class="fas fa-expand text-success me-2"></i>Test at different sizes</li>
+                            <li class="mb-2"><i class="fas fa-share-alt text-success me-2"></i>Share your favorite creations</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Popular Sticker Ideas</h5>
+                        <ul class="list-unstyled small">
+                            <li class="mb-1"><i class="fas fa-smile me-2"></i>Morning greetings</li>
+                            <li class="mb-1"><i class="fas fa-moon me-2"></i>Goodnight messages</li>
+                            <li class="mb-1"><i class="fas fa-laugh me-2"></i>Inside jokes</li>
+                            <li class="mb-1"><i class="fas fa-coffee me-2"></i>Daily routines</li>
+                            <li class="mb-1"><i class="fas fa-heart me-2"></i>Appreciation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div> <!-- Closing row div -->
+</main>
+
+<!-- Footer links -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="../dashboard.html" class="text-light">Home</a></li>
+                    <li><a href="../about_us.html" class="text-light">About</a></li>
+                    <li><a href="../frequently_asked_questions.html" class="text-light">FAQ</a></li>
+                    <li><a href="../contact.html" class="text-light">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Legal</h5>
+                <div class="legal-links">
+                    <a href="../privacy_policy.html" class="d-block mb-2">
+                        <i class="fas fa-shield-alt me-1"></i> Privacy Policy
+                    </a>
+                    <a href="../terms_and_conditions.html" class="d-block mb-2">
+                        <i class="fas fa-file-contract me-1"></i> Terms & Conditions
+                    </a>
+                    <a href="../frequently_asked_questions.html" class="d-block">
+                        <i class="fas fa-question-circle me-1"></i> Help Center
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
