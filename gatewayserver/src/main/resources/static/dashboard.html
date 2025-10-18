@@ -3,83 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ✅ Title & Description -->
-    <title>StrangerBlink| Chat Instantly</title>
-    <meta name="description" content="Connect instantly with random strangers worldwide. Start chatting safely and anonymously!">
-    <!-- ✅ Keywords -->
-    <meta name="keywords" content="StrangerBlink, dashboard, anonymous chat, random chat, online chat, instant messaging, connect with strangers">
-
-    <!-- ✅ Author -->
-    <meta name="author" content="Sandesh Adhikari">
-
-    <!-- ✅ Theme color for mobile browsers -->
-    <meta name="theme-color" content="#4361ee">
-
-    <!-- ✅ Open Graph / Facebook sharing -->
-    <meta property="og:title" content="StrangerBlink Dashboard | Chat Instantly">
-    <meta property="og:description" content="Access your StrangerBlink Dashboard and start chatting safely with people worldwide. Anonymous and instant conversations!">
-    <meta property="og:image" content="/images/applogo.png">
-    <meta property="og:url" content="https://strangerblink.fun/dashboard.html">
-    <meta property="og:type" content="website">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4826674306686209"
-            crossorigin="anonymous"></script>
-    <!-- ✅ Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="StrangerBlink Dashboard | Chat Instantly">
-    <meta name="twitter:description" content="Access your StrangerBlink Dashboard and start chatting safely with people worldwide. Anonymous and instant conversations!">
-    <meta name="twitter:image" content="/images/applogo.png">
-
-    <!-- ✅ Favicon -->
-    <link rel="icon" type="image/png" href="/images/applogo.png">
+    <title>StrangerBlink | Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- ✅ Canonical URL -->
-    <link rel="canonical" href="https://strangerblink.fun/dashboard.html">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="description" content="Connect instantly with random strangers worldwide. Start chatting safely and anonymously!">
-    <!-- ✅ Keywords -->
-    <meta name="keywords" content="StrangerBlink, dashboard, anonymous chat, random chat, online chat, instant messaging, connect with strangers">
-
-    <!-- ✅ Author -->
-    <meta name="author" content="Sandesh Adhikari">
-
-    <!-- ✅ Theme color for mobile browsers -->
-    <meta name="theme-color" content="#4361ee">
-
-    <!-- ✅ Open Graph / Facebook sharing -->
-    <meta property="og:title" content="StrangerBlink Dashboard | Chat Instantly">
-    <meta property="og:description" content="Access your StrangerBlink Dashboard and start chatting safely with people worldwide. Anonymous and instant conversations!">
-    <meta property="og:image" content="/images/applogo.png">
-    <meta property="og:url" content="https://strangerblink.fun/dashboard.html">
-    <meta property="og:type" content="website">
-
-    <!-- ✅ Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="StrangerBlink Dashboard | Chat Instantly">
-    <meta name="twitter:description" content="Access your StrangerBlink Dashboard and start chatting safely with people worldwide. Anonymous and instant conversations!">
-    <meta name="twitter:image" content="/images/applogo.png">
-
-    <!-- ✅ Favicon -->
-    <link rel="icon" type="image/png" href="/images/applogo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- ✅ Canonical URL -->
-    <link rel="canonical" href="https://strangerblink.fun/dashboard.html">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Add WebSocket libraries -->
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H5V4RS85W9"></script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-16784NM9T3"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-16784NM9T3');
-    </script>
     <style>
         :root {
             --primary: #4361ee;
@@ -92,19 +18,87 @@
             --success: #4cc9f0;
             --danger: #f72585;
             --warning: #f8961e;
+            --info: #06b6d4;
             --border-radius: 12px;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
             --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: #f5f7fa;
             color: var(--dark);
             line-height: 1.6;
             min-height: 100vh;
-            overflow-x: hidden;
         }
+
+        /* Navbar */
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--dark) !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-brand i {
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .nav-link {
+            color: var(--gray) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            color: var(--primary) !important;
+        }
+
+        .nav-link.active {
+            color: var(--primary) !important;
+            font-weight: 600;
+        }
+
+     .logout-btn-nav {
+    background: none;              /* same as normal links */
+    color: var(--danger) !important; /* red text */
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 0.5rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.logout-btn-nav:hover {
+    color: #ff4d4d !important; /* brighter red on hover */
+    transform: scale(1.03);   /* subtle hover effect */
+}
+
 
         /* Loading Screen */
         #loadingScreen {
@@ -113,7 +107,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #4361ee 0%, #7209b7 100%);
+            background: white;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -128,13 +122,13 @@
         }
 
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--light-gray);
+            border-top: 3px solid var(--primary);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
         }
 
         @keyframes spin {
@@ -143,16 +137,17 @@
         }
 
         .loading-text {
-            color: white;
-            font-size: 1.2rem;
+            color: var(--gray);
+            font-size: 0.95rem;
             font-weight: 500;
         }
 
         /* Main Content */
         #mainContent {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(10px);
             transition: all 0.5s ease;
+            padding: 2rem 0;
         }
 
         #mainContent.visible {
@@ -160,90 +155,174 @@
             transform: translateY(0);
         }
 
-        /* Dashboard Header */
+        /* Dashboard Header - Compact */
         .dashboard-header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 80px 0;
-            border-radius: 0 0 20px 20px;
-            margin-bottom: 40px;
+            padding: 2.5rem 0;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .welcome-icon {
-            font-size: 3rem;
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtext {
+            font-size: 1rem;
             opacity: 0.9;
-            margin-bottom: 20px;
+            font-weight: 400;
         }
 
-        /* User Info */
-        .user-info {
+        /* User Info Card - Compact & Professional */
+        .user-info-card {
             background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            padding: 25px;
-            margin-bottom: 30px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-left: 3px solid var(--primary);
         }
 
         .user-avatar {
-            width: 70px;
-            height: 70px;
+            width: 44px;
+            height: 44px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.8rem;
-            font-weight: bold;
-            box-shadow: var(--shadow);
+            font-size: 1.1rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .user-details {
+            flex: 1;
         }
 
         .user-name {
-            font-size: 1.5rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--dark);
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .user-meta {
             color: var(--gray);
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Action Cards Grid */
+        .actions-section {
+            margin-top: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--primary);
             font-size: 1rem;
         }
 
-        /* Action Cards */
         .action-card {
             background: white;
             border-radius: var(--border-radius);
-            padding: 30px;
+            padding: 1.5rem;
             box-shadow: var(--shadow);
             transition: var(--transition);
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 1px solid var(--light-gray);
             text-align: center;
             height: 100%;
-            border-top: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover::before {
+            transform: scaleX(1);
         }
 
         .action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
         }
 
-        .action-card.secondary {
-            border-top-color: var(--secondary);
+        .action-card.primary::before {
+            background: var(--primary);
         }
 
-        .action-card.warning {
-            border-top-color: var(--warning);
+        .action-card.secondary::before {
+            background: var(--secondary);
         }
 
-        .action-card.success {
-            border-top-color: var(--success);
+        .action-card.warning::before {
+            background: var(--warning);
+        }
+
+        .action-card.success::before {
+            background: var(--success);
+        }
+
+        .action-card.info::before {
+            background: var(--info);
+        }
+
+        .action-card.danger::before {
+            background: var(--danger);
         }
 
         .action-icon {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            margin-bottom: 1rem;
             color: var(--primary);
         }
 
@@ -259,49 +338,41 @@
             color: var(--success);
         }
 
+        .action-card.info .action-icon {
+            color: var(--info);
+        }
+
+        .action-card.danger .action-icon {
+            color: var(--danger);
+        }
+
         .action-title {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 0.5rem;
             color: var(--dark);
         }
 
         .action-description {
             color: var(--gray);
             line-height: 1.5;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
-        /* Dashboard Footer */
+        /* Footer */
         .dashboard-footer {
-            text-align: center;
-            padding-top: 40px;
+            margin-top: 3rem;
+            padding-top: 2rem;
             border-top: 1px solid var(--light-gray);
-            margin-top: 40px;
         }
 
-        .logout-btn {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            font-size: 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 30px;
+        .legal-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
         }
 
-        .logout-btn:hover {
-            background: #e61473;
-            transform: translateY(-2px);
-        }
-
-        /* Legal Links */
         .legal-links a {
             color: var(--gray);
             text-decoration: none;
@@ -309,11 +380,11 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 0.9rem;
         }
 
         .legal-links a:hover {
             color: var(--primary);
-            transform: translateY(-1px);
         }
 
         /* Notification */
@@ -322,16 +393,17 @@
             top: 20px;
             right: 20px;
             background: white;
-            padding: 15px 20px;
+            padding: 1rem 1.25rem;
             border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             transform: translateX(400px);
             transition: transform 0.3s ease;
             z-index: 1000;
-            border-left: 4px solid var(--primary);
+            border-left: 3px solid var(--primary);
+            max-width: 350px;
         }
 
         .notification.show {
@@ -366,22 +438,47 @@
             color: var(--warning);
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
             .dashboard-header {
-                padding: 60px 0;
+                padding: 2rem 0;
             }
 
-            .welcome-icon {
-                font-size: 2.5rem;
+            .welcome-text {
+                font-size: 1.5rem;
             }
 
-            .user-info {
-                padding: 20px;
-                text-align: center;
+            .welcome-subtext {
+                font-size: 0.9rem;
             }
 
-            .user-avatar {
-                margin: 0 auto 15px;
+            .user-info-card {
+                padding: 1rem;
+            }
+
+            .action-card {
+                padding: 1.25rem;
+            }
+
+            .action-icon {
+                font-size: 1.8rem;
+            }
+
+            .action-title {
+                font-size: 1rem;
+            }
+
+            .logout-btn-nav {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .legal-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
             }
 
             .notification {
@@ -398,16 +495,17 @@
 </head>
 <body>
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
     <div class="container">
         <a class="navbar-brand" href="#">
-            <i class="fas fa-comments me-2"></i>Strangerblink
+            <i class="fas fa-comments"></i>
+            <span>Strangerblink</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
                 <li class="nav-item">
                     <a class="nav-link active" href="dashboard.html">Dashboard</a>
                 </li>
@@ -420,6 +518,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>
                 </li>
+                <li class="nav-item">
+                    <button class="logout-btn-nav" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
@@ -428,128 +532,149 @@
 <!-- Loading Screen -->
 <div id="loadingScreen">
     <div class="loading-spinner"></div>
-    <div class="loading-text">Loading your dashboard...</div>
+    <div class="loading-text">Loading dashboard...</div>
 </div>
 
 <!-- Main Content -->
-<div id="mainContent">
+<div id="mainContent" class="container">
     <!-- Dashboard Header -->
-    <section class="dashboard-header">
-        <div class="container text-center">
-            <i class="fas fa-rocket welcome-icon"></i>
-            <h1 class="display-4 fw-bold mb-4">Welcome to Strangerblink!</h1>
-            <p class="lead">Ready to start chatting?</p>
-        </div>
-    </section>
-
-    <div class="container">
-        <!-- User Info -->
-        <div class="user-info">
+    <div class="dashboard-header">
+        <div class="header-content">
             <div class="row align-items-center">
-                <div class="col-auto">
-                    <div class="user-avatar" id="userAvatar">U</div>
+                <div class="col-lg-8">
+                    <h1 class="welcome-text">Welcome back!</h1>
+                    <p class="welcome-subtext mb-0">Ready to connect with people around the world?</p>
                 </div>
-                <div class="col">
-                    <div class="user-name" id="userName">User</div>
-                    <div class="user-meta" id="userMeta">Age • Gender</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Cards -->
-        <div class="row g-4 mb-5">
-            <div class="col-md-6 col-lg-4">
-                <div class="action-card" id="talkToStrangerBtn">
-                    <i class="fas fa-comments action-icon"></i>
-                    <div class="action-title">Talk To Stranger</div>
-                    <div class="action-description">
-                        Start anonymous conversations with people from around the world
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="action-card" id="randomChatBtn">
-                    <i class="fas fa-random action-icon"></i>
-                    <div class="action-title">Random Chat</div>
-                    <div class="action-description">
-                        Get paired with random users for instant conversations
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="action-card secondary" id="demoQuestionsBtn">
-                    <i class="fas fa-lightbulb action-icon"></i>
-                    <div class="action-title">Chat Ideas</div>
-                    <div class="action-description">
-                        Get conversation starters and questions for better chats
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="action-card success" id="helpSupportBtn">
-                    <i class="fas fa-question-circle action-icon"></i>
-                    <div class="action-title">Help & Support</div>
-                    <div class="action-description">
-                        Learn how to use Strangerblink safely
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="action-card warning" id="contactUsBtn">
-                    <i class="fas fa-lightbulb action-icon"></i>
-                    <div class="action-title">Contact</div>
-                    <div class="action-description">
-                        Reach out directly to the developer for feedback, support, or collaboration inquiries.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dashboard Footer -->
-        <div class="dashboard-footer">
-            <button class="logout-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i>
-                Logout
-            </button>
-
-            <!-- Legal Links Section -->
-            <div class="legal-links">
-                <div class="row justify-content-center g-3">
-                    <div class="col-auto">
-                        <a href="privacy_policy.html" class="d-block text-decoration-none">
-                            <i class="fas fa-shield-alt me-1"></i> Privacy Policy
-                        </a>
-                    </div>
-                    <div class="col-auto">
-                        <a href="terms_and_conditions.html" class="d-block text-decoration-none">
-                            <i class="fas fa-file-contract me-1"></i> Terms & Conditions
-                        </a>
-                    </div>
-                    <div class="col-auto">
-                        <a href="about_us.html" class="d-block text-decoration-none">
-                            <i class="fas fa-info-circle me-1"></i> About Us
-                        </a>
-                    </div>
-                    <div class="col-auto">
-                        <a href="disclaimer.html" class="d-block text-decoration-none">
-                            <i class="fas fa-exclamation-triangle me-1"></i> Disclaimer
-                        </a>
-                    </div>
-                    <div class="col-auto">
-                        <a href="frequently_asked_questions.html" class="d-block text-decoration-none">
-                            <i class="fas fa-question-circle me-1"></i> FAQ
-                        </a>
+                <div class="col-lg-4 mt-3 mt-lg-0">
+                    <div class="user-info-card">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <div class="user-details">
+                            <div class="user-name" id="userName">User</div>
+                            <div class="user-meta" id="userMeta">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Loading...</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Quick Actions Section -->
+    <div class="actions-section">
+        <h2 class="section-title">
+            <i class="fas fa-bolt"></i>
+            Quick Actions
+        </h2>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="action-card primary" id="talkToStrangerBtn">
+                    <i class="fas fa-comments action-icon"></i>
+                    <div class="action-title">Talk To Stranger</div>
+                    <div class="action-description">
+                        Start anonymous conversations instantly
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="action-card secondary" id="randomChatBtn">
+                    <i class="fas fa-random action-icon"></i>
+                    <div class="action-title">Random Chat</div>
+                    <div class="action-description">
+                        Get paired with random users worldwide
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Blog Card -->
+            <div class="col-md-6">
+                <a href="blog.html" class="action-card-link">
+                    <div class="action-card tertiary">
+                        <i class="fas fa-blog action-icon"></i>
+                        <div class="action-title">Blog</div>
+                        <div class="action-description">
+                            Read our latest articles and updates
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resources Section -->
+    <div class="actions-section">
+        <h2 class="section-title">
+            <i class="fas fa-compass"></i>
+            Resources & Help
+        </h2>
+        <div class="row g-3">
+            <div class="col-md-6 col-lg-3">
+                <div class="action-card info" id="demoQuestionsBtn">
+                    <i class="fas fa-lightbulb action-icon"></i>
+                    <div class="action-title">Chat Ideas</div>
+                    <div class="action-description">
+                        Get conversation starters
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="action-card success" id="helpSupportBtn">
+                    <i class="fas fa-question-circle action-icon"></i>
+                    <div class="action-title">Help & Support</div>
+                    <div class="action-description">
+                        Safety tips and guidelines
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="action-card warning" id="techBtn">
+                    <i class="fas fa-code action-icon"></i>
+                    <div class="action-title">Tech Details</div>
+                    <div class="action-description">
+                        Platform features & info
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="action-card danger" id="contactUsBtn">
+                    <i class="fas fa-envelope action-icon"></i>
+                    <div class="action-title">Contact Us</div>
+                    <div class="action-description">
+                        Reach out to the team
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="dashboard-footer">
+        <div class="legal-links">
+            <a href="privacy_policy.html">
+                <i class="fas fa-shield-alt"></i> Privacy Policy
+            </a>
+            <a href="terms_and_conditions.html">
+                <i class="fas fa-file-contract"></i> Terms & Conditions
+            </a>
+            <a href="about_us.html">
+                <i class="fas fa-info-circle"></i> About Us
+            </a>
+            <a href="disclaimer.html">
+                <i class="fas fa-exclamation-triangle"></i> Disclaimer
+            </a>
+            <a href="frequently_asked_questions.html">
+                <i class="fas fa-question-circle"></i> FAQ
+            </a>
+        </div>
+    </div>
 </div>
 
+<!-- Notification -->
 <div class="notification" id="notification">
     <i class="fas fa-exclamation-circle"></i>
     <span id="notificationText">This is a notification</span>
@@ -558,7 +683,7 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const apiUrl = "/user/api/user"; //UserBase URL
+    const apiUrl = "/user/api/user";
 
     // Function to check session and handle page display
     function checkSessionAndDisplay() {
@@ -573,17 +698,13 @@
             return response.json();
         })
         .then(userData => {
-            // Display user information
             displayUserInfo(userData);
-
-            // Show the dashboard
             setTimeout(() => {
                 document.getElementById('loadingScreen').classList.add('hidden');
                 document.getElementById('mainContent').classList.add('visible');
             }, 500);
         })
         .catch(err => {
-            // No session, redirect to login
             window.location.href = "signin.html";
         });
     }
@@ -592,13 +713,16 @@
     function displayUserInfo(userData) {
         document.getElementById('userAvatar').textContent = userData.userName.charAt(0).toUpperCase();
         document.getElementById('userName').textContent = userData.userName;
-        document.getElementById('userMeta').textContent = `${userData.age} • ${userData.gender === 'MALE' ? 'Male' : 'Female'}`;
+        document.getElementById('userMeta').innerHTML = `
+            <i class="fas fa-user-circle"></i>
+            <span>${userData.age} • ${userData.gender === 'MALE' ? 'Male' : 'Female'}</span>
+        `;
     }
 
-    // Check session immediately when page loads
+    // Check session on page load
     document.addEventListener('DOMContentLoaded', checkSessionAndDisplay);
 
-    // SIMPLE BUTTON CLICKS - NO ANIMATIONS
+    // Button clicks
     document.getElementById('talkToStrangerBtn').addEventListener('click', function() {
         window.location.href = "home.html";
     });
@@ -615,6 +739,10 @@
         window.location.href = "frequently_asked_questions.html";
     });
 
+    document.getElementById('techBtn').addEventListener('click', function() {
+        window.location.href = "tech.html";
+    });
+
     document.getElementById('contactUsBtn').addEventListener('click', function() {
         window.location.href = "contact.html";
     });
@@ -626,7 +754,6 @@
             credentials: 'include'
         })
         .then(() => {
-            localStorage.clear();
             window.location.href = "signin.html";
         })
         .catch(error => {

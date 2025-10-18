@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StrangerChat Blog - Connect with Random Strangers Worldwide</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Discover stories, tips, and insights about connecting with strangers worldwide on StrangerChat Blog. Learn about safety, features, and user experiences.">
+    <meta name="keywords" content="StrangerChat, blog, online chat, random strangers, safety tips, user stories, chat features, connection guides">
+    <meta name="author" content="StrangerChat Team">
+    <meta name="theme-color" content="#6c5ce7">
+    <meta name="robots" content="index, follow">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="StrangerChat Blog | Connect with Random Strangers Worldwide">
+    <meta property="og:description" content="Discover stories, tips, and insights about connecting with strangers worldwide. Learn about safety, features, and user experiences.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:url" content="https://strangerchat.com/blog">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="StrangerChat">
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="StrangerChat Blog | Connect with Random Strangers Worldwide">
+    <meta name="twitter:description" content="Discover stories, tips, and insights about connecting with strangers worldwide. Learn about safety, features, and user experiences.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+    <meta name="twitter:site" content="@StrangerChat">
+    <meta name="twitter:creator" content="@StrangerChat">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <link rel="canonical" href="https://strangerchat.com/blog">
+    <!-- Structured Data for Blog -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "name": "StrangerChat Blog",
+            "description": "Discover stories, tips, and insights about connecting with strangers worldwide",
+            "url": "https://strangerchat.com/blog",
+            "publisher": {
+                "@type": "Organization",
+                "name": "StrangerChat",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://strangerchat.com/images/logo.png"
+                }
+            },
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://strangerchat.com/blog"
+            }
+        }
+    </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4826674306686209"
+            crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --dark-bg: #2d3436;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.9), rgba(118, 75, 162, 0.9));
+            color: white;
+            padding: 80px 0 60px;
+            margin-bottom: 50px;
+            border-radius: 0 0 50px 50px;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .search-filter-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding-left: 45px;
+            border-radius: 25px;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+
+        .filter-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .category-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .category-pill {
+            padding: 8px 20px;
+            background: var(--light-bg);
+            border: 2px solid var(--secondary-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-pill:hover, .category-pill.active {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            margin-bottom: 30px;
+            height: 100%;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(108, 92, 231, 0.3);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .blog-card:hover .blog-image {
+            transform: scale(1.1);
+        }
+
+        .blog-image-wrapper {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .blog-category {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            z-index: 1;
+        }
+
+        .blog-content {
+            padding: 25px;
+        }
+
+        .blog-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--dark-bg);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .blog-excerpt {
+            color: #636e72;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #95a5a6;
+        }
+
+        .read-more-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .read-more-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+            color: white;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 50px 0;
+        }
+
+        .pagination .page-link {
+            color: var(--primary-color);
+            border: 2px solid var(--secondary-color);
+            margin: 0 5px;
+            border-radius: 10px;
+        }
+
+        .pagination .page-link:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .pagination .active .page-link {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(108, 92, 231, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .blog-image {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-comments"></i> StrangerChat
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="about_us.html">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container text-center">
+        <h1><i class="fas fa-blog"></i> StrangerChat Blog</h1>
+        <p class="lead">Discover stories, tips, and insights about connecting with strangers worldwide</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="blog-container">
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+        <div class="row align-items-center">
+            <div class="col-md-8 mb-3 mb-md-0">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search blog posts...">
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <button class="filter-btn" onclick="resetFilters()">
+                    <i class="fas fa-redo"></i> Reset Filters
+                </button>
+            </div>
+        </div>
+        <div class="category-pills">
+            <span class="category-pill active" data-category="all">All Posts</span>
+            <span class="category-pill" data-category="tips">Tips & Tricks</span>
+            <span class="category-pill" data-category="safety">Safety</span>
+            <span class="category-pill" data-category="stories">User Stories</span>
+            <span class="category-pill" data-category="features">Features</span>
+            <span class="category-pill" data-category="guides">Guides</span>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p class="mt-3">Loading posts...</p>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="row" id="blogGrid"></div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper">
+        <nav>
+            <ul class="pagination" id="pagination"></ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container text-center">
+        <p>&copy; 2024 StrangerChat. All rights reserved.</p>
+        <p>
+            <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-white"><i class="fab fa-linkedin"></i></a>
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Blog posts data - 100 posts total
+    const blogPosts = [
+        { id: 1, title: "10 Tips for Making Meaningful Connections on StrangerChat", category: "tips", excerpt: "Discover the best ways to start conversations and build genuine connections with strangers from around the world.", date: "2024-03-15", author: "Sarah Johnson", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 2, title: "Stay Safe While Chatting: Essential Security Guidelines", category: "safety", excerpt: "Learn about the important safety measures you should take when chatting with strangers online.", date: "2024-03-14", author: "Mike Roberts", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 3, title: "From Stranger to Friend: Inspiring Success Stories", category: "stories", excerpt: "Read heartwarming stories of people who found lasting friendships through StrangerChat.", date: "2024-03-13", author: "Emma Wilson", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 4, title: "Understanding Our New Video Chat Feature", category: "features", excerpt: "Explore the exciting new video chat capabilities and how to use them effectively.", date: "2024-03-12", author: "David Chen", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 5, title: "The Psychology Behind Random Conversations", category: "guides", excerpt: "Why talking to strangers can be beneficial for your mental health and social skills.", date: "2024-03-11", author: "Dr. Lisa Anderson", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 6, title: "Breaking the Ice: Best Conversation Starters", category: "tips", excerpt: "Never run out of things to say with these creative conversation starters.", date: "2024-03-10", author: "John Martinez", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 7, title: "How to Spot and Report Inappropriate Behavior", category: "safety", excerpt: "A comprehensive guide to identifying red flags and keeping the community safe.", date: "2024-03-09", author: "Rachel Green", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 8, title: "Cultural Exchange: Learning Languages Through Chat", category: "stories", excerpt: "How users are using StrangerChat to practice languages and learn about different cultures.", date: "2024-03-08", author: "Carlos Rivera", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 9, title: "Introducing Smart Matching: Connect with Like-Minded People", category: "features", excerpt: "Our AI-powered matching system helps you find people with similar interests.", date: "2024-03-07", author: "Tech Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 10, title: "The Complete Beginner's Guide to StrangerChat", category: "guides", excerpt: "Everything you need to know to get started on your StrangerChat journey.", date: "2024-03-06", author: "Support Team", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 11, title: "Overcoming Social Anxiety Through Anonymous Chatting", category: "guides", excerpt: "How anonymous conversations can help build confidence in social situations.", date: "2024-03-05", author: "Dr. James Wilson", image: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 12, title: "5 Red Flags to Watch Out For in Online Conversations", category: "safety", excerpt: "Stay alert with these warning signs of potentially harmful interactions.", date: "2024-03-04", author: "Security Team", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 13, title: "Best Practices for Group Chat Rooms", category: "tips", excerpt: "Make the most of our group chat feature with these helpful tips.", date: "2024-03-03", author: "Community Manager", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 14, title: "How I Found My Business Partner on StrangerChat", category: "stories", excerpt: "An entrepreneur shares their unexpected success story.", date: "2024-03-02", author: "Alex Turner", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 15, title: "New Filter Options: Customize Your Chat Experience", category: "features", excerpt: "Discover how to use our advanced filters to find exactly who you want to chat with.", date: "2024-03-01", author: "Product Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 16, title: "The Art of Active Listening in Online Conversations", category: "tips", excerpt: "Improve your conversation skills by becoming a better listener.", date: "2024-02-28", author: "Communication Coach", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 17, title: "Privacy Settings: Take Control of Your Data", category: "safety", excerpt: "A detailed walkthrough of our privacy features and how to use them.", date: "2024-02-27", author: "Privacy Officer", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 18, title: "Around the World in 80 Chats: A Global Journey", category: "stories", excerpt: "One user's quest to chat with people from 80 different countries.", date: "2024-02-26", author: "Travel Enthusiast", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 19, title: "Emoji Reactions: Express Yourself Better", category: "features", excerpt: "Learn about our new emoji reaction system and how it enhances conversations.", date: "2024-02-25", author: "UX Designer", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 20, title: "Building Empathy Through Cross-Cultural Conversations", category: "guides", excerpt: "How talking to people from different backgrounds expands your worldview.", date: "2024-02-24", author: "Cultural Studies Professor", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 21, title: "Time Management: Balancing Chat Time with Real Life", category: "tips", excerpt: "Healthy habits for enjoying StrangerChat without overdoing it.", date: "2024-02-23", author: "Wellness Coach", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 22, title: "Protecting Your Identity: Username Best Practices", category: "safety", excerpt: "Choose safe and memorable usernames that protect your privacy.", date: "2024-02-22", author: "Security Expert", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 23, title: "When Strangers Become Study Buddies", category: "stories", excerpt: "Students are forming study groups with people from around the world.", date: "2024-02-21", author: "Student Community", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 24, title: "Voice Messages: Adding Personality to Your Chats", category: "features", excerpt: "Explore our voice messaging feature and tips for using it effectively.", date: "2024-02-20", author: "Audio Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 25, title: "Navigating Difficult Conversations with Grace", category: "guides", excerpt: "How to handle disagreements and maintain respectful dialogue.", date: "2024-02-19", author: "Conflict Resolution Specialist", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 26, title: "Using StrangerChat to Combat Loneliness", category: "tips", excerpt: "Connect with others when you're feeling isolated or lonely.", date: "2024-02-18", author: "Mental Health Advocate", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 27, title: "Parental Controls and Family Safety Features", category: "safety", excerpt: "Keep younger users safe with our comprehensive parental control tools.", date: "2024-02-17", author: "Family Safety Team", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 28, title: "Love Knows No Borders: Romance Stories", category: "stories", excerpt: "Couples share how they met and fell in love through StrangerChat.", date: "2024-02-16", author: "Relationship Editor", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 29, title: "Dark Mode and Accessibility Features", category: "features", excerpt: "Making StrangerChat comfortable and accessible for everyone.", date: "2024-02-15", author: "Accessibility Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 30, title: "The Ethics of Anonymous Communication", category: "guides", excerpt: "Understanding responsibility and ethics in anonymous online spaces.", date: "2024-02-14", author: "Ethics Researcher", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 31, title: "Conversation Topics to Avoid with Strangers", category: "tips", excerpt: "Keep conversations pleasant by steering clear of these sensitive topics.", date: "2024-02-13", author: "Etiquette Expert", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 32, title: "Recognizing and Preventing Catfishing", category: "safety", excerpt: "Learn the signs of catfishing and how to protect yourself.", date: "2024-02-12", author: "Cybersecurity Analyst", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 33, title: "Finding Career Mentors Through Random Chats", category: "stories", excerpt: "Professionals share how they found mentors in unexpected places.", date: "2024-02-11", author: "Career Coach", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 34, title: "Custom Stickers: Make Your Chats More Fun", category: "features", excerpt: "Create and share personalized stickers with your chat partners.", date: "2024-02-10", author: "Design Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 35, title: "Handling Rejection and Moving On Gracefully", category: "guides", excerpt: "Not every conversation will click, and that's okay. Here's how to handle it.", date: "2024-02-09", author: "Social Skills Trainer", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 36, title: "Creating Engaging Profile Bios That Get Responses", category: "tips", excerpt: "Write a bio that attracts interesting conversations and connections.", date: "2024-02-08", author: "Content Strategist", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 37, title: "End-to-End Encryption: Your Conversations Are Private", category: "safety", excerpt: "Understanding how we protect your messages with advanced encryption.", date: "2024-02-07", author: "Encryption Engineer", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 38, title: "Volunteering Online: Supporting Strangers in Need", category: "stories", excerpt: "Heartwarming stories of users providing emotional support to others.", date: "2024-02-06", author: "Community Volunteer", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 39, title: "Scheduled Chats: Never Miss a Conversation", category: "features", excerpt: "Set up recurring chats with your favorite conversation partners.", date: "2024-02-05", author: "Scheduling Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 40, title: "The Benefits of Stepping Outside Your Comfort Zone", category: "guides", excerpt: "Why talking to strangers can lead to personal growth and new perspectives.", date: "2024-02-04", author: "Personal Development Coach", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 41, title: "Dealing with Trolls and Negative Users", category: "tips", excerpt: "Strategies for handling unpleasant encounters without letting them ruin your experience.", date: "2024-02-03", author: "Community Moderator", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 42, title: "Two-Factor Authentication: Extra Security for Your Account", category: "safety", excerpt: "Add an extra layer of protection to your StrangerChat account.", date: "2024-02-02", author: "Security Specialist", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 43, title: "From Chat to Collaboration: Creative Projects Born Here", category: "stories", excerpt: "Artists and creators who found collaborators through StrangerChat.", date: "2024-02-01", author: "Creative Community", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 44, title: "Translation Features: Breaking Down Language Barriers", category: "features", excerpt: "Chat with anyone in the world using our real-time translation tools.", date: "2024-01-31", author: "Localization Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 45, title: "Mindfulness and Being Present in Conversations", category: "guides", excerpt: "How to fully engage and be present during your chat sessions.", date: "2024-01-30", author: "Mindfulness Instructor", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 46, title: "Humor in Conversations: Making Others Laugh Across Cultures", category: "tips", excerpt: "Navigate cultural differences in humor while keeping things light and fun.", date: "2024-01-29", author: "Comedy Writer", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 47, title: "Reporting System: How We Handle Complaints", category: "safety", excerpt: "Behind the scenes look at how we process reports and maintain community standards.", date: "2024-01-28", author: "Trust & Safety Team", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 48, title: "Unexpected Connections: When Coincidences Happen", category: "stories", excerpt: "Amazing stories of chance encounters and meaningful coincidences.", date: "2024-01-27", author: "Story Collector", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 49, title: "Gamification Features: Earn Badges and Achievements", category: "features", excerpt: "Make chatting more fun with our new achievement system.", date: "2024-01-26", author: "Gaming Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 50, title: "The Future of Online Connections: What's Next?", category: "guides", excerpt: "Our vision for the future of StrangerChat and digital human connections.", date: "2024-01-25", author: "CEO", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        // Additional 50 posts
+        { id: 51, title: "Creating a Welcoming Profile: First Impressions Matter", category: "tips", excerpt: "How to create a profile that attracts positive and interesting conversations.", date: "2024-01-24", author: "Profile Expert", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 52, title: "Understanding Digital Footprints in Anonymous Chat", category: "safety", excerpt: "What information you might be sharing without realizing it and how to protect yourself.", date: "2024-01-23", author: "Digital Privacy Advocate", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 53, title: "Finding Your Tribe: Niche Communities on StrangerChat", category: "stories", excerpt: "How users with specific interests are finding like-minded people through our platform.", date: "2024-01-22", author: "Community Builder", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 54, title: "Advanced Search Filters: Finding Exactly Who You Want to Chat With", category: "features", excerpt: "A deep dive into our powerful search and filtering capabilities.", date: "2024-01-21", author: "Search Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 55, title: "The Science of Connection: Why We Need Social Interaction", category: "guides", excerpt: "Exploring the psychological and biological reasons humans need to connect with others.", date: "2024-01-20", author: "Social Scientist", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 56, title: "Mastering the Art of Small Talk", category: "tips", excerpt: "Transform awkward small talk into meaningful connections with these techniques.", date: "2024-01-19", author: "Conversation Coach", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 57, title: "Location Privacy: What You Need to Know", category: "safety", excerpt: "Understanding how location data is handled and how to protect your privacy.", date: "2024-01-18", author: "Privacy Specialist", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 58, title: "From Online to Offline: When Virtual Friends Meet in Person", category: "stories", excerpt: "Inspiring stories of online connections that turned into real-life friendships.", date: "2024-01-17", author: "Friendship Advocate", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 59, title: "Custom Themes: Personalize Your Chat Experience", category: "features", excerpt: "How to customize the look and feel of your StrangerChat interface.", date: "2024-01-16", author: "UI/UX Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 60, title: "Digital Detox: Finding Balance in an Always-Connected World", category: "guides", excerpt: "How to enjoy online connections while maintaining a healthy relationship with technology.", date: "2024-01-15", author: "Wellness Expert", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 61, title: "Building Rapport Quickly in Online Conversations", category: "tips", excerpt: "Techniques for establishing trust and connection in a short amount of time.", date: "2024-01-14", author: "Communication Specialist", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 62, title: "Password Security: Creating Strong and Memorable Passwords", category: "safety", excerpt: "Best practices for creating passwords that are both secure and easy to remember.", date: "2024-01-13", author: "Security Analyst", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 63, title: "Language Learning Success Stories Through Chat", category: "stories", excerpt: "How users have significantly improved their language skills through regular chatting.", date: "2024-01-12", author: "Language Enthusiast", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 64, title: "Chat History: Never Lose Track of Important Conversations", category: "features", excerpt: "How our chat history feature helps you keep track of meaningful connections.", date: "2024-01-11", author: "Data Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 65, title: "The Power of Vulnerability in Anonymous Conversations", category: "guides", excerpt: "How sharing authentically can lead to deeper connections, even with strangers.", date: "2024-01-10", author: "Relationship Counselor", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 66, title: "Keeping Conversations Fresh and Engaging", category: "tips", excerpt: "How to maintain interesting conversations over multiple chat sessions.", date: "2024-01-09", author: "Conversation Expert", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 67, title: "Understanding Phishing Attempts in Chat Platforms", category: "safety", excerpt: "How to recognize and avoid phishing scams in online conversations.", date: "2024-01-08", author: "Cybersecurity Expert", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 68, title: "Cross-Cultural Friendships That Changed Perspectives", category: "stories", excerpt: "How chatting with people from different cultures has transformed users' worldviews.", date: "2024-01-07", author: "Global Citizen", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 69, title: "Push Notifications: Staying Connected Without Being Overwhelmed", category: "features", excerpt: "How to customize notifications to stay informed without constant interruptions.", date: "2024-01-06", author: "Notification Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 70, title: "The Role of Technology in Modern Social Connection", category: "guides", excerpt: "Examining how digital platforms are reshaping how we form and maintain relationships.", date: "2024-01-05", author: "Technology Sociologist", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 71, title: "Effective Ways to End Conversations Gracefully", category: "tips", excerpt: "How to politely conclude chats when you need to move on.", date: "2024-01-04", author: "Etiquette Coach", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 72, title: "Screen Time Management for Healthy Chat Habits", category: "safety", excerpt: "Balancing your online interactions with offline life for better mental health.", date: "2024-01-03", author: "Digital Wellness Coach", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 73, title: "Unexpected Mentors Found Through Random Chats", category: "stories", excerpt: "How chance conversations have led to valuable guidance and mentorship.", date: "2024-01-02", author: "Career Development Specialist", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 74, title: "Offline Mode: Preparing for Conversations Without Internet", category: "features", excerpt: "How to use StrangerChat even when you have limited or no internet connection.", date: "2024-01-01", author: "Offline Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 75, title: "The History of Anonymous Communication", category: "guides", excerpt: "Tracing the evolution of anonymous conversations from ancient times to the digital age.", date: "2023-12-31", author: "History Professor", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 76, title: "Creating Memorable First Messages", category: "tips", excerpt: "Craft opening messages that stand out and get responses.", date: "2023-12-30", author: "Message Strategist", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 77, title: "Data Encryption: How Your Messages Stay Private", category: "safety", excerpt: "A technical look at how we secure your conversations from prying eyes.", date: "2023-12-29", author: "Security Engineer", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 78, title: "From Chat Partners to Travel Companions", category: "stories", excerpt: "How online connections have led to real-world travel adventures.", date: "2023-12-28", author: "Travel Writer", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 79, title: "Multi-Device Synchronization: Seamless Chat Experience", category: "features", excerpt: "How your conversations sync across all your devices for uninterrupted chatting.", date: "2023-12-27", author: "Sync Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 80, title: "The Art of Asking Good Questions", category: "guides", excerpt: "How to ask questions that lead to interesting and meaningful conversations.", date: "2023-12-26", author: "Interviewer", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 81, title: "Managing Multiple Conversations Effectively", category: "tips", excerpt: "How to juggle multiple chats without losing track or quality of conversation.", date: "2023-12-25", author: "Productivity Expert", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 82, title: "Understanding Terms of Service and Community Guidelines", category: "safety", excerpt: "What you need to know about our policies to ensure a safe experience for everyone.", date: "2023-12-24", author: "Legal Team", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 83, title: "Pen Pals for the Digital Age", category: "stories", excerpt: "How StrangerChat is reviving the tradition of pen pals with modern technology.", date: "2023-12-23", author: "Digital Historian", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 84, title: "Voice Recognition Features for Hands-Free Chatting", category: "features", excerpt: "How to use voice commands to navigate and chat without typing.", date: "2023-12-22", author: "Voice Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 85, title: "Cultural Sensitivity in Global Conversations", category: "guides", excerpt: "How to navigate cultural differences with respect and curiosity.", date: "2023-12-21", author: "Cultural Advisor", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 86, title: "Using Emojis and GIFs to Enhance Conversations", category: "tips", excerpt: "How to use visual elements to express emotions and add personality to your chats.", date: "2023-12-20", author: "Digital Expression Coach", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 87, title: "Protecting Against Malware and Viruses in Chat Platforms", category: "safety", excerpt: "How to avoid and protect against malicious software in online conversations.", date: "2023-12-19", author: "Security Analyst", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 88, title: "Unexpected Business Opportunities Through Chat", category: "stories", excerpt: "Entrepreneurs share how random conversations led to business ventures.", date: "2023-12-18", author: "Business Journalist", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 89, title: "Accessibility Features for Users with Disabilities", category: "features", excerpt: "How we're making StrangerChat accessible to everyone, regardless of ability.", date: "2023-12-17", author: "Accessibility Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 90, title: "The Psychology of First Impressions in Digital Spaces", category: "guides", excerpt: "How we form impressions of others in the absence of physical cues.", date: "2023-12-16", author: "Digital Psychologist", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 91, title: "Creating Conversation Routines for Regular Chatters", category: "tips", excerpt: "How to establish healthy chatting habits and routines.", date: "2023-12-15", author: "Habit Coach", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 92, title: "Understanding Data Retention Policies", category: "safety", excerpt: "How long we keep your data and what happens when you delete your account.", date: "2023-12-14", author: "Data Protection Officer", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 93, title: "Support Systems Formed Through Online Connections", category: "stories", excerpt: "How users have found emotional support during difficult times through StrangerChat.", date: "2023-12-13", author: "Mental Health Advocate", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 94, title: "Integration with Other Apps and Platforms", category: "features", excerpt: "How StrangerChat works with other services you already use.", date: "2023-12-12", author: "Integration Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 95, title: "The Evolution of Online Communication Etiquette", category: "guides", excerpt: "How digital communication norms have changed over time.", date: "2023-12-11", author: "Digital Anthropologist", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 96, title: "Dealing with Conversation Lulls Effectively", category: "tips", excerpt: "How to gracefully handle and recover from awkward silences in chat.", date: "2023-12-10", author: "Conversation Coach", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 97, title: "Secure File Sharing in Conversations", category: "safety", excerpt: "How to safely share files and media with your chat partners.", date: "2023-12-09", author: "Security Team", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 98, title: "Intergenerational Connections Through Chat", category: "stories", excerpt: "Heartwarming stories of friendships formed across different generations.", date: "2023-12-08", author: "Intergenerational Advocate", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 99, title: "Performance Optimization for Smooth Chatting", category: "features", excerpt: "How we ensure StrangerChat runs smoothly even on slower connections.", date: "2023-12-07", author: "Performance Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { id: 100, title: "The Future of Human Connection in a Digital World", category: "guides", excerpt: "Speculating on how technology will continue to shape how we connect with others.", date: "2023-12-06", author: "Futurist", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+          { id: 101, title: "Building Trust in Anonymous Online Relationships", category: "guides", excerpt: "How to establish and maintain trust when identities are hidden.", date: "2023-12-05", author: "Trust Specialist", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 102, title: "Creative Icebreakers for Different Personality Types", category: "tips", excerpt: "Tailored conversation starters for introverts, extroverts, and everyone in between.", date: "2023-12-04", author: "Personality Coach", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 103, title: "Understanding IP Address Protection in Chat", category: "safety", excerpt: "How we protect your location data and what you can do to stay anonymous.", date: "2023-12-03", author: "Network Security", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 104, title: "Virtual Travel: Exploring Cultures Through Conversation", category: "stories", excerpt: "How users are experiencing different countries through local connections.", date: "2023-12-02", author: "Cultural Explorer", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 105, title: "AI-Powered Conversation Suggestions", category: "features", excerpt: "How our AI helps keep conversations flowing with smart suggestions.", date: "2023-12-01", author: "AI Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 106, title: "The Art of Digital Storytelling in Chat", category: "guides", excerpt: "How to share compelling stories that captivate your chat partners.", date: "2023-11-30", author: "Storytelling Coach", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 107, title: "Managing Emotional Energy in Multiple Conversations", category: "tips", excerpt: "How to maintain emotional boundaries while being present in chats.", date: "2023-11-29", author: "Emotional Intelligence Coach", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 108, title: "Secure Payment Integration for Premium Features", category: "safety", excerpt: "How we protect your financial information for premium subscriptions.", date: "2023-11-28", author: "Payment Security", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 109, title: "Book Clubs Born from Random Chats", category: "stories", excerpt: "How literature lovers are forming international book clubs through StrangerChat.", date: "2023-11-27", author: "Book Community", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 110, title: "Real-Time Translation Accuracy Improvements", category: "features", excerpt: "How our translation technology has evolved to better understand context and nuance.", date: "2023-11-26", author: "Translation Team", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 111, title: "Navigating Political Discussions Respectfully", category: "guides", excerpt: "How to discuss politics without damaging connections.", date: "2023-11-25", author: "Political Dialogue Expert", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 112, title: "Using Voice Tone in Voice Messages", category: "tips", excerpt: "How to convey emotion and intent through your voice in audio messages.", date: "2023-11-24", author: "Voice Coach", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 113, title: "Protecting Against Social Engineering Attacks", category: "safety", excerpt: "How to recognize and avoid manipulation tactics in online conversations.", date: "2023-11-23", author: "Security Awareness", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 114, title: "Music Collaboration Through Global Connections", category: "stories", excerpt: "How musicians are creating cross-border collaborations through chat.", date: "2023-11-22", author: "Music Community", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 115, title: "Advanced Blocking and Filtering Options", category: "features", excerpt: "Customize your experience with granular control over who you interact with.", date: "2023-11-21", author: "Moderation Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 116, title: "The Neuroscience of Online Connection", category: "guides", excerpt: "How our brains respond to digital social interactions.", date: "2023-11-20", author: "Neuroscientist", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 117, title: "Creating Conversation Cadence and Rhythm", category: "tips", excerpt: "How to establish a comfortable back-and-forth flow in your chats.", date: "2023-11-19", author: "Communication Rhythm Coach", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 118, title: "Understanding Cookie Policies and Tracking", category: "safety", excerpt: "How we use cookies and what tracking information is collected.", date: "2023-11-18", author: "Privacy Policy Team", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 119, title: "Culinary Exchange: Sharing Recipes Across Borders", category: "stories", excerpt: "How food lovers are exchanging traditional recipes and cooking tips.", date: "2023-11-17", author: "Food Community", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 120, title: "Bandwidth Optimization for Video Chats", category: "features", excerpt: "How we ensure smooth video quality even with limited internet speeds.", date: "2023-11-16", author: "Video Engineering", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 121, title: "Digital Body Language: Conveying Emotion Through Text", category: "guides", excerpt: "How to express emotions and intentions without physical cues.", date: "2023-11-15", author: "Digital Communication Expert", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 122, title: "Managing Time Zone Differences in Global Chats", category: "tips", excerpt: "How to maintain connections across different time zones effectively.", date: "2023-11-14", author: "Global Coordinator", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 123, title: "Secure Authentication Methods", category: "safety", excerpt: "Exploring different ways to securely access your StrangerChat account.", date: "2023-11-13", author: "Authentication Team", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 124, title: "Virtual Language Immersion Programs", category: "stories", excerpt: "How users are creating their own language learning immersion through daily chats.", date: "2023-11-12", author: "Language Learning Community", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 125, title: "Custom Keyboard Shortcuts for Power Users", category: "features", excerpt: "Speed up your chatting with these time-saving keyboard shortcuts.", date: "2023-11-11", author: "UX Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 126, title: "The Role of Serendipity in Digital Connections", category: "guides", excerpt: "How chance encounters online can lead to meaningful relationships.", date: "2023-11-10", author: "Serendipity Researcher", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 127, title: "Building a Positive Digital Reputation", category: "tips", excerpt: "How to cultivate a positive presence that attracts great conversations.", date: "2023-11-09", author: "Digital Reputation Coach", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 128, title: "Understanding Metadata and What It Reveals", category: "safety", excerpt: "What metadata is collected and how it's used to improve your experience.", date: "2023-11-08", author: "Data Analytics Team", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 129, title: "Virtual Study Groups Across Continents", category: "stories", excerpt: "How students are forming international study sessions through StrangerChat.", date: "2023-11-07", author: "Student Network", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 130, title: "Offline Message Queue System", category: "features", excerpt: "How messages are stored and delivered when recipients are offline.", date: "2023-11-06", author: "Message Delivery Team", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 131, title: "The Psychology of Anonymity and Self-Disclosure", category: "guides", excerpt: "Why people often share more openly when their identity is protected.", date: "2023-11-05", author: "Psychology Researcher", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 132, title: "Creating Engaging Conversation Threads", category: "tips", excerpt: "How to develop multi-topic conversations that keep both parties interested.", date: "2023-11-04", author: "Conversation Architect", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 133, title: "Protecting Against Doxing Attempts", category: "safety", excerpt: "How to prevent and respond to attempts to uncover your real identity.", date: "2023-11-03", author: "Privacy Protection Team", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 134, title: "Art Collaboration Across Time Zones", category: "stories", excerpt: "How visual artists are creating collaborative works through international connections.", date: "2023-11-02", author: "Art Community", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 135, title: "Real-Time Sentiment Analysis for Moderators", category: "features", excerpt: "How AI helps our moderation team identify and address concerning conversations.", date: "2023-11-01", author: "Moderation AI Team", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 136, title: "The Ethics of Digital Friendship", category: "guides", excerpt: "Navigating the responsibilities and boundaries of online friendships.", date: "2023-10-31", author: "Digital Ethics Professor", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 137, title: "Using Humor Across Language Barriers", category: "tips", excerpt: "How to use universal humor that translates well across cultures.", date: "2023-10-30", author: "Cross-Cultural Comedian", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 138, title: "Secure Backup and Recovery Options", category: "safety", excerpt: "How to backup your important conversations and recover them if needed.", date: "2023-10-29", author: "Data Recovery Team", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 139, title: "Virtual Pen Pal Programs for Schools", category: "stories", excerpt: "How educators are using StrangerChat for cultural exchange programs.", date: "2023-10-28", author: "Education Coordinator", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 140, title: "Progressive Web App Capabilities", category: "features", excerpt: "How to use StrangerChat as a native-like app without downloading anything.", date: "2023-10-27", author: "Web App Team", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 141, title: "The Sociology of Online Communities", category: "guides", excerpt: "How digital platforms create new forms of social organization.", date: "2023-10-26", author: "Digital Sociologist", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 142, title: "Creating Conversation Rituals and Traditions", category: "tips", excerpt: "How to establish meaningful patterns in your regular chat relationships.", date: "2023-10-25", author: "Ritual Coach", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 143, title: "Understanding Cross-Border Data Regulations", category: "safety", excerpt: "How we comply with international data protection laws like GDPR and CCPA.", date: "2023-10-24", author: "Legal Compliance Team", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 144, title: "Virtual Reality Chat Integration Preview", category: "features", excerpt: "A sneak peek at our upcoming VR chat capabilities for immersive conversations.", date: "2023-10-23", author: "VR Development Team", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 145, title: "The Philosophy of Random Encounters", category: "guides", excerpt: "Exploring the meaning and value of chance meetings in digital spaces.", date: "2023-10-22", author: "Philosophy Professor", image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 146, title: "Managing Conversation Energy Levels", category: "tips", excerpt: "How to match and guide the energy of your chat conversations.", date: "2023-10-21", author: "Energy Management Coach", image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 147, title: "Biometric Authentication Options", category: "safety", excerpt: "Using fingerprint and facial recognition for secure account access.", date: "2023-10-20", author: "Biometrics Team", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 148, title: "Global Gaming Communities Through Chat", category: "stories", excerpt: "How gamers are finding international teammates and forming clans.", date: "2023-10-19", author: "Gaming Community", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 149, title: "Machine Learning for Better Matching", category: "features", excerpt: "How our algorithms learn from your preferences to suggest better chat partners.", date: "2023-10-18", author: "ML Team", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+    { id: 150, title: "The Future of Anonymous Social Platforms", category: "guides", excerpt: "Predicting how anonymous communication will evolve in the coming years.", date: "2023-10-17", author: "Platform Futurist", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
+];
+
+    let currentPage = 1;
+    let currentCategory = 'all';
+    let searchQuery = '';
+    const postsPerPage = 9;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        displayPosts();
+        setupEventListeners();
+    });
+
+    function setupEventListeners() {
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            searchQuery = e.target.value.toLowerCase();
+            currentPage = 1;
+            displayPosts();
+        });
+
+        // Category filter
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.addEventListener('click', function() {
+                document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                currentCategory = this.dataset.category;
+                currentPage = 1;
+                displayPosts();
+            });
+        });
+    }
+
+    function getFilteredPosts() {
+        return blogPosts.filter(post => {
+            const matchesCategory = currentCategory === 'all' || post.category === currentCategory;
+            const matchesSearch = post.title.toLowerCase().includes(searchQuery) ||
+                                post.excerpt.toLowerCase().includes(searchQuery) ||
+                                post.author.toLowerCase().includes(searchQuery);
+            return matchesCategory && matchesSearch;
+        });
+    }
+
+  function displayPosts() {
+    const filteredPosts = getFilteredPosts();
+    const startIndex = (currentPage - 1) * postsPerPage;
+    const endIndex = startIndex + postsPerPage;
+    const postsToDisplay = filteredPosts.slice(startIndex, endIndex);
+
+    const blogGrid = document.getElementById('blogGrid');
+    blogGrid.innerHTML = '';
+
+    if (postsToDisplay.length === 0) {
+        blogGrid.innerHTML = '<div class="col-12 text-center"><p class="text-white fs-4">No posts found matching your criteria.</p></div>';
+        return;
+    }
+
+    postsToDisplay.forEach(post => {
+        const col = document.createElement('div');
+        col.className = 'col-md-6 col-lg-4';
+        col.innerHTML = `
+            <div class="blog-card">
+                <div class="blog-image-wrapper">
+                    <span class="blog-category">${post.category}</span>
+                    <img src="${post.image}" alt="${post.title}" class="blog-image" onerror="this.src='https://via.placeholder.com/400x250/6c5ce7/ffffff?text=StrangerChat+Blog'">
+                </div>
+                <div class="blog-content">
+                    <h3 class="blog-title">${post.title}</h3>
+                    <div class="blog-meta">
+                        <span><i class="far fa-calendar"></i> ${post.date}</span>
+                        <span><i class="far fa-user"></i> ${post.author}</span>
+                    </div>
+                    <p class="blog-excerpt">${post.excerpt}</p>
+                    <a href="blogpages/page${post.id}.html" class="read-more-btn">
+                        Read More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        `;
+        blogGrid.appendChild(col);
+    });
+
+    displayPagination(filteredPosts.length);
+}
+
+    function displayPagination(totalPosts) {
+        const totalPages = Math.ceil(totalPosts / postsPerPage);
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        // Previous button
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+        prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Previous</a>`;
+        pagination.appendChild(prevLi);
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>`;
+                pagination.appendChild(li);
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                const li = document.createElement('li');
+                li.className = 'page-item disabled';
+                li.innerHTML = `<a class="page-link" href="#">...</a>`;
+                pagination.appendChild(li);
+            }
+        }
+
+        // Next button
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Next</a>`;
+        pagination.appendChild(nextLi);
+    }
+
+    function changePage(page) {
+        const filteredPosts = getFilteredPosts();
+        const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+
+        if (page < 1 || page > totalPages) return;
+
+        currentPage = page;
+        displayPosts();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+     function resetFilters() {
+        currentCategory = 'all';
+        searchQuery = '';
+        currentPage = 1;
+        document.getElementById('searchInput').value = '';
+        document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+        document.querySelector('.category-pill[data-category="all"]').classList.add('active');
+        displayPosts();
+    }
+
+    // Make functions globally accessible
+    window.changePage = changePage;
+    window.resetFilters = resetFilters;
+</script>
+</body>
+</html>
