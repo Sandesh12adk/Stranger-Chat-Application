@@ -12,5 +12,6 @@
     <file url="file://$PROJECT_DIR$/gatewayserver/gatewayserver/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gatewayserver/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/randompairchat/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/videocallservice/src/main/java" charset="UTF-8" />
   </component>
 </project>

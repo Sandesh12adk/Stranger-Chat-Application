@@ -9,19 +9,19 @@
         <outputRelativeToContentRoot value="true" />
         <module name="eurekaserver" />
         <module name="gatewayserver" />
+        <module name="randompairchat" />
+        <module name="UserService" />
         <module name="configserver" />
+        <module name="chatservice" />
       </profile>
-      <profile name="Annotation profile for randompairchat" enabled="true">
+      <profile name="Annotation profile for videocallservice" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="randompairchat" />
-        <module name="chatservice" />
-        <module name="UserService" />
+        <module name="videocallservice" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -36,6 +36,7 @@
       <module name="eurekaserver" options="-parameters" />
       <module name="gatewayserver" options="-parameters" />
       <module name="randompairchat" options="-parameters" />
+      <module name="videocallservice" options="-parameters" />
     </option>
   </component>
 </project>

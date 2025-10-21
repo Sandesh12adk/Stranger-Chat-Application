@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🎥 Stranger Video Call</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+          background-color: #111;
+          color: #fff;
+          font-family: Arial, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 20px;
+        }
+        h1 { margin-bottom: 10px; }
+        video {
+          width: 45%;
+          border: 2px solid #444;
+          border-radius: 10px;
+          margin: 10px;
+          background: #000;
+        }
+        #video-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        button {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 8px;
+          background-color: #007bff;
+          color: #fff;
+          cursor: pointer;
+          margin-top: 10px;
+        }
+        button:hover { background-color: #0056b3; }
+        #debug {
+          margin-top: 20px;
+          width: 90%;
+          background: #222;
+          padding: 10px;
+          border-radius: 8px;
+          font-family: monospace;
+          max-height: 250px;
+          overflow-y: auto;
+          text-align: left;
+        }
+    </style>
+</head>
+<body>
+<h1>🎥 Stranger Video Call</h1>
+<div id="video-container">
+    <video id="localVideo" autoplay playsinline muted></video>
+    <video id="remoteVideo" autoplay playsinline></video>
+</div>
+<button id="nextBtn">Next Stranger</button>
+<div id="debug"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<script>
+    const BASE_URL = '/videocallservice';
+    const DEBUG = document.getElementById('debug');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let userId = null;
+    let partnerId = null;
+    let stompClient = null;
+    let localStream;
+    let peerConnection;
+
+    const iceServers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+    function log(msg) {
+      console.log(msg);
+      DEBUG.innerHTML += `[${new Date().toLocaleTimeString()}] ${msg}<br>`;
+      DEBUG.scrollTop = DEBUG.scrollHeight;
+    }
+
+    async function fetchUserSession() {
+      try {
+        log("Fetching user session...");
+        const res = await fetch('/user/api/user/session-check');
+        const user = await res.json();
+        userId = user.userId;
+        log(`User authenticated: ${user.userName} (${userId})`);
+        connectWebSocket();
+      } catch (e) {
+        log("❌ Failed to fetch user session: " + e);
+      }
+    }
+
+    function connectWebSocket() {
+      log("Connecting to WebSocket...");
+      const socket = new SockJS(`${BASE_URL}/pair-video`);
+      stompClient = Stomp.over(socket);
+      stompClient.debug = () => {};
+
+      stompClient.connect({}, frame => {
+        log("✅ Connected to WebSocket: " + frame);
+        stompClient.subscribe(`/content/user/${userId}`, handleSignalMessage);
+        findPartner();
+      }, error => {
+        log("❌ WebSocket error: " + error);
+      });
+    }
+
+    async function findPartner() {
+      log("Searching for a partner...");
+      const res = await fetch(`${BASE_URL}/next/${userId}`, { method: 'POST' });
+      const data = await res.json();
+
+      if (data.partnerId) {
+        partnerId = data.partnerId;
+        log(`🎯 Partner found: ${partnerId}`);
+        startWebRTC(true);
+      } else {
+        log("🕓 Waiting for partner...");
+      }
+    }
+
+    function handleSignalMessage(msg) {
+      const message = JSON.parse(msg.body);
+      log(`📩 Received: ${message.type} from ${message.from || 'server'}`);
+
+      switch (message.type) {
+        case "PAIR_CONNECTED":
+          partnerId = message.pairedUserId;
+          if (!partnerId) {
+            log("⚠️ No partnerId in PAIR_CONNECTED — waiting for valid ID...");
+            return;
+          }
+          log(`✅ Connected with partner ${partnerId}`);
+          startWebRTC(true);
+          break;
+
+        case "PAIR_DISCONNECTED":
+          log(`❌ Partner ${message.disconnectedUserId} disconnected`);
+          cleanupConnection();
+          break;
+
+        case "offer":
+          partnerId = message.from;
+          startWebRTC(false, message.sdp);
+          break;
+
+        case "answer":
+          peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp));
+          log("✅ Answer received and set");
+          break;
+
+        case "candidate":
+          if (message.candidate && peerConnection) {
+            peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
+          }
+          break;
+      }
+    }
+
+    async function startWebRTC(isCaller, remoteSdp = null) {
+      cleanupConnection(); // ensure clean start
+
+      if (!partnerId) {
+        log("⚠️ Cannot start WebRTC — partnerId is null");
+        return;
+      }
+
+      peerConnection = new RTCPeerConnection(iceServers);
+      localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      document.getElementById('localVideo').srcObject = localStream;
+
+      localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+      peerConnection.onicecandidate = e => {
+        if (e.candidate) {
+          sendSignal({
+            type: "candidate",
+            from: userId,
+            to: partnerId,
+            candidate: e.candidate
+          });
+        }
+      };
+
+      peerConnection.ontrack = e => {
+        document.getElementById('remoteVideo').srcObject = e.streams[0];
+      };
+
+      if (isCaller) {
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+        sendSignal({ type: "offer", from: userId, to: partnerId, sdp: offer });
+        log("📤 Sent offer");
+      } else if (remoteSdp) {
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(remoteSdp));
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+        sendSignal({ type: "answer", from: userId, to: partnerId, sdp: answer });
+        log("📤 Sent answer");
+      }
+    }
+
+    function sendSignal(payload) {
+      if (!payload.to) {
+        log("⚠️ Attempted to send signal with null 'to' field");
+        return;
+      }
+      stompClient.send("/application/signalmessage.send", {}, JSON.stringify(payload));
+      log(`📤 Sent ${payload.type} to ${payload.to}`);
+    }
+
+    function cleanupConnection() {
+      if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+      }
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+      }
+      document.getElementById('remoteVideo').srcObject = null;
+      log("🧹 Cleaned up old connection");
+    }
+
+    nextBtn.addEventListener('click', async () => {
+      if (partnerId) {
+        await fetch(`${BASE_URL}/skip/${userId}`, { method: 'POST' });
+      }
+      cleanupConnection();
+      findPartner();
+    });
+
+    fetchUserSession();
+</script>
+</body>
+</html>

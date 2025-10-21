@@ -1,4 +1,3 @@
-
 services:
   # ----------------------------
   # MySQL (start first)
@@ -25,7 +24,7 @@ services:
       - BlinkRandom_Network
 
   # ----------------------------
-  # Config Server (start second)
+  # Config Server (start second) - This runs on HTTP
   # ----------------------------
   configserver:
     image: sandesh921/configserver:v1.0
@@ -33,7 +32,7 @@ services:
     environment:
       JAVA_OPTS: -Xms64m -Xmx96m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -Dspring.main.lazy-initialization=true
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:8888/application/default"]
+      test: ["CMD", "curl", "-f", "http://localhost:8888/application/default"]  # HTTP for config server
       interval: 10s
       timeout: 5s
       retries: 15
@@ -51,7 +50,7 @@ services:
     image: sandesh921/eurekaserver:v1.0
     container_name: eurekaserver_container
     environment:
-      SPRING_CONFIG_IMPORT: configserver:https://configserver:8888
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888  # ← HTTP for config server
       SPRING_CLOUD_CONFIG_FAIL_FAST: "true"
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 3000
       SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
@@ -59,7 +58,7 @@ services:
       SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: 25
       JAVA_OPTS: -Xms96m -Xmx128m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -Dspring.main.lazy-initialization=true
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:8761/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8761/"]  # ← KEEP HTTPS for health checks
       interval: 15s
       timeout: 5s
       retries: 10
@@ -79,16 +78,16 @@ services:
     ports:
       - "1111:1111"
     environment:
-      SPRING_CONFIG_IMPORT: configserver:https://configserver:8888
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888  # ← HTTP for config server
       SPRING_CLOUD_CONFIG_FAIL_FAST: "true"
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 3000
       SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
       SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.5
       SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: 25
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: https://eurekaserver:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka  # ← KEEP HTTPS for Eureka
       JAVA_OPTS: -Xms256m -Xmx384m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=80.0 -Dspring.main.lazy-initialization=true
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:1111/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:1111/actuator/health"]  # ← KEEP HTTPS for health checks
       interval: 20s
       timeout: 10s
       retries: 8
@@ -108,19 +107,19 @@ services:
     image: sandesh921/userservice:v1.0
     container_name: userservice_container
     environment:
-      SPRING_CONFIG_IMPORT: configserver:https://configserver:8888
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888  # ← HTTP for config server
       SPRING_CLOUD_CONFIG_FAIL_FAST: "true"
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 3000
       SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
       SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.5
       SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: 25
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: https://eurekaserver:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka  # ← KEEP HTTPS for Eureka
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/chattingappproject
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: san123M
       JAVA_OPTS: -Xms192m -Xmx256m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -Dspring.main.lazy-initialization=true
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]  # ← KEEP HTTPS for health checks
       interval: 20s
       timeout: 10s
       retries: 8
@@ -144,19 +143,19 @@ services:
     image: sandesh921/chatservice:v1.0
     container_name: chatservice_container
     environment:
-      SPRING_CONFIG_IMPORT: configserver:https://configserver:8888
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888  # ← HTTP for config server
       SPRING_CLOUD_CONFIG_FAIL_FAST: "true"
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 3000
       SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
       SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.5
       SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: 25
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: https://eurekaserver:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka  # ← KEEP HTTPS for Eureka
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/chattingappproject
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: san123M
       JAVA_OPTS: -Xms256m -Xmx384m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=80.0 -Dspring.main.lazy-initialization=true
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:8081/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]  # ← KEEP HTTPS for health checks
       interval: 20s
       timeout: 10s
       retries: 8
@@ -180,16 +179,16 @@ services:
     image: sandesh921/randompairservice:v1.0
     container_name: randompairservice_container
     environment:
-      SPRING_CONFIG_IMPORT: configserver:https://configserver:8888
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888  # ← HTTP for config server
       SPRING_CLOUD_CONFIG_FAIL_FAST: "true"
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 3000
       SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
       SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.5
       SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: 25
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: https://eurekaserver:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka  # ← KEEP HTTPS for Eureka
       JAVA_OPTS: -Xms96m -Xmx128m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -Dspring.main.lazy-initialization=true
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost:8082/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]  # ← KEEP HTTPS for health checks
       interval: 20s
       timeout: 10s
       retries: 8
@@ -198,6 +197,37 @@ services:
       configserver:
         condition: service_healthy
       eurekaserver:
+        condition: service_healthy
+    networks:
+      - BlinkRandom_Network
+
+  # ----------------------------
+  # Video Call Service (start eighth)
+  # ----------------------------
+  videocallservice:
+    image: sandesh921/videocallservice:v1.0
+    container_name: videocallservice_container
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888  # ← HTTP for config server
+      SPRING_CLOUD_CONFIG_FAIL_FAST: "true"
+      SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 3000
+      SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
+      SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.5
+      SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: 25
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka  # ← KEEP HTTPS for Eureka
+      JAVA_OPTS: -Xms192m -Xmx256m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0 -Dspring.main.lazy-initialization=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]  # ← KEEP HTTPS for health checks
+      interval: 20s
+      timeout: 10s
+      retries: 8
+      start_period: 60s
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+      gatewayserver:
         condition: service_healthy
     networks:
       - BlinkRandom_Network
@@ -218,6 +248,7 @@ services:
       - ./certbot/conf:/etc/letsencrypt
     depends_on:
       - gatewayserver
+      - videocallservice
     networks:
       - BlinkRandom_Network
 
