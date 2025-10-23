@@ -593,10 +593,21 @@
                 </div>
             </div>
 
-            <!-- New Blog Card -->
+            <!-- Video Call Card -->
             <div class="col-md-6">
-                <a href="blog.html" class="action-card-link">
-                    <div class="action-card tertiary">
+                <div class="action-card success" id="videoCallBtn">
+                    <i class="fas fa-video action-icon"></i>
+                    <div class="action-title">Video Call</div>
+                    <div class="action-description">
+                        Face-to-face conversations with strangers
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Card -->
+            <div class="col-md-6">
+                <a href="blog.html" class="action-card-link" style="text-decoration: none;">
+                    <div class="action-card info">
                         <i class="fas fa-blog action-icon"></i>
                         <div class="action-title">Blog</div>
                         <div class="action-description">
@@ -734,6 +745,11 @@
 
     document.getElementById('randomChatBtn').addEventListener('click', function() {
         window.location.href = "randompairchat.html";
+    });
+
+    // Video Call Button
+    document.getElementById('videoCallBtn').addEventListener('click', function() {
+        window.location.href = "videocall-v2.html";
     });
 
     document.getElementById('demoQuestionsBtn').addEventListener('click', function() {
