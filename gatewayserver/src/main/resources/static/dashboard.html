@@ -573,7 +573,7 @@
             Quick Actions
         </h2>
         <div class="row g-3 mb-4">
-            <div class="col-md-6">
+            <div class="col-md-6 col-lg-4">
                 <div class="action-card primary" id="talkToStrangerBtn">
                     <i class="fas fa-comments action-icon"></i>
                     <div class="action-title">Talk To Stranger</div>
@@ -583,7 +583,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 col-lg-4">
                 <div class="action-card secondary" id="randomChatBtn">
                     <i class="fas fa-random action-icon"></i>
                     <div class="action-title">Random Chat</div>
@@ -593,28 +593,26 @@
                 </div>
             </div>
 
-            <!-- Video Call Card -->
-            <div class="col-md-6">
+            <!-- New Video Call Card -->
+            <div class="col-md-6 col-lg-4">
                 <div class="action-card success" id="videoCallBtn">
                     <i class="fas fa-video action-icon"></i>
                     <div class="action-title">Video Call</div>
                     <div class="action-description">
-                        Face-to-face conversations with strangers
+                        Face-to-face calls with strangers
                     </div>
                 </div>
             </div>
 
             <!-- Blog Card -->
-            <div class="col-md-6">
-                <a href="blog.html" class="action-card-link" style="text-decoration: none;">
-                    <div class="action-card info">
-                        <i class="fas fa-blog action-icon"></i>
-                        <div class="action-title">Blog</div>
-                        <div class="action-description">
-                            Read our latest articles and updates
-                        </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="action-card info" id="blogBtn">
+                    <i class="fas fa-blog action-icon"></i>
+                    <div class="action-title">Blog</div>
+                    <div class="action-description">
+                        Read our latest articles and updates
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </div>
@@ -747,9 +745,13 @@
         window.location.href = "randompairchat.html";
     });
 
-    // Video Call Button
+    // New Video Call button
     document.getElementById('videoCallBtn').addEventListener('click', function() {
         window.location.href = "videocall-v2.html";
+    });
+
+    document.getElementById('blogBtn').addEventListener('click', function() {
+        window.location.href = "blog.html";
     });
 
     document.getElementById('demoQuestionsBtn').addEventListener('click', function() {
