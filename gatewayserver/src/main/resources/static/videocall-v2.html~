@@ -1056,8 +1056,7 @@ function showCameraWaitingMessage(browserInfo) {
         <div>⏳ ${waitingMessage}</div>
         ${helpTip}
         <small style="margin-top: 10px; display: block;">
-            <i>If this continues,Inform the developer insta: sandesh.adhikari.3323 or thorug the contact us page
-            </i>
+            <i>If this continues,Inform the developer insta: sandesh.adhikari.3323</i>
         </small>
     `;
 }
